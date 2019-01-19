@@ -13,6 +13,9 @@ using QtNodes::FlowScene;
 using QtNodes::FlowView;
 using QtNodes::ConnectionStyle;
 
+#include "src/ShaderNodes/Model/Functions/ClassFunctionAbsNodeModel/FunctionAbsNodeModel.hpp"
+#include "src/ShaderNodes/DoubleNodeModel"
+
 int main(int argc, char** argv) {
     QApplication application(argc, argv);
 
@@ -21,9 +24,24 @@ int main(int argc, char** argv) {
     widget->show();
     */
 
-    FlowScene scene(nullptr);
+    auto reg = std::make_shared<DataModelRegistry>();
 
+    reg->registerModel<FunctionAbsNodeModel>();
+    reg->registerModel<DoubleNodeModel<PortType::In>>();
+    reg->registerModel<DoubleNodeModel<PortType::Out>>();
+
+    ConnectionStyle::setConnectionStyle(
+        R"(
+      {
+        "ConnectionStyle": {
+          "UseDataDefinedColors": true
+        }
+      }
+      )");
+
+    FlowScene scene(reg);
     FlowView view(&scene);
+
 
     view.setWindowTitle("Node-based flow editor");
     view.resize(800, 600);

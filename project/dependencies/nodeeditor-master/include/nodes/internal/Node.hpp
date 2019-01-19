@@ -86,6 +86,8 @@ public:
   nodeDataModel() const;
 
 public slots: // data propagation
+  void
+  onNeedRedraw();
 
   /// Propagates incoming data to the underlying model.
   void

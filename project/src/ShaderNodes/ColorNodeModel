@@ -1,1 +1,1 @@
-#include "Model/ClassColorNodeModel/ColorNodeModel.hpp"
+#include "Model/Types/ClassColorNodeModel/ColorNodeModel.hpp"

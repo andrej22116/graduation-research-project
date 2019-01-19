@@ -1,1 +1,1 @@
-#include "Model/ClassSamplerNodeModel/SamplerNodeModel.hpp"
+#include "Model/Types/ClassSamplerNodeModel/SamplerNodeModel.hpp"

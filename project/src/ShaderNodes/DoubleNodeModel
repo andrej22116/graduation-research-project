@@ -1,1 +1,1 @@
-#include "Model/ClassDoubleNodeModel/DoubleNodeModel.hpp"
+#include "Model/Types/ClassDoubleNodeModel/DoubleNodeModel.hpp"

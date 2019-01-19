@@ -36,6 +36,8 @@ Node(std::unique_ptr<NodeDataModel> && dataModel)
   // propagate data: model => node
   connect(_nodeDataModel.get(), &NodeDataModel::dataUpdated,
           this, &Node::onDataUpdated);
+  connect(_nodeDataModel.get(), &NodeDataModel::modelUpdated,
+          this, &Node::onNeedRedraw);
 }
 
 
@@ -176,6 +178,14 @@ Node::
 nodeDataModel() const
 {
   return _nodeDataModel.get();
+}
+
+
+void
+Node::
+onNeedRedraw()
+{
+    _nodeGraphicsObject->update();
 }
 
 

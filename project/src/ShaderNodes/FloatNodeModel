@@ -1,1 +1,1 @@
-#include "Model/ClassFloatNodeModel/FloatNodeModel.hpp"
+#include "Model/Types/ClassFloatNodeModel/FloatNodeModel.hpp"

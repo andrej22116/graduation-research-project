@@ -122,7 +122,14 @@ public:
   virtual
   NodePainterDelegate* painterDelegate() const { return nullptr; }
 
+public slots:
+  virtual
+  void
+  onConnect(PortType portType, PortIndex portIndex, NodeDataType dataType) {}
+
 signals:
+  void
+  modelUpdated();
 
   void
   dataUpdated(PortIndex index);

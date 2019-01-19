@@ -1,1 +1,1 @@
-#include "Model/ClassMatrix2NodeModel/Matrix2NodeModel.hpp"
+#include "Model/Types/ClassMatrix2NodeModel/Matrix2NodeModel.hpp"

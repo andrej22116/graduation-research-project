@@ -1,1 +1,1 @@
-#include "Model/ClassVector3NodeModel/Vector3NodeModel.hpp"
+#include "Model/Types/ClassVector3NodeModel/Vector3NodeModel.hpp"
