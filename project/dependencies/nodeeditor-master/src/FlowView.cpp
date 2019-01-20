@@ -9,7 +9,7 @@
 #include <QtCore/QRectF>
 #include <QtCore/QPointF>
 
-#include <QtOpenGL>
+#include <QOpenGLWidget>
 #include <QtWidgets>
 
 #include <QDebug>
@@ -80,6 +80,9 @@ deleteSelectionAction() const
 void
 FlowView::setScene(FlowScene *scene)
 {
+  setViewport(new QOpenGLWidget());
+  setViewportUpdateMode(ViewportUpdateMode::SmartViewportUpdate);
+
   _scene = scene;
   QGraphicsView::setScene(_scene);
 

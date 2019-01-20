@@ -1,6 +1,7 @@
 #include <QWidget>
 #include <QVBoxLayout>
 #include <QApplication>
+#include <QSurfaceFormat>
 
 #include <nodes/NodeData>
 #include <nodes/FlowScene>
@@ -23,6 +24,16 @@ int main(int argc, char** argv) {
     auto widget = new QWidget();
     widget->show();
     */
+
+    QSurfaceFormat format;
+    format.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
+    format.setDepthBufferSize(24);
+    format.setStencilBufferSize(8);
+    format.setSamples(8);
+    format.setRenderableType(QSurfaceFormat::OpenGL);
+    format.setVersion(3, 3);
+    format.setProfile(QSurfaceFormat::CoreProfile);
+    QSurfaceFormat::setDefaultFormat(format);
 
     auto reg = std::make_shared<DataModelRegistry>();
 

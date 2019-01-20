@@ -105,6 +105,7 @@ qt5_wrap_ui(project_headers_wrapped ${project_ui})
 #qt5_wrap_cpp(project_sources_moc ${project_headers})
 
 add_executable(${PROJECT_NAME}
+#    WIN32
     ${project_headers}
     ${project_sources}
     ${project_sources_moc}
