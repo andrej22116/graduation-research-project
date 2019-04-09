@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QtGui/QPainter>
+#include "Export.hpp"
 
 namespace QtNodes
 {
@@ -11,9 +12,9 @@ class NodeGeometry;
 class NodeGraphicsObject;
 class NodeDataModel;
 class FlowItemEntry;
-class FlowScene;
+class DataModelRegistry;
 
-class NodePainter
+class NODE_EDITOR_PUBLIC NodePainter
 {
 public:
 
@@ -25,14 +26,14 @@ public:
   void
   paint(QPainter* painter,
         Node& node,
-        FlowScene const& scene);
+        DataModelRegistry& registry);
 
   static
   void
   drawNodeRect(QPainter* painter,
                NodeGeometry const& geom,
                NodeDataModel const* model,
-               NodeGraphicsObject const & graphicsObject);
+               bool graphicsObjectIsSelected = false);
 
   static
   void
@@ -54,7 +55,7 @@ public:
                        NodeGeometry const& geom,
                        NodeState const& state,
                        NodeDataModel const * model,
-                       FlowScene const & scene);
+                       DataModelRegistry const& registry);
 
   static
   void
@@ -74,6 +75,6 @@ public:
   drawValidationRect(QPainter * painter,
                      NodeGeometry const & geom,
                      NodeDataModel const * model,
-                     NodeGraphicsObject const & graphicsObject);
+                     bool graphicsObjectIsSelected = false);
 };
 }

@@ -20,7 +20,7 @@ public:
      *
      * Node have one input port, one output port
      */
-    unsigned int nPorts( PortType portType ) const override final;
+    unsigned int nPorts( PortType portType ) const override;
 
     /**
      * @brief dataType
@@ -31,7 +31,7 @@ public:
      * In/Out types: double
      */
     NodeDataType dataType( PortType portType
-                         , PortIndex portIndex ) const override final;
+                         , PortIndex portIndex ) const override;
 
     /**
      * @brief portCaption
@@ -40,55 +40,30 @@ public:
      * @return port name
      */
     QString portCaption( PortType portType
-                       , PortIndex portIndex ) const override final;
+                       , PortIndex portIndex ) const override;
 
     /**
      * @brief portCaptionVisible
      * @return only true!
      */
     bool portCaptionVisible( PortType portType
-                           , PortIndex portIndex) const override final;
+                           , PortIndex portIndex) const override;
 
     /**
      * @brief portOutConnectionPolicy
      * @param portIndex
      * @return
      */
-    ConnectionPolicy portOutConnectionPolicy(PortIndex portIndex) const override final;
+    ConnectionPolicy portOutConnectionPolicy(PortIndex portIndex) const override;
 
-protected:
-    /**
-     * @brief called from nPorts.
-     * @warning First in/out port is busy!
-     */
-    virtual unsigned int m_nPorts( PortType portType ) const = 0;
-
-    /**
-     * @brief called from dataType.
-     * @warning First in/out port is busy!
-     */
-    virtual NodeDataType m_dataType( PortType portType
-                                   , PortIndex portIndex ) const = 0;
-
-    /**
-     * @brief called from portCaptionVisible.
-     * @warning First in/out port is busy!
-     */
-    virtual bool m_portCaptionVisible( PortType portType
-                                     , PortIndex portIndex ) const;
-
-    /**
-     * @brief called from portCaption.
-     * @warning First in/out port is busy!
-     */
-    virtual QString m_portCaption( PortType portType
-                                 , PortIndex portIndex ) const;
-
-    /**
-     * @brief called from portOutConnectionPolicy.
-     * @warning First out port is busy!
-     */
-    virtual ConnectionPolicy m_portOutConnectionPolicy(PortIndex portIndex) const;
+    ////////////////////////////////////////////////////////////////
+    /// @warning This is dummy!
+    void setInData( std::shared_ptr<NodeData> nodeData
+                  , PortIndex port) override {}
+    ///
+    /// @warning This is dummy!
+    std::shared_ptr<NodeData> outData(PortIndex port) override { return nullptr; }
+    ////////////////////////////////////////////////////////////////
 };
 
 
@@ -111,17 +86,16 @@ public:
 
     std::string whatThis() const override;
 
-protected:
-    unsigned int m_nPorts( PortType portType ) const override;
+    unsigned int nPorts( PortType portType ) const override;
 
-    NodeDataType m_dataType( PortType portType
+    NodeDataType dataType( PortType portType
+                         , PortIndex portIndex ) const override;
+
+    bool portCaptionVisible( PortType portType
                            , PortIndex portIndex ) const override;
 
-    bool m_portCaptionVisible( PortType portType
-                             , PortIndex portIndex ) const override;
-
-    QString m_portCaption( PortType portType
-                         , PortIndex portIndex ) const override;
+    QString portCaption( PortType portType
+                       , PortIndex portIndex ) const override;
 };
 
 class SubtractorFunctionalNode : public FunctionalNode {
@@ -143,17 +117,48 @@ public:
 
     std::string whatThis() const override;
 
-protected:
-    unsigned int m_nPorts( PortType portType ) const override;
+    unsigned int nPorts( PortType portType ) const override;
 
-    NodeDataType m_dataType( PortType portType
+    NodeDataType dataType( PortType portType
+                         , PortIndex portIndex ) const override;
+
+    bool portCaptionVisible( PortType portType
                            , PortIndex portIndex ) const override;
 
-    bool m_portCaptionVisible( PortType portType
-                             , PortIndex portIndex ) const override;
-
-    QString m_portCaption( PortType portType
-                         , PortIndex portIndex ) const override;
+    QString portCaption( PortType portType
+                       , PortIndex portIndex ) const override;
 };
 
+class ConditionFunctionalNode : public FunctionalNode {
+public:
+    ConditionFunctionalNode(){}
+    ~ConditionFunctionalNode() override {}
+
+    /**
+     * @brief Name
+     * @return Model name
+     */
+    QString name() const override;
+
+    /**
+     * @brief caption
+     * @return Node title
+     */
+    QString caption() const override;
+
+    std::string whatThis() const override;
+
+    unsigned int nPorts( PortType portType ) const override;
+
+    NodeDataType dataType( PortType portType
+                         , PortIndex portIndex ) const override;
+
+    bool portCaptionVisible( PortType portType
+                           , PortIndex portIndex ) const override;
+
+    QString portCaption( PortType portType
+                       , PortIndex portIndex ) const override;
+
+    ConnectionPolicy portOutConnectionPolicy(PortIndex portIndex) const override;
+};
 #endif // FUNCTIONALNODES_HPP

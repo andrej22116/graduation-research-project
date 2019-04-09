@@ -32,6 +32,13 @@ Node(std::unique_ptr<NodeDataModel> && dataModel)
   , _nodeGraphicsObject(nullptr)
 {
   _nodeGeometry.recalculateSize();
+
+  // propagate data: model => node
+  connect(_nodeDataModel.get(), &NodeDataModel::dataUpdated,
+          this, &Node::onDataUpdated);
+
+  connect(_nodeDataModel.get(), &NodeDataModel::embeddedWidgetSizeUpdated,
+          this, &Node::onNodeSizeUpdated );
 }
 
 
@@ -171,18 +178,61 @@ NodeDataModel*
 Node::
 nodeDataModel() const
 {
-  return _nodeDataModel.get();
+    return _nodeDataModel.get();
+}
+
+bool Node::isSelected() const
+{
+    return _nodeGraphicsObject && _nodeGraphicsObject->isSelected();
 }
 
 
 void
 Node::
-propagateData(std::shared_ptr<NodeData>,
-              PortIndex) const
+propagateData(std::shared_ptr<NodeData> nodeData,
+              PortIndex inPortIndex) const
 {
+  _nodeDataModel->setInData(std::move(nodeData), inPortIndex);
+
   //Recalculate the nodes visuals. A data change can result in the node taking more space than before, so this forces a recalculate+repaint on the affected node
   _nodeGraphicsObject->setGeometryChanged();
   _nodeGeometry.recalculateSize();
   _nodeGraphicsObject->update();
   _nodeGraphicsObject->moveConnections();
+}
+
+
+void
+Node::
+onDataUpdated(PortIndex index)
+{
+  auto nodeData = _nodeDataModel->outData(index);
+
+  auto connections =
+    _nodeState.connections(PortType::Out, index);
+
+  for (auto const & c : connections)
+    c.second->propagateData(nodeData);
+}
+
+void
+Node::
+onNodeSizeUpdated()
+{
+    if( nodeDataModel()->embeddedWidget() )
+    {
+        nodeDataModel()->embeddedWidget()->adjustSize();
+    }
+    nodeGeometry().recalculateSize();
+    for(PortType type: {PortType::In, PortType::Out})
+    {
+        for(auto& conn_set : nodeState().getEntries(type))
+        {
+            for(auto& pair: conn_set)
+            {
+                Connection* conn = pair.second;
+                conn->getConnectionGraphicsObject().move();
+            }
+        }
+    }
 }

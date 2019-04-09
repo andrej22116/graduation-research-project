@@ -22,6 +22,8 @@ enum class NodeValidationState
   Error
 };
 
+class Connection;
+
 class StyleCollection;
 
 class NODE_EDITOR_PUBLIC NodeDataModel
@@ -93,9 +95,19 @@ public:
 
 public:
 
+  /// Triggers the algorithm
+  virtual
+  void
+  setInData(std::shared_ptr<NodeData> nodeData,
+            PortIndex port) = 0;
+
+  virtual
+  std::shared_ptr<NodeData>
+  outData(PortIndex port) = 0;
+
   virtual
   QWidget *
-  embeddedWidget() { return nullptr; };
+  embeddedWidget() { return nullptr; }
 
   virtual
   bool
@@ -112,18 +124,43 @@ public:
   virtual
   NodePainterDelegate* painterDelegate() const { return nullptr; }
 
-public slots:
-  virtual
-  void
-  onConnect(PortType portType, PortIndex portIndex, NodeDataType dataType) {}
+public Q_SLOTS:
 
-signals:
+  virtual void
+  inputConnectionCreated(Connection const&)
+  {
+  }
+
+  virtual void
+  inputConnectionDeleted(Connection const&)
+  {
+  }
+
+  virtual void
+  outputConnectionCreated(Connection const&)
+  {
+  }
+
+  virtual void
+  outputConnectionDeleted(Connection const&)
+  {
+  }
+
+Q_SIGNALS:
 
   void
   dataUpdated(PortIndex index);
 
   void
   dataInvalidated(PortIndex index);
+
+  void
+  computingStarted();
+
+  void
+  computingFinished();
+
+  void embeddedWidgetSizeUpdated();
 
 private:
 

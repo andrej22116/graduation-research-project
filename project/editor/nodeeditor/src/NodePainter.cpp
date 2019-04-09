@@ -12,6 +12,7 @@
 #include "NodeDataModel.hpp"
 #include "Node.hpp"
 #include "FlowScene.hpp"
+#include "DataModelRegistry.hpp"
 
 using QtNodes::NodePainter;
 using QtNodes::NodeGeometry;
@@ -20,27 +21,33 @@ using QtNodes::Node;
 using QtNodes::NodeState;
 using QtNodes::NodeDataModel;
 using QtNodes::FlowScene;
+using QtNodes::DataModelRegistry;
+
+NodePainter::NodePainter()
+{
+
+}
 
 void
 NodePainter::
 paint(QPainter* painter,
-      Node & node,
-      FlowScene const& scene)
+      Node& node,
+      DataModelRegistry& registry)
 {
   NodeGeometry const& geom = node.nodeGeometry();
 
   NodeState const& state = node.nodeState();
 
-  NodeGraphicsObject const & graphicsObject = node.nodeGraphicsObject();
+  bool graphicsObjectIsSelected = node.isSelected();
 
   geom.recalculateSize(painter->font());
 
   //--------------------------------------------
   NodeDataModel const * model = node.nodeDataModel();
 
-  drawNodeRect(painter, geom, model, graphicsObject);
+  drawNodeRect(painter, geom, model, graphicsObjectIsSelected);
 
-  drawConnectionPoints(painter, geom, state, model, scene);
+  drawConnectionPoints(painter, geom, state, model, registry);
 
   drawFilledConnectionPoints(painter, geom, state, model);
 
@@ -50,7 +57,7 @@ paint(QPainter* painter,
 
   drawResizeRect(painter, geom, model);
 
-  drawValidationRect(painter, geom, model, graphicsObject);
+  drawValidationRect(painter, geom, model, graphicsObjectIsSelected);
 
   /// call custom painter
   if (auto painterDelegate = model->painterDelegate())
@@ -65,11 +72,11 @@ NodePainter::
 drawNodeRect(QPainter* painter,
              NodeGeometry const& geom,
              NodeDataModel const* model,
-             NodeGraphicsObject const & graphicsObject)
+             bool graphicsObjectIsSelected)
 {
   NodeStyle const& nodeStyle = model->nodeStyle();
 
-  auto color = graphicsObject.isSelected()
+  auto color = graphicsObjectIsSelected
                ? nodeStyle.SelectedBoundaryColor
                : nodeStyle.NormalBoundaryColor;
 
@@ -109,8 +116,8 @@ NodePainter::
 drawConnectionPoints(QPainter* painter,
                      NodeGeometry const& geom,
                      NodeState const& state,
-                     NodeDataModel const * model,
-                     FlowScene const & scene)
+                     NodeDataModel const* model,
+                     DataModelRegistry const& registry)
 {
   NodeStyle const& nodeStyle      = model->nodeStyle();
   auto const     &connectionStyle = StyleCollection::connectionStyle();
@@ -145,11 +152,11 @@ drawConnectionPoints(QPainter* painter,
         {
           if (portType == PortType::In)
           {
-            typeConvertable = scene.registry().getTypeConverter(state.reactingDataType(), dataType) != nullptr;
+            typeConvertable = registry.getTypeConverter(state.reactingDataType(), dataType) != nullptr;
           }
           else
           {
-            typeConvertable = scene.registry().getTypeConverter(dataType, state.reactingDataType()) != nullptr;
+            typeConvertable = registry.getTypeConverter(dataType, state.reactingDataType()) != nullptr;
           }
         }
 
@@ -349,7 +356,7 @@ NodePainter::
 drawValidationRect(QPainter * painter,
                    NodeGeometry const & geom,
                    NodeDataModel const * model,
-                   NodeGraphicsObject const & graphicsObject)
+                   bool graphicsObjectIsSelected)
 {
   auto modelValidationState = model->validationState();
 
@@ -357,7 +364,7 @@ drawValidationRect(QPainter * painter,
   {
     NodeStyle const& nodeStyle = model->nodeStyle();
 
-    auto color = graphicsObject.isSelected()
+    auto color = graphicsObjectIsSelected
                  ? nodeStyle.SelectedBoundaryColor
                  : nodeStyle.NormalBoundaryColor;
 

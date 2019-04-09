@@ -120,7 +120,17 @@ tryConnect() const
   _connection->setNodeToPort(*_node, requiredPort, portIndex);
 
   // 4) Adjust Connection geometry
+
   _node->nodeGraphicsObject().moveConnections();
+
+  // 5) Poke model to intiate data transfer
+
+  auto outNode = _connection->getNode(PortType::Out);
+  if (outNode)
+  {
+    PortIndex outPortIndex = _connection->getPortIndex(PortType::Out);
+    outNode->onDataUpdated(outPortIndex);
+  }
 
   return true;
 }

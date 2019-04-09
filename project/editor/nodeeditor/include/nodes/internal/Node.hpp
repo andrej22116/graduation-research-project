@@ -85,11 +85,23 @@ public:
   NodeDataModel*
   nodeDataModel() const;
 
-public slots: // data propagation
+  bool isSelected() const;
+
+public Q_SLOTS: // data propagation
+
   /// Propagates incoming data to the underlying model.
   void
   propagateData(std::shared_ptr<NodeData> nodeData,
                 PortIndex inPortIndex) const;
+
+  /// Fetches data from model's OUT #index port
+  /// and propagates it to the connection
+  void
+  onDataUpdated(PortIndex index);
+
+  /// update the graphic part if the size of the embeddedwidget changes
+  void
+  onNodeSizeUpdated();
 
 private:
 

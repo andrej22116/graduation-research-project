@@ -169,7 +169,7 @@ paint(QPainter * painter,
 {
   painter->setClipRect(option->exposedRect);
 
-  NodePainter::paint(painter, _node, _scene);
+  NodePainter::paint(painter, _node, _scene.registry());
 }
 
 
