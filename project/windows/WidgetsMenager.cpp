@@ -1,6 +1,6 @@
 #include "WidgetsMenager.hpp"
 
-WidgetsMenager::WidgetsMenager()
+WidgetsMenager::WidgetsMenager(QWidget* parent)
 {
 
 }

@@ -1,6 +1,7 @@
 #include "MenagetWidget.hpp"
 
-MenagetWidget::MenagetWidget(QWidget *parent) : QWidget(parent)
+MenagetWidget::MenagetWidget(std::shared_ptr<MenagetWidget> parent)
+    : QWidget(parent.get())
 {
 
 }
