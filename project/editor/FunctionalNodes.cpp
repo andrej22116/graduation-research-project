@@ -54,7 +54,7 @@ QtNodes::NodeDataType AdderFunctionalNode::dataType( QtNodes::PortType
                                                    , QtNodes::PortIndex portIndex ) const
 {
     if ( portIndex == 0 ) { return ActionDataType{}; }
-    return IntegerDataType{};
+    return FloatDataType{};
 }
 
 bool AdderFunctionalNode::portCaptionVisible( QtNodes::PortType portType
@@ -93,7 +93,7 @@ QtNodes::NodeDataType SubtractorFunctionalNode::dataType( QtNodes::PortType
                                                         , QtNodes::PortIndex portIndex) const
 {
     if ( portIndex == 0 ) { return ActionDataType{}; }
-    return IntegerDataType{};
+    return FloatDataType{};
 }
 
 bool SubtractorFunctionalNode::portCaptionVisible( QtNodes::PortType
@@ -161,4 +161,277 @@ QString ConditionFunctionalNode::portCaption( QtNodes::PortType
 NodeDataModel::ConnectionPolicy ConditionFunctionalNode::portOutConnectionPolicy(QtNodes::PortIndex) const
 {
     return NodeDataModel::ConnectionPolicy::One;
+}
+
+QString RadiansFunctionalNode::name() const
+{
+    return "To radians";
+}
+
+QString RadiansFunctionalNode::caption() const
+{
+    return "To radians";
+}
+
+std::string RadiansFunctionalNode::whatThis() const
+{
+    return "2rad";
+}
+
+QtNodes::NodeDataType RadiansFunctionalNode::dataType( QtNodes::PortType
+                                                     , QtNodes::PortIndex portIndex) const
+{
+    if ( portIndex == 0 ) { return ActionDataType{}; }
+    return FloatDataType{};
+}
+
+QString DegreesFunctionalNode::name() const
+{
+    return "To degrees";
+}
+
+QString DegreesFunctionalNode::caption() const
+{
+    return "To degrees";
+}
+
+std::string DegreesFunctionalNode::whatThis() const
+{
+    return "2deg";
+}
+
+QtNodes::NodeDataType DegreesFunctionalNode::dataType( QtNodes::PortType
+                                                     , QtNodes::PortIndex portIndex ) const
+{
+    if ( portIndex == 0 ) { return ActionDataType{}; }
+    return FloatDataType{};
+}
+
+unsigned int TrigonometryFunctionalNode::nPorts(QtNodes::PortType portType) const
+{
+    return 2;
+}
+
+NodeDataModel::ConnectionPolicy
+TrigonometryFunctionalNode::portOutConnectionPolicy(QtNodes::PortIndex portIndex) const
+{
+    return portIndex == 0 ? NodeDataModel::ConnectionPolicy::One
+                          : NodeDataModel::ConnectionPolicy::Many;
+}
+
+QtNodes::NodeDataType TrigonometryFunctionalNode::dataType( QtNodes::PortType
+                                                          , QtNodes::PortIndex portIndex ) const
+{
+    if ( portIndex == 0 ) { return ActionDataType{}; }
+    return FloatDataType{};
+}
+
+QString SinFunctionalNode::name() const
+{
+    return "Sine";
+}
+
+QString SinFunctionalNode::caption() const
+{
+    return "Sine";
+}
+
+std::string SinFunctionalNode::whatThis() const
+{
+    return "sin";
+}
+
+QString CosFunctionalNode::name() const
+{
+    return "Cosine";
+}
+
+QString CosFunctionalNode::caption() const
+{
+    return "Cosine";
+}
+
+std::string CosFunctionalNode::whatThis() const
+{
+    return "cos";
+}
+
+QString TanFunctionalNode::name() const
+{
+    return "Tangent";
+}
+
+QString TanFunctionalNode::caption() const
+{
+    return "Tangent";
+}
+
+std::string TanFunctionalNode::whatThis() const
+{
+    return "tan";
+}
+
+QString CtanFunctionalNode::name() const
+{
+    return "Cotangent";
+}
+
+QString CtanFunctionalNode::caption() const
+{
+    return "Cotangent";
+}
+
+std::string CtanFunctionalNode::whatThis() const
+{
+    return "ctan";
+}
+
+QString ArcSinFunctionalNode::name() const
+{
+    return "Arc sine";
+}
+
+QString ArcSinFunctionalNode::caption() const
+{
+    return "Arc sine";
+}
+
+std::string ArcSinFunctionalNode::whatThis() const
+{
+    return "asin";
+}
+
+QString ArcCosFunctionalNode::name() const
+{
+    return "Arc cosine";
+}
+
+QString ArcCosFunctionalNode::caption() const
+{
+    return "Arc cosine";
+}
+
+std::string ArcCosFunctionalNode::whatThis() const
+{
+    return "acos";
+}
+
+QString ArcTanFunctionalNode::name() const
+{
+    return "Arc tangent";
+}
+
+QString ArcTanFunctionalNode::caption() const
+{
+    return "Arc tangent";
+}
+
+std::string ArcTanFunctionalNode::whatThis() const
+{
+    return "atan";
+}
+
+QString PowFunctionalNode::name() const
+{
+    return "Power";
+}
+
+QString PowFunctionalNode::caption() const
+{
+    return "Power";
+}
+
+std::string PowFunctionalNode::whatThis() const
+{
+    return "pow";
+}
+
+QString ExpFunctionalNode::name() const
+{
+    return "Exponentiation";
+}
+
+QString ExpFunctionalNode::caption() const
+{
+    return "Exponentiation";
+}
+
+std::string ExpFunctionalNode::whatThis() const
+{
+    return "exp";
+}
+
+QString Exp2FunctionalNode::name() const
+{
+    return "Exponentiation 2";
+}
+
+QString Exp2FunctionalNode::caption() const
+{
+    return "Exponentiation 2";
+}
+
+std::string Exp2FunctionalNode::whatThis() const
+{
+    return "exp2";
+}
+
+QString LogFunctionalNode::name() const
+{
+    return "Logarithm";
+}
+
+QString LogFunctionalNode::caption() const
+{
+    return "Logarithm";
+}
+
+std::string LogFunctionalNode::whatThis() const
+{
+    return "log";
+}
+
+QString Log2FunctionalNode::name() const
+{
+    return "Logarithm base 2";
+}
+
+QString Log2FunctionalNode::caption() const
+{
+    return "Logarithm base 2";
+}
+
+std::string Log2FunctionalNode::whatThis() const
+{
+    return "log2";
+}
+
+QString SqrtFunctionalNode::name() const
+{
+    return "Sqrt";
+}
+
+QString SqrtFunctionalNode::caption() const
+{
+    return "Sqrt";
+}
+
+std::string SqrtFunctionalNode::whatThis() const
+{
+    return "sqrt";
+}
+
+QString InverseSqrtFunctionalNode::name() const
+{
+    return "Inverse sqrt";
+}
+
+QString InverseSqrtFunctionalNode::caption() const
+{
+    return "Inverse sqrt";
+}
+
+std::string InverseSqrtFunctionalNode::whatThis() const
+{
+    return "isqrt";
 }

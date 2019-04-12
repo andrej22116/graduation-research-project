@@ -3,6 +3,8 @@
 #include <nodes/Node>
 #include <nodes/DataModelRegistry>
 
+#include <QScrollBar>
+
 #include <QPainter>
 #include <QPixmap>
 

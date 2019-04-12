@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QtGui/QColor>
+#include <map>
 
 #include "Export.hpp"
 #include "Style.hpp"
@@ -32,7 +33,7 @@ public:
 
   QColor constructionColor() const;
   QColor normalColor() const;
-  QColor normalColor(QString typeId) const;
+  QColor normalColor(const QString& typeId) const;
   QColor selectedColor() const;
   QColor selectedHaloColor() const;
   QColor hoveredColor() const;

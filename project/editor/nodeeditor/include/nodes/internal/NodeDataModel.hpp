@@ -69,6 +69,11 @@ public:
   virtual
   unsigned int nPorts(PortType portType) const = 0;
 
+  /// return true, if port has concrete data type
+  virtual
+  bool hasConcreteDataType(PortType, PortIndex) const
+  { return true; }
+
   virtual
   NodeDataType dataType(PortType portType, PortIndex portIndex) const = 0;
 

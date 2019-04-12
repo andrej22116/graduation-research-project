@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QtCore/QString>
+#include <memory>
 
 #include "Export.hpp"
 

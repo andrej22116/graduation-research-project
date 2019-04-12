@@ -160,7 +160,7 @@ normalColor() const
 
 QColor
 ConnectionStyle::
-normalColor(QString typeId) const
+normalColor(const QString& typeId) const
 {
   std::size_t hash = qHash(typeId);
 
