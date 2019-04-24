@@ -21,6 +21,8 @@ target_link_libraries( editor
 	nodes
 )
 
+set(CMAKE_AUTOMOC ON)
+
 target_compile_options( editor
   PRIVATE
     $<$<CXX_COMPILER_ID:MSVC>:/W4 /wd4127 /EHsc>
@@ -30,9 +32,9 @@ target_compile_options( editor
 
 set_target_properties( editor
   PROPERTIES
-	ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib
-    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib
-    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
+    ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/lib
+    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/lib
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/bin
 )
 
 add_subdirectory( nodeeditor )
