@@ -4,16 +4,14 @@
 #include <QObject>
 #include <memory>
 
-struct TargetObject;
+class TargetObject;
 struct LightSource;
 
 /**
  * @brief The ITargetSceneRenderer class is the interface for use render target
  */
-class ITargetSceneRenderer : public virtual QObject
+class ITargetSceneRenderer
 {
-    Q_OBJECT
-
 public:
     /**
      * @brief Set render properties
@@ -22,22 +20,22 @@ public:
     virtual void setSceneProperties(QJsonDocument& jsonProperties) = 0;
 
     /**
-     * @brief setVertexShaderText
+     * @brief Set vertex shader source code
      * @param text - vertex shader programm text;
      */
     virtual void setVertexShaderText(const QString& text) = 0;
 
     /**
-     * @brief setGeometryShaderText
+     * @brief Set geometry shader source code
      * @param text - geometry shader programm text;
      */
     virtual void setGeometryShaderText(const QString& text) = 0;
 
     /**
-     * @brief setPixelShaderText
-     * @param text - pixel shader programm text;
+     * @brief Set fragment shader source code
+     * @param text - fragment shader programm text;
      */
-    virtual void setPixelShaderText(const QString& text) = 0;
+    virtual void setFragmentShaderText(const QString& text) = 0;
 
     /**
      * @brief Compile and setup shader programm
@@ -93,6 +91,13 @@ public:
      */
     virtual void setLight(std::shared_ptr<LightSource> lightSource) = 0;
 
+    /**
+     * @brief Render scene for prewiew watch and safe into QPixmap
+     * @param size
+     * @return
+     */
+    virtual std::shared_ptr<QPixmap> renderObjectToImage(const QSize& size) = 0;
+
 public slots:
     /**
      * @brief Rendering scene
@@ -100,5 +105,7 @@ public slots:
     virtual void render() = 0;
 
 };
+
+//Q_DECLARE_INTERFACE(ITargetSceneRenderer, "ITargetSceneRenderer")
 
 #endif // ITARGETSCENERENDERER_HPP

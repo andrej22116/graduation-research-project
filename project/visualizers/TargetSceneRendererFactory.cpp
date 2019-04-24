@@ -2,6 +2,8 @@
 
 #include <functional>
 
+#include "OpenGLScene.hpp"
+
 #define SWITCH(str)  switch(str_hash_for_switch(str))
 #define CASE(str)    static_assert(str_is_correct(str) && (str_len(str) <= MAX_LEN),\
 "CASE string contains wrong characters");\
@@ -44,17 +46,35 @@ constexpr ullong str_hash_for_switch(const std::string& str)
     return (str_is_correct(str.c_str()) && (str.length() <= MAX_LEN)) ? str_hash(str.c_str(), str.length()) : N_HASH;
 }
 
-std::shared_ptr<ITargetSceneRenderer> TargetSceneRendererFactory::create(std::string name)
+std::shared_ptr<ITargetSceneRenderer> TargetSceneRendererFactory::create(const std::string& name)
 {
     SWITCH ( name ) {
-        CASE ("OGL_Obj"): { return std::make_shared<ITargetSceneRenderer>(nullptr); }
-        CASE ("OGL_Scene"): { return std::make_shared<ITargetSceneRenderer>(nullptr); }
-        CASE ("OGL_Part"): { return std::make_shared<ITargetSceneRenderer>(nullptr); }
-        CASE ("D3D_Obj"): { return std::make_shared<ITargetSceneRenderer>(nullptr); }
-        CASE ("D3D_Scene"): { return std::make_shared<ITargetSceneRenderer>(nullptr); }
-        CASE ("D3D_Part"): { return std::make_shared<ITargetSceneRenderer>(nullptr); }
-        CASE ("VUL_Obj"): { return std::make_shared<ITargetSceneRenderer>(nullptr); }
-        CASE ("VUL_Scene"): { return std::make_shared<ITargetSceneRenderer>(nullptr); }
-        CASE ("VUL_Part"): { return std::make_shared<ITargetSceneRenderer>(nullptr); }
+        CASE ("OGL_Obj"): {
+            return std::dynamic_pointer_cast<ITargetSceneRenderer>(std::make_shared<OpenGLScene>(nullptr));
+        }
+        CASE ("OGL_Scene"): {
+            return std::dynamic_pointer_cast<ITargetSceneRenderer>(std::make_shared<OpenGLScene>(nullptr));
+        }
+        CASE ("OGL_Part"): {
+            return std::dynamic_pointer_cast<ITargetSceneRenderer>(std::make_shared<OpenGLScene>(nullptr));
+        }
+        CASE ("D3D_Obj"): {
+            return std::dynamic_pointer_cast<ITargetSceneRenderer>(std::make_shared<OpenGLScene>(nullptr));
+        }
+        CASE ("D3D_Scene"): {
+            return std::dynamic_pointer_cast<ITargetSceneRenderer>(std::make_shared<OpenGLScene>(nullptr));
+        }
+        CASE ("D3D_Part"): {
+            return std::dynamic_pointer_cast<ITargetSceneRenderer>(std::make_shared<OpenGLScene>(nullptr));
+        }
+        CASE ("VUL_Obj"): {
+            return std::dynamic_pointer_cast<ITargetSceneRenderer>(std::make_shared<OpenGLScene>(nullptr));
+        }
+        CASE ("VUL_Scene"): {
+            return std::dynamic_pointer_cast<ITargetSceneRenderer>(std::make_shared<OpenGLScene>(nullptr));
+        }
+        CASE ("VUL_Part"): {
+            return std::dynamic_pointer_cast<ITargetSceneRenderer>(std::make_shared<OpenGLScene>(nullptr));
+        }
     }
 }
