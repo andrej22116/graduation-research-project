@@ -22,6 +22,8 @@ public:
 
   NodeGeometry(std::unique_ptr<NodeDataModel> const &dataModel);
 
+  void updateModel();
+
 public:
   unsigned int
   height() const { return _height; }
@@ -82,11 +84,11 @@ public:
 
   /// Updates size unconditionally
   void
-  recalculateSize() const;
+  recalculateSize(bool withWidget = true) const;
 
   /// Updates size if the QFontMetrics is changed
   void
-  recalculateSize(QFont const &font) const;
+  recalculateSize(QFont const &font, bool withWidget = true) const;
 
   // TODO removed default QTransform()
   QPointF

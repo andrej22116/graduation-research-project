@@ -1,5 +1,8 @@
 #include "FunctionalNodes.hpp"
 #include "ShaderNodeDataTypes.hpp"
+#include "GlobalConstants.hpp"
+
+#include <nodes/Connection>
 
 unsigned int FunctionalNode::nPorts(QtNodes::PortType) const
 {
@@ -40,9 +43,15 @@ QString AdderFunctionalNode::caption() const
     return "Adder";
 }
 
-std::string AdderFunctionalNode::whatThis() const
+QJsonObject AdderFunctionalNode::save() const
 {
-    return "+";
+    QJsonObject nodeJSON;
+
+    nodeJSON[JSON_NODE] = name();
+    nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
+    nodeJSON[JSON_NAME] = SHORT_NAME_OF_ADDER_FUNCTIONAL_NODE;
+
+    return nodeJSON;
 }
 
 unsigned int AdderFunctionalNode::nPorts(QtNodes::PortType portType) const
@@ -79,9 +88,15 @@ QString SubtractorFunctionalNode::caption() const
     return "Substractor";
 }
 
-std::string SubtractorFunctionalNode::whatThis() const
+QJsonObject SubtractorFunctionalNode::save() const
 {
-    return "-";
+    QJsonObject nodeJSON;
+
+    nodeJSON[JSON_NODE] = name();
+    nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
+    nodeJSON[JSON_NAME] = SHORT_NAME_OF_SUBSTRACTOR_FUNCTIONAL_NODE;
+
+    return nodeJSON;
 }
 
 unsigned int SubtractorFunctionalNode::nPorts(QtNodes::PortType portType) const
@@ -119,9 +134,15 @@ QString ConditionFunctionalNode::caption() const
     return "Condition";
 }
 
-std::string ConditionFunctionalNode::whatThis() const
+QJsonObject ConditionFunctionalNode::save() const
 {
-    return "if";
+    QJsonObject nodeJSON;
+
+    nodeJSON[JSON_NODE] = name();
+    nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
+    nodeJSON[JSON_NAME] = SHORT_NAME_OF_CONDITION_FUNCTIONAL_NODE;
+
+    return nodeJSON;
 }
 
 unsigned int ConditionFunctionalNode::nPorts(QtNodes::PortType portType) const
@@ -173,9 +194,15 @@ QString RadiansFunctionalNode::caption() const
     return "To radians";
 }
 
-std::string RadiansFunctionalNode::whatThis() const
+QJsonObject RadiansFunctionalNode::save() const
 {
-    return "2rad";
+    QJsonObject nodeJSON;
+
+    nodeJSON[JSON_NODE] = name();
+    nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
+    nodeJSON[JSON_NAME] = SHORT_NAME_OF_RADIANS_FUNCTIONAL_NODE;
+
+    return nodeJSON;
 }
 
 QtNodes::NodeDataType RadiansFunctionalNode::dataType( QtNodes::PortType
@@ -195,16 +222,47 @@ QString DegreesFunctionalNode::caption() const
     return "To degrees";
 }
 
-std::string DegreesFunctionalNode::whatThis() const
+QJsonObject DegreesFunctionalNode::save() const
 {
-    return "2deg";
+    QJsonObject nodeJSON;
+
+    nodeJSON[JSON_NODE] = name();
+    nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
+    nodeJSON[JSON_NAME] = SHORT_NAME_OF_DEGREES_FUNCTIONAL_NODE;
+
+    return nodeJSON;
 }
 
 QtNodes::NodeDataType DegreesFunctionalNode::dataType( QtNodes::PortType
                                                      , QtNodes::PortIndex portIndex ) const
 {
     if ( portIndex == 0 ) { return ActionDataType{}; }
-    return FloatDataType{};
+    return /*FloatDataType*/{_dataType, _dataType};
+}
+
+void DegreesFunctionalNode::inputConnectionCreated(const QtNodes::Connection& connection)
+{
+    if ( connection.getPortIndex(PortType::Out) == 0 ) {
+        return;
+    }
+
+    auto _inputDataType = connection.dataType(PortType::In).id;
+    if ( _inputDataType == "a" ) {
+        connection.removeFromNodes();
+        return;
+    }
+
+    _dataType = _inputDataType;
+    emit dataModelUpdated();
+}
+
+void DegreesFunctionalNode::inputConnectionDeleted(const QtNodes::Connection& connection)
+{
+    if ( connection.getPortIndex(PortType::Out) == 0 ) {
+        return;
+    }
+    _dataType = "";
+    emit dataModelUpdated();
 }
 
 unsigned int TrigonometryFunctionalNode::nPorts(QtNodes::PortType portType) const
@@ -236,9 +294,15 @@ QString SinFunctionalNode::caption() const
     return "Sine";
 }
 
-std::string SinFunctionalNode::whatThis() const
+QJsonObject SinFunctionalNode::save() const
 {
-    return "sin";
+    QJsonObject nodeJSON;
+
+    nodeJSON[JSON_NODE] = name();
+    nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
+    nodeJSON[JSON_NAME] = SHORT_NAME_OF_SIN_FUNCTIONAL_NODE;
+
+    return nodeJSON;
 }
 
 QString CosFunctionalNode::name() const
@@ -251,9 +315,15 @@ QString CosFunctionalNode::caption() const
     return "Cosine";
 }
 
-std::string CosFunctionalNode::whatThis() const
+QJsonObject CosFunctionalNode::save() const
 {
-    return "cos";
+    QJsonObject nodeJSON;
+
+    nodeJSON[JSON_NODE] = name();
+    nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
+    nodeJSON[JSON_NAME] = SHORT_NAME_OF_COS_FUNCTIONAL_NODE;
+
+    return nodeJSON;
 }
 
 QString TanFunctionalNode::name() const
@@ -266,9 +336,15 @@ QString TanFunctionalNode::caption() const
     return "Tangent";
 }
 
-std::string TanFunctionalNode::whatThis() const
+QJsonObject TanFunctionalNode::save() const
 {
-    return "tan";
+    QJsonObject nodeJSON;
+
+    nodeJSON[JSON_NODE] = name();
+    nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
+    nodeJSON[JSON_NAME] = SHORT_NAME_OF_TAN_FUNCTIONAL_NODE;
+
+    return nodeJSON;
 }
 
 QString CtanFunctionalNode::name() const
@@ -281,9 +357,15 @@ QString CtanFunctionalNode::caption() const
     return "Cotangent";
 }
 
-std::string CtanFunctionalNode::whatThis() const
+QJsonObject CtanFunctionalNode::save() const
 {
-    return "ctan";
+    QJsonObject nodeJSON;
+
+    nodeJSON[JSON_NODE] = name();
+    nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
+    nodeJSON[JSON_NAME] = SHORT_NAME_OF_CTAN_FUNCTIONAL_NODE;
+
+    return nodeJSON;
 }
 
 QString ArcSinFunctionalNode::name() const
@@ -296,9 +378,15 @@ QString ArcSinFunctionalNode::caption() const
     return "Arc sine";
 }
 
-std::string ArcSinFunctionalNode::whatThis() const
+QJsonObject ArcSinFunctionalNode::save() const
 {
-    return "asin";
+    QJsonObject nodeJSON;
+
+    nodeJSON[JSON_NODE] = name();
+    nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
+    nodeJSON[JSON_NAME] = SHORT_NAME_OF_ARC_SIN_FUNCTIONAL_NODE;
+
+    return nodeJSON;
 }
 
 QString ArcCosFunctionalNode::name() const
@@ -311,9 +399,15 @@ QString ArcCosFunctionalNode::caption() const
     return "Arc cosine";
 }
 
-std::string ArcCosFunctionalNode::whatThis() const
+QJsonObject ArcCosFunctionalNode::save() const
 {
-    return "acos";
+    QJsonObject nodeJSON;
+
+    nodeJSON[JSON_NODE] = name();
+    nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
+    nodeJSON[JSON_NAME] = SHORT_NAME_OF_ARC_COS_FUNCTIONAL_NODE;
+
+    return nodeJSON;
 }
 
 QString ArcTanFunctionalNode::name() const
@@ -326,9 +420,15 @@ QString ArcTanFunctionalNode::caption() const
     return "Arc tangent";
 }
 
-std::string ArcTanFunctionalNode::whatThis() const
+QJsonObject ArcTanFunctionalNode::save() const
 {
-    return "atan";
+    QJsonObject nodeJSON;
+
+    nodeJSON[JSON_NODE] = name();
+    nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
+    nodeJSON[JSON_NAME] = SHORT_NAME_OF_ARC_TAN_FUNCTIONAL_NODE;
+
+    return nodeJSON;
 }
 
 QString PowFunctionalNode::name() const
@@ -341,9 +441,15 @@ QString PowFunctionalNode::caption() const
     return "Power";
 }
 
-std::string PowFunctionalNode::whatThis() const
+QJsonObject PowFunctionalNode::save() const
 {
-    return "pow";
+    QJsonObject nodeJSON;
+
+    nodeJSON[JSON_NODE] = name();
+    nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
+    nodeJSON[JSON_NAME] = SHORT_NAME_OF_POWER_FUNCTIONAL_NODE;
+
+    return nodeJSON;
 }
 
 QString ExpFunctionalNode::name() const
@@ -356,9 +462,15 @@ QString ExpFunctionalNode::caption() const
     return "Exponentiation";
 }
 
-std::string ExpFunctionalNode::whatThis() const
+QJsonObject ExpFunctionalNode::save() const
 {
-    return "exp";
+    QJsonObject nodeJSON;
+
+    nodeJSON[JSON_NODE] = name();
+    nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
+    nodeJSON[JSON_NAME] = SHORT_NAME_OF_EXP_FUNCTIONAL_NODE;
+
+    return nodeJSON;
 }
 
 QString Exp2FunctionalNode::name() const
@@ -371,9 +483,15 @@ QString Exp2FunctionalNode::caption() const
     return "Exponentiation 2";
 }
 
-std::string Exp2FunctionalNode::whatThis() const
+QJsonObject Exp2FunctionalNode::save() const
 {
-    return "exp2";
+    QJsonObject nodeJSON;
+
+    nodeJSON[JSON_NODE] = name();
+    nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
+    nodeJSON[JSON_NAME] = SHORT_NAME_OF_EXP2_FUNCTIONAL_NODE;
+
+    return nodeJSON;
 }
 
 QString LogFunctionalNode::name() const
@@ -386,9 +504,15 @@ QString LogFunctionalNode::caption() const
     return "Logarithm";
 }
 
-std::string LogFunctionalNode::whatThis() const
+QJsonObject LogFunctionalNode::save() const
 {
-    return "log";
+    QJsonObject nodeJSON;
+
+    nodeJSON[JSON_NODE] = name();
+    nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
+    nodeJSON[JSON_NAME] = SHORT_NAME_OF_LOG_FUNCTIONAL_NODE;
+
+    return nodeJSON;
 }
 
 QString Log2FunctionalNode::name() const
@@ -401,9 +525,15 @@ QString Log2FunctionalNode::caption() const
     return "Logarithm base 2";
 }
 
-std::string Log2FunctionalNode::whatThis() const
+QJsonObject Log2FunctionalNode::save() const
 {
-    return "log2";
+    QJsonObject nodeJSON;
+
+    nodeJSON[JSON_NODE] = name();
+    nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
+    nodeJSON[JSON_NAME] = SHORT_NAME_OF_LOG2_FUNCTIONAL_NODE;
+
+    return nodeJSON;
 }
 
 QString SqrtFunctionalNode::name() const
@@ -416,9 +546,15 @@ QString SqrtFunctionalNode::caption() const
     return "Sqrt";
 }
 
-std::string SqrtFunctionalNode::whatThis() const
+QJsonObject SqrtFunctionalNode::save() const
 {
-    return "sqrt";
+    QJsonObject nodeJSON;
+
+    nodeJSON[JSON_NODE] = name();
+    nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
+    nodeJSON[JSON_NAME] = SHORT_NAME_OF_SQRT_FUNCTIONAL_NODE;
+
+    return nodeJSON;
 }
 
 QString InverseSqrtFunctionalNode::name() const
@@ -431,7 +567,13 @@ QString InverseSqrtFunctionalNode::caption() const
     return "Inverse sqrt";
 }
 
-std::string InverseSqrtFunctionalNode::whatThis() const
+QJsonObject InverseSqrtFunctionalNode::save() const
 {
-    return "isqrt";
+    QJsonObject nodeJSON;
+
+    nodeJSON[JSON_NODE] = name();
+    nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
+    nodeJSON[JSON_NAME] = SHORT_NAME_OF_ISQRT_FUNCTIONAL_NODE;
+
+    return nodeJSON;
 }

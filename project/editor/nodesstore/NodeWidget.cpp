@@ -26,6 +26,7 @@ NodeWidget::NodeWidget( Node& node
     QWidget(parent)
 {
     auto geometry = node.nodeGeometry();
+    geometry.recalculateSize(false);
     auto pointDiameter = node.nodeDataModel()->nodeStyle().ConnectionPointDiameter;
     auto twoPointsDiameter = static_cast<qreal>(pointDiameter * 2);
     auto fourPointsDiameter = static_cast<unsigned int>(pointDiameter * 4);
@@ -43,7 +44,7 @@ NodeWidget::NodeWidget( Node& node
     nodePainter.translate(twoPointsDiameter, twoPointsDiameter);
     nodePainter.setRenderHint(QPainter::RenderHint::Antialiasing);
 
-    QtNodes::NodePainter::paint(&nodePainter, node, registry);
+    QtNodes::NodePainter::paint(&nodePainter, node, registry, false);
 
     nodePainter.end();
 

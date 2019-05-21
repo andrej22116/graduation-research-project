@@ -4,6 +4,8 @@
 
 #include "Connection.hpp"
 
+#include <algorithm>
+
 using QtNodes::NodeState;
 using QtNodes::NodeDataType;
 using QtNodes::NodeDataModel;
@@ -18,7 +20,54 @@ NodeState(std::unique_ptr<NodeDataModel> const &model)
   , _reaction(NOT_REACTING)
   , _reactingPortType(PortType::None)
   , _resizing(false)
+  , _dataModel(model)
 {}
+
+
+void
+NodeState::
+updateModel()
+{
+    /// Remove or Add IN ports
+    auto nPortsIn = _dataModel->nPorts(PortType::In);
+    if ( nPortsIn < _inConnections.size() ) {
+        std::for_each( _inConnections.begin() + nPortsIn
+                     , _inConnections.end()
+                     , [](ConnectionPtrSet& ptrSet) {
+            std::for_each( ptrSet.begin()
+                         , ptrSet.end()
+                         , [](std::pair<QUuid, Connection*> connection) {
+                connection.second->removeFromNodes();
+            });
+        });
+
+        _inConnections.erase(_inConnections.begin() + nPortsIn);
+    }
+    else if ( nPortsIn > _inConnections.size() ) {
+        _inConnections.resize(nPortsIn);
+    }
+
+    /// Remove or Add OUT ports
+    auto nPortsOut = _dataModel->nPorts(PortType::Out);
+    if ( nPortsOut < _outConnections.size() ) {
+        std::for_each( _outConnections.begin() + nPortsOut
+                     , _outConnections.end()
+                     , [](ConnectionPtrSet& ptrSet) {
+            std::for_each( ptrSet.begin()
+                         , ptrSet.end()
+                         , [](std::pair<QUuid, Connection*> connection) {
+                connection.second->removeFromNodes();
+            });
+        });
+
+        _outConnections.erase(_outConnections.begin() + nPortsOut);
+    }
+    else if ( nPortsOut > _outConnections.size() ) {
+        _outConnections.resize(nPortsOut);
+    }
+
+    /// @todo Add test on invalid in/out ports!
+}
 
 
 std::vector<NodeState::ConnectionPtrSet> const &

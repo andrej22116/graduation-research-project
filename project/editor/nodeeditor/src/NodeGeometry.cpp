@@ -38,6 +38,14 @@ NodeGeometry(std::unique_ptr<NodeDataModel> const &dataModel)
   _boldFontMetrics = QFontMetrics(f);
 }
 
+void
+NodeGeometry::
+updateModel()
+{
+    _nSources = _dataModel->nPorts(PortType::Out);
+    _nSinks = _dataModel->nPorts(PortType::In);
+}
+
 unsigned int
 NodeGeometry::nSources() const
 {
@@ -80,9 +88,9 @@ boundingRect() const
 
 void
 NodeGeometry::
-recalculateSize() const
+recalculateSize(bool withWidget) const
 {
-  _entryHeight = _fontMetrics.height();
+  _entryHeight = static_cast<unsigned>(_fontMetrics.height());
 
   {
     unsigned int maxNumOfEntries = std::max(_nSinks, _nSources);
@@ -90,9 +98,10 @@ recalculateSize() const
     _height = step * maxNumOfEntries;
   }
 
-  if (auto w = _dataModel->embeddedWidget())
+  auto widget = _dataModel->embeddedWidget();
+  if (withWidget && widget)
   {
-    _height = std::max(_height, static_cast<unsigned>(w->height()));
+    _height = std::max(_height, static_cast<unsigned>(widget->height()));
   }
 
   _height += captionHeight();
@@ -104,9 +113,9 @@ recalculateSize() const
            _outputPortWidth +
            2 * _spacing;
 
-  if (auto w = _dataModel->embeddedWidget())
+  if (withWidget && widget)
   {
-    _width += w->width();
+    _width += static_cast<unsigned>(widget->width());
   }
 
   _width = std::max(_width, captionWidth());
@@ -121,7 +130,7 @@ recalculateSize() const
 
 void
 NodeGeometry::
-recalculateSize(QFont const & font) const
+recalculateSize(QFont const & font, bool withWidget) const
 {
   QFontMetrics fontMetrics(font);
   QFont boldFont = font;
@@ -135,7 +144,7 @@ recalculateSize(QFont const & font) const
     _fontMetrics     = fontMetrics;
     _boldFontMetrics = boldFontMetrics;
 
-    recalculateSize();
+    recalculateSize(withWidget);
   }
 }
 

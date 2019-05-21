@@ -32,7 +32,8 @@ void
 NodePainter::
 paint(QPainter* painter,
       Node& node,
-      DataModelRegistry& registry)
+      DataModelRegistry& registry,
+      bool withWidget)
 {
   NodeGeometry const& geom = node.nodeGeometry();
 
@@ -40,7 +41,7 @@ paint(QPainter* painter,
 
   bool graphicsObjectIsSelected = node.isSelected();
 
-  geom.recalculateSize(painter->font());
+  geom.recalculateSize(painter->font(), withWidget);
 
   //--------------------------------------------
   NodeDataModel const * model = node.nodeDataModel();
@@ -147,7 +148,7 @@ drawConnectionPoints(QPainter* painter,
 
         auto   diff = geom.draggingPos() - p;
         double dist = std::sqrt(QPointF::dotProduct(diff, diff));
-        bool   typeConvertable = false;
+        /*bool   typeConvertable = false;
 
         {
           if (portType == PortType::In)
@@ -158,9 +159,10 @@ drawConnectionPoints(QPainter* painter,
           {
             typeConvertable = registry.getTypeConverter(dataType, state.reactingDataType()) != nullptr;
           }
-        }
+        }*/
 
-        if (state.reactingDataType().id == dataType.id || typeConvertable)
+        if (state.reactingDataType().id == dataType.id
+            || /*typeConvertable*/ dataType.id == "")
         {
           double const thres = 40.0;
           r = (dist < thres) ?

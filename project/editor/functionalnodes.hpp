@@ -1,14 +1,16 @@
 #ifndef FUNCTIONALNODES_HPP
 #define FUNCTIONALNODES_HPP
 
-#include "BaseShaderNodeDataModel.hpp"
+#include <nodes/NodeDataModel>
 
+using QtNodes::NodeDataModel;
 using QtNodes::PortType;
 using QtNodes::PortIndex;
 using QtNodes::NodeDataType;
 using QtNodes::NodeData;
+using QtNodes::Connection;
 
-class FunctionalNode : public BaseShaderNodeDataModel {
+class FunctionalNode : public NodeDataModel {
 public:
     FunctionalNode() {}
     ~FunctionalNode() override {}
@@ -84,7 +86,7 @@ public:
      */
     QString caption() const override;
 
-    std::string whatThis() const override;
+    QJsonObject save() const override;
 
     unsigned int nPorts( PortType portType ) const override;
 
@@ -107,7 +109,7 @@ public:
 
     QString caption() const override;
 
-    std::string whatThis() const override;
+    QJsonObject save() const override;
 
     unsigned int nPorts( PortType portType ) const override;
 
@@ -130,7 +132,7 @@ public:
 
     QString caption() const override;
 
-    std::string whatThis() const override;
+    QJsonObject save() const override;
 
     unsigned int nPorts( PortType portType ) const override;
 
@@ -172,7 +174,7 @@ public:
 
     QString caption() const override;
 
-    std::string whatThis() const override;
+    QJsonObject save() const override;
 
     NodeDataType dataType( PortType portType
                          , PortIndex portIndex ) const override;
@@ -187,10 +189,17 @@ public:
 
     QString caption() const override;
 
-    std::string whatThis() const override;
+    QJsonObject save() const override;
 
     NodeDataType dataType( PortType portType
                          , PortIndex portIndex ) const override;
+
+    void inputConnectionCreated(const Connection&) override;
+
+    void inputConnectionDeleted(const Connection&) override;
+
+private:
+    QString _dataType;
 };
 
 class SinFunctionalNode : public TrigonometryFunctionalNode {
@@ -202,7 +211,7 @@ public:
 
     QString caption() const override;
 
-    std::string whatThis() const override;
+    QJsonObject save() const override;
 };
 
 class CosFunctionalNode : public TrigonometryFunctionalNode {
@@ -214,7 +223,7 @@ public:
 
     QString caption() const override;
 
-    std::string whatThis() const override;
+    QJsonObject save() const override;
 };
 
 class TanFunctionalNode : public TrigonometryFunctionalNode {
@@ -226,7 +235,7 @@ public:
 
     QString caption() const override;
 
-    std::string whatThis() const override;
+    QJsonObject save() const override;
 };
 
 class CtanFunctionalNode : public TrigonometryFunctionalNode {
@@ -238,7 +247,7 @@ public:
 
     QString caption() const override;
 
-    std::string whatThis() const override;
+    QJsonObject save() const override;
 };
 
 class ArcSinFunctionalNode : public TrigonometryFunctionalNode {
@@ -250,7 +259,7 @@ public:
 
     QString caption() const override;
 
-    std::string whatThis() const override;
+    QJsonObject save() const override;
 };
 
 class ArcCosFunctionalNode : public TrigonometryFunctionalNode {
@@ -262,7 +271,7 @@ public:
 
     QString caption() const override;
 
-    std::string whatThis() const override;
+    QJsonObject save() const override;
 };
 
 class ArcTanFunctionalNode : public TrigonometryFunctionalNode {
@@ -274,7 +283,7 @@ public:
 
     QString caption() const override;
 
-    std::string whatThis() const override;
+    QJsonObject save() const override;
 };
 
 ///
@@ -290,7 +299,7 @@ public:
 
     QString caption() const override;
 
-    std::string whatThis() const override;
+    QJsonObject save() const override;
 };
 
 class ExpFunctionalNode : public TrigonometryFunctionalNode {
@@ -302,7 +311,7 @@ public:
 
     QString caption() const override;
 
-    std::string whatThis() const override;
+    QJsonObject save() const override;
 };
 
 class Exp2FunctionalNode : public TrigonometryFunctionalNode {
@@ -314,7 +323,7 @@ public:
 
     QString caption() const override;
 
-    std::string whatThis() const override;
+    QJsonObject save() const override;
 };
 
 class LogFunctionalNode : public TrigonometryFunctionalNode {
@@ -326,7 +335,7 @@ public:
 
     QString caption() const override;
 
-    std::string whatThis() const override;
+    QJsonObject save() const override;
 };
 
 class Log2FunctionalNode : public TrigonometryFunctionalNode {
@@ -338,7 +347,7 @@ public:
 
     QString caption() const override;
 
-    std::string whatThis() const override;
+    QJsonObject save() const override;
 };
 
 /// todo: replace float to universal decimal type
@@ -351,7 +360,7 @@ public:
 
     QString caption() const override;
 
-    std::string whatThis() const override;
+    QJsonObject save() const override;
 };
 
 /// todo: replace float to universal decimal type
@@ -364,7 +373,7 @@ public:
 
     QString caption() const override;
 
-    std::string whatThis() const override;
+    QJsonObject save() const override;
 };
 
 ///

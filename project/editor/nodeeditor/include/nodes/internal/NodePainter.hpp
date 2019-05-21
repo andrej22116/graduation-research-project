@@ -26,7 +26,8 @@ public:
   void
   paint(QPainter* painter,
         Node& node,
-        DataModelRegistry& registry);
+        DataModelRegistry& registry,
+        bool withWidget = true);
 
   static
   void

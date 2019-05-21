@@ -32,6 +32,8 @@ public:
 
   NodeState(std::unique_ptr<NodeDataModel> const &model);
 
+  void updateModel();
+
 public:
 
   using ConnectionPtrSet =
@@ -93,5 +95,7 @@ private:
   NodeDataType _reactingDataType;
 
   bool _resizing;
+
+  std::unique_ptr<NodeDataModel> const &_dataModel;
 };
 }

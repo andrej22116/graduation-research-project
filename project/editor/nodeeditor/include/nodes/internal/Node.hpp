@@ -103,6 +103,9 @@ public Q_SLOTS: // data propagation
   void
   onNodeSizeUpdated();
 
+  void
+  onDataModelUpdated();
+
 private:
 
   // addressing

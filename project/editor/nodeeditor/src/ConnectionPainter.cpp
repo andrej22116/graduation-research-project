@@ -190,7 +190,7 @@ drawNormalLine(QPainter * painter,
   QColor normalColorIn   = connectionStyle.normalColor();
   QColor selectedColor = connectionStyle.selectedColor();
 
-  bool gradientColor = false;
+  //bool gradientColor = false;
 
   if (connectionStyle.useDataDefinedColors())
   {
@@ -199,7 +199,7 @@ drawNormalLine(QPainter * painter,
     auto dataTypeOut = connection.dataType(PortType::Out);
     auto dataTypeIn = connection.dataType(PortType::In);
 
-    gradientColor = (dataTypeOut.id != dataTypeIn.id);
+    //gradientColor = (dataTypeOut.id != dataTypeIn.id);
 
     normalColorOut  = connectionStyle.normalColor(dataTypeOut.id);
     normalColorIn   = connectionStyle.normalColor(dataTypeIn.id);
@@ -222,7 +222,7 @@ drawNormalLine(QPainter * painter,
 
 
   auto cubic = cubicPath(geom);
-  if (gradientColor)
+  /*if (gradientColor)
   {
     painter->setBrush(Qt::NoBrush);
 
@@ -263,7 +263,7 @@ drawNormalLine(QPainter * painter,
     }
   }
   else
-  {
+  {*/
     p.setColor(normalColorOut);
 
     if (selected)
@@ -275,7 +275,7 @@ drawNormalLine(QPainter * painter,
     painter->setBrush(Qt::NoBrush);
 
     painter->drawPath(cubic);
-  }
+  //}
 }
 
 

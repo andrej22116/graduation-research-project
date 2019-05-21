@@ -167,6 +167,8 @@ Q_SIGNALS:
 
   void embeddedWidgetSizeUpdated();
 
+  void dataModelUpdated();
+
 private:
 
   NodeStyle _nodeStyle;

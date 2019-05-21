@@ -39,6 +39,9 @@ Node(std::unique_ptr<NodeDataModel> && dataModel)
 
   connect(_nodeDataModel.get(), &NodeDataModel::embeddedWidgetSizeUpdated,
           this, &Node::onNodeSizeUpdated );
+
+  connect(_nodeDataModel.get(), &NodeDataModel::dataModelUpdated,
+          this, &Node::onDataModelUpdated );
 }
 
 
@@ -235,4 +238,16 @@ onNodeSizeUpdated()
             }
         }
     }
+}
+
+void Node::onDataModelUpdated()
+{
+  _nodeGeometry.updateModel();
+
+  _nodeState.updateModel();
+
+  _nodeGraphicsObject->setGeometryChanged();
+  _nodeGeometry.recalculateSize();
+  _nodeGraphicsObject->update();
+  _nodeGraphicsObject->moveConnections();
 }

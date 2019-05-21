@@ -70,7 +70,7 @@ canConnect(PortIndex &portIndex, TypeConverter & converter) const
   auto const   &modelTarget = _node->nodeDataModel();
   NodeDataType candidateNodeDataType = modelTarget->dataType(requiredPort, portIndex);
 
-  if (connectionDataType.id != candidateNodeDataType.id)
+  /*if (connectionDataType.id != candidateNodeDataType.id)
   {
     if (requiredPort == PortType::In)
     {
@@ -82,6 +82,11 @@ canConnect(PortIndex &portIndex, TypeConverter & converter) const
     }
 
     return (converter != nullptr);
+  }*/
+
+  if ( (requiredPort == PortType::In && candidateNodeDataType.id != "")
+      && connectionDataType.id != candidateNodeDataType.id ) {
+      return false;
   }
 
   return true;
@@ -104,10 +109,10 @@ tryConnect() const
 
   // 1.5) If the connection is possible but a type conversion is needed,
   //      assign a convertor to connection
-  if (converter)
+  /*if (converter)
   {
     _connection->setTypeConverter(converter);
-  }
+  }*/
 
   // 2) Assign node to required port in Connection
   PortType requiredPort = connectionRequiredPort();
