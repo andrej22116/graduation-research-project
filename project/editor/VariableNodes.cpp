@@ -80,12 +80,12 @@ QWidget* ConstUserVariableNode::embeddedWidget()
 
 QString ConstUserVariableNode::name() const
 {
-    return "Variable";
+    return "const";
 }
 
 QString ConstUserVariableNode::caption() const
 {
-    return "User variable";
+    return "Constant";
 }
 
 unsigned int ConstUserVariableNode::nPorts(QtNodes::PortType portType) const
@@ -104,17 +104,8 @@ QJsonObject ConstUserVariableNode::save() const
     return {};
 }
 
+
 /*
-void ConstUserVariableNode::onActivated(const QString& text)
-{
-    _dataType = text;
-
-    auto layout = dynamic_cast<QGridLayout*>()
-
-    emit dataModelUpdated();
-}
-*/
-
 QString TimeVariableNode::name() const
 {
     return "Time";
@@ -145,4 +136,34 @@ QJsonObject TimeVariableNode::save() const
     nodeJSON[JSON_NAME] = name();
 
     return nodeJSON;
+}*/
+
+UserVariableNode::UserVariableNode()
+{
+    auto widget = embeddedWidget();
+    auto layout = dynamic_cast<QGridLayout*>(widget->layout());
+    auto lineEdit = new QLineEdit(widget);
+    auto label = new QLabel("Name ", widget);
+
+    connect(lineEdit, &QLineEdit::textChanged, this, [this](const QString& newVal){
+        this->_varName = newVal;
+    });
+
+    layout->addWidget(label, 0, 0);
+    layout->addWidget(lineEdit, 0, 1);
+}
+
+QString UserVariableNode::name() const
+{
+    return "vardef";
+}
+
+QString UserVariableNode::caption() const
+{
+    return "Variable";
+}
+
+QJsonObject UserVariableNode::save() const
+{
+    return ConstUserVariableNode::save();
 }

@@ -7,6 +7,7 @@
 #include <QOpenGLShaderProgram>
 #include <QOpenGLVertexArrayObject>
 #include <QOpenGLBuffer>
+#include <QOpenGLFunctions_4_2_Core>
 
 #include <QMap>
 #include <vector>
@@ -58,6 +59,8 @@ public:
 
     std::shared_ptr<QPixmap> renderObjectToImage(const QSize& size) override;
 
+    QWidget* widget() override;
+
 public slots:
     void render() override;
 
@@ -107,7 +110,7 @@ private: /// Buffers OpenGL -- Unused!
 
 private: /// Shaders
     //QOpenGLShaderProgram _globalShader;
-    QOpenGLShaderProgram _userShaderProgramm;
+    std::shared_ptr<QOpenGLShaderProgram> _userShaderProgramm;
     std::shared_ptr<QOpenGLShader> _vertexShader;
     std::shared_ptr<QOpenGLShader> _geometryShader;
     std::shared_ptr<QOpenGLShader> _fragmentShader;

@@ -32,3 +32,5 @@ public:
   virtual NodeDataType type() const = 0;
 };
 }
+
+#define NO_DATA_TYPE (NodeDataType{})

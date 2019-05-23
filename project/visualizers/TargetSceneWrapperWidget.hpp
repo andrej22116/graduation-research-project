@@ -13,8 +13,12 @@ class ITargetSceneRenderer;
 class TargetSceneWrapperWidget : public QDockWidget
 {
     Q_OBJECT
+
 public:
     explicit TargetSceneWrapperWidget(QWidget* parent = nullptr);
+
+    TargetSceneWrapperWidget( std::shared_ptr<ITargetSceneRenderer> targetSceneRenderer
+                            , QWidget* parent = nullptr );
 
     /// Set target scene renderer to this wrapper;
     void setTargetSceneRenderer(std::shared_ptr<ITargetSceneRenderer> targetSceneRenderer);
@@ -30,7 +34,11 @@ private slots:
     void setTargetObject();
 
 private:
+    void createCentralWidget();
+
+private:
     std::shared_ptr<ITargetSceneRenderer> _targetSceneRenderer;
+    QWidget* centralWidget;
 };
 
 #endif // TARGETSCENEWRAPPERWIDGET_HPP

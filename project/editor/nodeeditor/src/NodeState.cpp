@@ -67,6 +67,40 @@ updateModel()
     }
 
     /// @todo Add test on invalid in/out ports!
+    /*for (auto& map : _inConnections) {
+        for ( auto iterator = map.begin(); iterator != map.end(); ) {
+            auto connection = iterator->second;
+
+            auto nodePortIndex = connection->getPortIndex(PortType::In);
+
+            if ( connection->dataType(PortType::Out).id
+                 != _dataModel->dataType(PortType::In, nodePortIndex).id ) {
+                connection->removeFromNodes();
+                iterator = map.erase(iterator);
+            }
+            else {
+                ++iterator;
+            }
+        }
+    }*/
+
+    /*for (auto& map : _outConnections) {
+        for ( auto iterator = map.begin(); iterator != map.end(); ) {
+            auto connection = iterator->second;
+
+            auto nodePortIndex = connection->getPortIndex(PortType::Out);
+
+            if ( connection->dataType(PortType::In).id
+                 != _dataModel->dataType(PortType::Out, nodePortIndex).id ) {
+                connection->removeFromNodes();
+                //iterator = map.erase(iterator);
+                ++iterator;
+            }
+            else {
+                ++iterator;
+            }
+        }
+    }*/
 }
 
 

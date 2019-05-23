@@ -6,6 +6,7 @@ set( CPP_SOURCES
         VariableNodes.cpp
 	nodesstore/NodeWidget.cpp
 	nodesstore/FlowLayout.cpp
+        nodesstore/NodeStoreWidget.cpp
 	EditorGraphicsScene.cpp
         VariableWidgets.cpp
         VariableValueControlsFactory.cpp

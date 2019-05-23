@@ -162,7 +162,9 @@ drawConnectionPoints(QPainter* painter,
         }*/
 
         if (state.reactingDataType().id == dataType.id
-            || /*typeConvertable*/ dataType.id == "")
+            || /*typeConvertable*/
+            (dataType.id == ""
+             && model->acceptDataType(i, state.reactingDataType()) ) )
         {
           double const thres = 40.0;
           r = (dist < thres) ?

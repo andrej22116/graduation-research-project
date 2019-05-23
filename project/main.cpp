@@ -16,13 +16,17 @@
 //#include <editor/nodesstore/NodesStoreWidget.hpp>
 #include <editor/nodesstore/FlowLayout.hpp>
 #include <editor/EditorGraphicsScene.hpp>
+#include <editor/VariableNodes.hpp>
 
 #include <QScrollArea>
 #include <QSplitter>
 
 #include <visualizers/LookCentralObjectCamera.hpp>
 #include <visualizers/OpenGLScene.hpp>
+#include <visualizers/TargetSceneWrapperWidget.hpp>
 #include <QDebug>
+
+#include <editor/nodesstore/NodeStoreWidget.hpp>
 
 using QtNodes::DataModelRegistry;
 using QtNodes::FlowScene;
@@ -44,7 +48,7 @@ int main(int argc, char** argv) {
     format.setStencilBufferSize(8);
     format.setSamples(8);
     format.setRenderableType(QSurfaceFormat::OpenGL);
-    format.setVersion(3, 3);
+    format.setVersion(4, 2);
     format.setProfile(QSurfaceFormat::CoreProfile);
     QSurfaceFormat::setDefaultFormat(format);
 
@@ -71,6 +75,8 @@ int main(int argc, char** argv) {
     reg->registerModel<Log2FunctionalNode>("Exponential");
     reg->registerModel<SqrtFunctionalNode>("Exponential");
     reg->registerModel<InverseSqrtFunctionalNode>("Exponential");
+    reg->registerModel<ConstUserVariableNode>("SuperTest");
+    reg->registerModel<UserVariableNode>("SuperTest");
     //reg->registerModel<DoubleNodeModel<PortType::In>>();
     //reg->registerModel<DoubleNodeModel<PortType::Out>>();
 
@@ -106,7 +112,7 @@ int main(int argc, char** argv) {
     dock->setAllowedAreas(Qt::DockWidgetArea::AllDockWidgetAreas);
     mainWindow->addDockWidget(Qt::DockWidgetArea::RightDockWidgetArea, dock);
 
-    {
+    /*{
         auto scrollArea = new QScrollArea{mainWindow};
         scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAsNeeded);
         scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
@@ -133,7 +139,13 @@ int main(int argc, char** argv) {
         }
 
         //leftWidget->setFixedSize(500, 500);
-    }
+    }*/
+    auto nodeStore = new NodeStoreWidget(reg, mainWindow);
+    dock = new QDockWidget("Nodes store", mainWindow);
+    dock->setSizePolicy(sizePolicy);
+    dock->setWidget(nodeStore);
+    dock->setAllowedAreas(Qt::DockWidgetArea::AllDockWidgetAreas);
+    mainWindow->addDockWidget(Qt::DockWidgetArea::LeftDockWidgetArea, dock);
 
     mainWindow->setWindowTitle("Node-based flow editor");
     mainWindow->resize(800, 600);
@@ -154,12 +166,18 @@ int main(int argc, char** argv) {
     qDebug() << "Camera direction: " << camera.direction();
     qDebug() << "Camera position: " << camera.position();
 
+    /*
     OpenGLScene ogls;
     dock = new QDockWidget("Target scene", mainWindow);
     dock->setSizePolicy(sizePolicy);
     dock->setWidget(&ogls);
     dock->setAllowedAreas(Qt::DockWidgetArea::AllDockWidgetAreas);
-    mainWindow->addDockWidget(Qt::DockWidgetArea::TopDockWidgetArea, dock);
+    */
+
+    TargetSceneWrapperWidget ogls( std::make_shared<OpenGLScene>() );
+    ogls.showNormal();
+
+    mainWindow->setStyleSheet("QWidget{background-color: rgb(60, 60, 65); color: white;}");
 
     return application.exec();
 }

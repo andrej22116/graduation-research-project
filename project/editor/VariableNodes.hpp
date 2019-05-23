@@ -13,19 +13,8 @@ using QtNodes::NodeData;
 class VariableWidget;
 
 
-class UserVariableNode : public NodeDataModel {
-    Q_OBJECT
-
-public:
-    /// @warning This is dummy!
-    void setInData(std::shared_ptr<NodeData>, PortIndex) override {}
-    /// @warning This is dummy!
-    std::shared_ptr<NodeData> outData(PortIndex) override { return nullptr; }
-};
-
-
 /// Used for define user variables
-class ConstUserVariableNode : public UserVariableNode {
+class ConstUserVariableNode : public NodeDataModel {
     Q_OBJECT
 
 public:
@@ -40,17 +29,39 @@ public:
 
     unsigned int nPorts( PortType portType ) const override;
 
-    NodeDataType dataType( PortType /*portType*/
+    NodeDataType dataType( PortType portType
                          , PortIndex portIndex ) const override;
 
     QJsonObject save() const override;
 
-    //bool resizable() const override { return true; }
+
+    /// @warning This is dummy!
+    void setInData(std::shared_ptr<NodeData>, PortIndex) override {}
+    /// @warning This is dummy!
+    std::shared_ptr<NodeData> outData(PortIndex) override { return nullptr; }
 
 private:
     QString _dataType;
     QWidget* _nodeWidget;
     VariableWidget* _variableWidget = nullptr;
+};
+
+
+class UserVariableNode : public ConstUserVariableNode {
+    Q_OBJECT
+
+public:
+    UserVariableNode();
+    ~UserVariableNode() override {};
+
+    QString name() const override;
+
+    QString caption() const override;
+
+    QJsonObject save() const override;
+
+private:
+    QString _varName;
 };
 
 /*
@@ -80,6 +91,7 @@ private:
 };*/
 
 
+/*
 class TimeVariableNode : public UserVariableNode {
     QString name() const override;
 
@@ -91,6 +103,6 @@ class TimeVariableNode : public UserVariableNode {
                          , PortIndex portIndex ) const override;
 
     QJsonObject save() const override;
-};
+};*/
 
 #endif // VARIABLENODES_HPP

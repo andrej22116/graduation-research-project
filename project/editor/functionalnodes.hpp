@@ -10,64 +10,63 @@ using QtNodes::NodeDataType;
 using QtNodes::NodeData;
 using QtNodes::Connection;
 
+#define NODE_NO_DATA \
+    void setInData( std::shared_ptr<NodeData>, PortIndex) override {} \
+    std::shared_ptr<NodeData> outData(PortIndex) override { return nullptr; }
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
 class FunctionalNode : public NodeDataModel {
 public:
-    FunctionalNode() {}
-    ~FunctionalNode() override {}
+    unsigned int
+    nPorts( PortType portType ) const override final;
 
-    /**
-     * @brief nPorts
-     * @param portType
-     * @return ports amount
-     *
-     * Node have one input port, one output port
-     */
-    unsigned int nPorts( PortType portType ) const override;
+    NodeDataType
+    dataType( PortType portType
+            , PortIndex portIndex ) const override final;
 
-    /**
-     * @brief dataType
-     * @param portType
-     * @param portIndex
-     * @return Data type for port
-     *
-     * In/Out types: double
-     */
-    NodeDataType dataType( PortType portType
-                         , PortIndex portIndex ) const override;
+    bool
+    portCaptionVisible( PortType portType
+                      , PortIndex portIndex ) const override final;
 
-    /**
-     * @brief portCaption
-     * @param portType
-     * @param portIndex
-     * @return port name
-     */
-    QString portCaption( PortType portType
-                       , PortIndex portIndex ) const override;
+    QString
+    portCaption( PortType portType
+               , PortIndex portIndex ) const override final;
 
-    /**
-     * @brief portCaptionVisible
-     * @return only true!
-     */
-    bool portCaptionVisible( PortType portType
-                           , PortIndex portIndex) const override;
+    void
+    inputConnectionCreated(const Connection& connection) override final;
 
-    /**
-     * @brief portOutConnectionPolicy
-     * @param portIndex
-     * @return
-     */
-    ConnectionPolicy portOutConnectionPolicy(PortIndex portIndex) const override;
+    void
+    inputConnectionDeleted(const Connection& connection) override final;
 
-    ////////////////////////////////////////////////////////////////
-    /// @warning This is dummy!
-    void setInData( std::shared_ptr<NodeData> nodeData
-                  , PortIndex port) override {}
-    ///
-    /// @warning This is dummy!
-    std::shared_ptr<NodeData> outData(PortIndex port) override { return nullptr; }
-    ////////////////////////////////////////////////////////////////
+    NODE_NO_DATA
+
+public:
+    virtual unsigned int
+    functionalNPorts( PortType portType ) const = 0;
+
+    virtual NodeDataType
+    functionalDataType( PortType portType
+                      , PortIndex portIndex ) const = 0;
+
+    virtual bool
+    functionalPortCaptionVisible( PortType portType
+                                , PortIndex portIndex ) const;
+
+    virtual QString
+    functionalPortCaption( PortType portType
+                         , PortIndex portIndex ) const;
+
+    virtual void
+    functionalConnectionCreated(const Connection&){}
+
+    virtual void
+    functionalConnectionDeleted(const Connection&){}
 };
 
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
 class AdderFunctionalNode : public FunctionalNode {
 public:
@@ -78,76 +77,112 @@ public:
      * @brief Name
      * @return Model name
      */
-    QString name() const override;
+    QString
+    name() const override;
 
     /**
      * @brief caption
      * @return Node title
      */
-    QString caption() const override;
+    QString
+    caption() const override;
 
-    QJsonObject save() const override;
+    QJsonObject
+    save() const override;
 
-    unsigned int nPorts( PortType portType ) const override;
+    unsigned int
+    functionalNPorts( PortType portType ) const override;
 
-    NodeDataType dataType( PortType portType
+    NodeDataType
+    functionalDataType( PortType portType
+                      , PortIndex portIndex ) const override;
+
+    bool
+    functionalPortCaptionVisible( PortType portType
+                                , PortIndex portIndex ) const override;
+
+    QString
+    functionalPortCaption( PortType portType
                          , PortIndex portIndex ) const override;
 
-    bool portCaptionVisible( PortType portType
-                           , PortIndex portIndex ) const override;
-
-    QString portCaption( PortType portType
-                       , PortIndex portIndex ) const override;
+    NODE_NO_DATA
 };
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
 class SubtractorFunctionalNode : public FunctionalNode {
 public:
     SubtractorFunctionalNode(){}
     ~SubtractorFunctionalNode() override {}
 
-    QString name() const override;
+    QString
+    name() const override;
 
-    QString caption() const override;
+    QString
+    caption() const override;
 
-    QJsonObject save() const override;
+    QJsonObject
+    save() const override;
 
-    unsigned int nPorts( PortType portType ) const override;
+    unsigned int
+    functionalNPorts( PortType portType ) const override;
 
-    NodeDataType dataType( PortType portType
+    NodeDataType
+    functionalDataType( PortType portType
+                      , PortIndex portIndex ) const override;
+
+    bool
+    functionalPortCaptionVisible( PortType portType
+                                , PortIndex portIndex ) const override;
+
+    QString
+    functionalPortCaption( PortType portType
                          , PortIndex portIndex ) const override;
 
-    bool portCaptionVisible( PortType portType
-                           , PortIndex portIndex ) const override;
-
-    QString portCaption( PortType portType
-                       , PortIndex portIndex ) const override;
+    NODE_NO_DATA
 };
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
 class ConditionFunctionalNode : public FunctionalNode {
 public:
     ConditionFunctionalNode(){}
     ~ConditionFunctionalNode() override {}
 
-    QString name() const override;
+    QString
+    name() const override;
 
-    QString caption() const override;
+    QString
+    caption() const override;
 
-    QJsonObject save() const override;
+    QJsonObject
+    save() const override;
 
-    unsigned int nPorts( PortType portType ) const override;
+    unsigned int
+    functionalNPorts( PortType portType ) const override;
 
-    NodeDataType dataType( PortType portType
+    NodeDataType
+    functionalDataType( PortType portType
+                      , PortIndex portIndex ) const override;
+
+    bool
+    functionalPortCaptionVisible( PortType portType
+                                , PortIndex portIndex ) const override;
+
+    QString
+    functionalPortCaption( PortType portType
                          , PortIndex portIndex ) const override;
 
-    bool portCaptionVisible( PortType portType
-                           , PortIndex portIndex ) const override;
+    ConnectionPolicy
+    portOutConnectionPolicy(QtNodes::PortIndex) const;
 
-    QString portCaption( PortType portType
-                       , PortIndex portIndex ) const override;
-
-    ConnectionPolicy portOutConnectionPolicy(PortIndex portIndex) const override;
+    NODE_NO_DATA
 };
 
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 ///
 /// \brief Trigonometry functions
 ///
@@ -157,135 +192,201 @@ public:
     TrigonometryFunctionalNode(){}
     ~TrigonometryFunctionalNode() override {}
 
-    unsigned int nPorts( PortType portType ) const override;
+    unsigned int
+    functionalNPorts( PortType portType ) const override;
 
-    ConnectionPolicy portOutConnectionPolicy(PortIndex portIndex) const override;
+    NodeDataType
+    functionalDataType( PortType portType
+                      , PortIndex portIndex ) const override;
 
-    NodeDataType dataType( PortType portType
-                         , PortIndex portIndex ) const override;
+    NODE_NO_DATA
 };
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
 class RadiansFunctionalNode : public TrigonometryFunctionalNode {
 public:
     RadiansFunctionalNode(){}
     ~RadiansFunctionalNode() override {}
 
-    QString name() const override;
+    QString
+    name() const override;
 
-    QString caption() const override;
+    QString
+    caption() const override;
 
-    QJsonObject save() const override;
+    QJsonObject
+    save() const override;
 
-    NodeDataType dataType( PortType portType
-                         , PortIndex portIndex ) const override;
+    NodeDataType
+    functionalDataType( PortType portType
+                      , PortIndex portIndex ) const override;
 };
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
 class DegreesFunctionalNode : public TrigonometryFunctionalNode {
 public:
     DegreesFunctionalNode(){}
     ~DegreesFunctionalNode() override {}
 
-    QString name() const override;
+    QString
+    name() const override;
 
-    QString caption() const override;
+    QString
+    caption() const override;
 
-    QJsonObject save() const override;
+    QJsonObject
+    save() const override;
 
-    NodeDataType dataType( PortType portType
-                         , PortIndex portIndex ) const override;
+    NodeDataType
+    functionalDataType( PortType portType
+                      , PortIndex portIndex ) const override;
 
-    void inputConnectionCreated(const Connection&) override;
+    void
+    functionalConnectionCreated(const Connection& connection) override;
 
-    void inputConnectionDeleted(const Connection&) override;
+    void
+    functionalConnectionDeleted(const Connection& connection) override;
+
+    bool
+    acceptDataType( PortIndex portIndex
+                  , const NodeDataType& nodeDataType ) const override;
 
 private:
-    QString _dataType;
+    NodeDataType _dataType;
 };
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
 class SinFunctionalNode : public TrigonometryFunctionalNode {
 public:
     SinFunctionalNode(){}
     ~SinFunctionalNode() override {}
 
-    QString name() const override;
+    QString
+    name() const override;
 
-    QString caption() const override;
+    QString
+    caption() const override;
 
-    QJsonObject save() const override;
+    QJsonObject
+    save() const override;
 };
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
 class CosFunctionalNode : public TrigonometryFunctionalNode {
 public:
     CosFunctionalNode(){}
     ~CosFunctionalNode() override {}
 
-    QString name() const override;
+    QString
+    name() const override;
 
-    QString caption() const override;
+    QString
+    caption() const override;
 
-    QJsonObject save() const override;
+    QJsonObject
+    save() const override;
 };
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
 class TanFunctionalNode : public TrigonometryFunctionalNode {
 public:
     TanFunctionalNode(){}
     ~TanFunctionalNode() override {}
 
-    QString name() const override;
+    QString
+    name() const override;
 
-    QString caption() const override;
+    QString
+    caption() const override;
 
-    QJsonObject save() const override;
+    QJsonObject
+    save() const override;
 };
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
 class CtanFunctionalNode : public TrigonometryFunctionalNode {
 public:
     CtanFunctionalNode(){}
     ~CtanFunctionalNode() override {}
 
-    QString name() const override;
+    QString
+    name() const override;
 
-    QString caption() const override;
+    QString
+    caption() const override;
 
-    QJsonObject save() const override;
+    QJsonObject
+    save() const override;
 };
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
 class ArcSinFunctionalNode : public TrigonometryFunctionalNode {
 public:
     ArcSinFunctionalNode(){}
     ~ArcSinFunctionalNode() override {}
 
-    QString name() const override;
+    QString
+    name() const override;
 
-    QString caption() const override;
+    QString
+    caption() const override;
 
-    QJsonObject save() const override;
+    QJsonObject
+    save() const override;
 };
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
 class ArcCosFunctionalNode : public TrigonometryFunctionalNode {
 public:
     ArcCosFunctionalNode(){}
     ~ArcCosFunctionalNode() override {}
 
-    QString name() const override;
+    QString
+    name() const override;
 
-    QString caption() const override;
+    QString
+    caption() const override;
 
-    QJsonObject save() const override;
+    QJsonObject
+    save() const override;
 };
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
 class ArcTanFunctionalNode : public TrigonometryFunctionalNode {
 public:
     ArcTanFunctionalNode(){}
     ~ArcTanFunctionalNode() override {}
 
-    QString name() const override;
+    QString
+    name() const override;
 
-    QString caption() const override;
+    QString
+    caption() const override;
 
-    QJsonObject save() const override;
+    QJsonObject
+    save() const override;
 };
 
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 ///
 /// Exponential
 ///
@@ -295,60 +396,90 @@ public:
     PowFunctionalNode(){}
     ~PowFunctionalNode() override {}
 
-    QString name() const override;
+    QString
+    name() const override;
 
-    QString caption() const override;
+    QString
+    caption() const override;
 
-    QJsonObject save() const override;
+    QJsonObject
+    save() const override;
 };
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
 class ExpFunctionalNode : public TrigonometryFunctionalNode {
 public:
     ExpFunctionalNode(){}
     ~ExpFunctionalNode() override {}
 
-    QString name() const override;
+    QString
+    name() const override;
 
-    QString caption() const override;
+    QString
+    caption() const override;
 
-    QJsonObject save() const override;
+    QJsonObject
+    save() const override;
 };
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
 class Exp2FunctionalNode : public TrigonometryFunctionalNode {
 public:
     Exp2FunctionalNode(){}
     ~Exp2FunctionalNode() override {}
 
-    QString name() const override;
+    QString
+    name() const override;
 
-    QString caption() const override;
+    QString
+    caption() const override;
 
-    QJsonObject save() const override;
+    QJsonObject
+    save() const override;
 };
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
 class LogFunctionalNode : public TrigonometryFunctionalNode {
 public:
     LogFunctionalNode(){}
     ~LogFunctionalNode() override {}
 
-    QString name() const override;
+    QString
+    name() const override;
 
-    QString caption() const override;
+    QString
+    caption() const override;
 
-    QJsonObject save() const override;
+    QJsonObject
+    save() const override;
 };
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
 class Log2FunctionalNode : public TrigonometryFunctionalNode {
 public:
     Log2FunctionalNode(){}
     ~Log2FunctionalNode() override {}
 
-    QString name() const override;
+    QString
+    name() const override;
 
-    QString caption() const override;
+    QString
+    caption() const override;
 
-    QJsonObject save() const override;
+    QJsonObject
+    save() const override;
 };
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
 /// todo: replace float to universal decimal type
 class SqrtFunctionalNode : public TrigonometryFunctionalNode {
@@ -356,12 +487,18 @@ public:
     SqrtFunctionalNode(){}
     ~SqrtFunctionalNode() override {}
 
-    QString name() const override;
+    QString
+    name() const override;
 
-    QString caption() const override;
+    QString
+    caption() const override;
 
-    QJsonObject save() const override;
+    QJsonObject
+    save() const override;
 };
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
 /// todo: replace float to universal decimal type
 class InverseSqrtFunctionalNode : public TrigonometryFunctionalNode {
@@ -369,16 +506,18 @@ public:
     InverseSqrtFunctionalNode(){}
     ~InverseSqrtFunctionalNode() override {}
 
-    QString name() const override;
+    QString
+    name() const override;
 
-    QString caption() const override;
+    QString
+    caption() const override;
 
-    QJsonObject save() const override;
+    QJsonObject
+    save() const override;
 };
 
-///
-/// Common
-///
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
 
 #endif // FUNCTIONALNODES_HPP

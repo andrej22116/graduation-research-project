@@ -8,14 +8,38 @@
 #include <QOpenGLShader>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLFramebufferObject>
-#include <QOpenGLFunctions_4_0_Core>
-#include <QFile>
-#include <QTextStream>
+#include <QOpenGLFunctions_4_2_Core>
 
 #include <QMouseEvent>
 #include <QWheelEvent>
 
 #include <QTimer>
+
+#ifdef QT_DEBUG
+void showOpenGLErrors(const QString& file, int line) {
+    auto glf = QOpenGLContext::currentContext()->functions();
+    GLenum err ( glf->glGetError() );
+
+    while ( err != GL_NO_ERROR )
+    {
+        QString error;
+        switch ( err )
+        {
+            case GL_INVALID_OPERATION:  error="GL_INVALID_OPERATION";      break;
+            case GL_INVALID_ENUM:       error="GL_INVALID_ENUM";           break;
+            case GL_INVALID_VALUE:      error="GL_INVALID_VALUE";          break;
+            case GL_OUT_OF_MEMORY:      error="GL_OUT_OF_MEMORY";          break;
+            case GL_INVALID_FRAMEBUFFER_OPERATION:  error="INVALID_FRAMEBUFFER_OPERATION";  break;
+        }
+        qDebug() << error << " - " << file << ":" << line;
+        err = glf->glGetError();
+    }
+}
+#   define D_showOpenGLErrors(file, line) showOpenGLErrors((file), (line));
+#else
+#   define D_showOpenGLErrors(file, line)
+#endif
+
 
 OpenGLScene::OpenGLScene(QWidget* parent) :
     QOpenGLWidget(parent),
@@ -26,19 +50,10 @@ OpenGLScene::OpenGLScene(QWidget* parent) :
     _camera(std::make_shared<LookCentralObjectCamera>()),
     _cameraMoves(false)
 {
-    QSurfaceFormat format;
-    format.setVersion(4, 2);
-    format.setSamples(4);
-    format.setProfile(QSurfaceFormat::NoProfile);
-    format.setSwapBehavior(QSurfaceFormat::SwapBehavior::DoubleBuffer);
-    setFormat(format);
-
     _timer->setInterval(1000 / 60);
     _timer->setTimerType(Qt::TimerType::PreciseTimer);
     connect( _timer.get(), &QTimer::timeout
            , this, &OpenGLScene::update );
-    _timer->start();
-    //_renderPipeLine.push_back(&OpenGLScene::renderTargetObject);
 }
 
 OpenGLScene::~OpenGLScene()
@@ -53,8 +68,8 @@ void OpenGLScene::setSceneProperties(QJsonDocument& jsonProperties)
 
 void OpenGLScene::setVertexShaderText(const QString& text)
 {
-    if ( _vertexShader ) {
-        _userShaderProgramm.removeShader(_vertexShader.get());
+    if ( _userShaderProgramm && _vertexShader ) {
+        _userShaderProgramm->removeShader(_vertexShader.get());
     }
 
     _vertexShader = std::make_shared<QOpenGLShader>(QOpenGLShader::Vertex);
@@ -62,13 +77,13 @@ void OpenGLScene::setVertexShaderText(const QString& text)
         throw std::runtime_error(_vertexShader->log().toStdString());
     }
 
-    _userShaderProgramm.addShader(_vertexShader.get());
+   // _userShaderProgramm.addShader(_vertexShader.get());
 }
 
 void OpenGLScene::setGeometryShaderText(const QString& text)
 {
-    if ( _geometryShader ) {
-        _userShaderProgramm.removeShader(_geometryShader.get());
+    if ( _userShaderProgramm && _geometryShader ) {
+        _userShaderProgramm->removeShader(_geometryShader.get());
     }
 
     _geometryShader = std::make_shared<QOpenGLShader>(QOpenGLShader::Geometry);
@@ -76,13 +91,13 @@ void OpenGLScene::setGeometryShaderText(const QString& text)
         throw std::runtime_error(_geometryShader->log().toStdString());
     }
 
-    _userShaderProgramm.addShader(_geometryShader.get());
+    //_userShaderProgramm.addShader(_geometryShader.get());
 }
 
 void OpenGLScene::setFragmentShaderText(const QString& text)
 {
-    if ( _fragmentShader ) {
-        _userShaderProgramm.removeShader(_fragmentShader.get());
+    if ( _userShaderProgramm && _fragmentShader ) {
+        _userShaderProgramm->removeShader(_fragmentShader.get());
     }
 
     _fragmentShader = std::make_shared<QOpenGLShader>(QOpenGLShader::Fragment);
@@ -90,14 +105,20 @@ void OpenGLScene::setFragmentShaderText(const QString& text)
         throw std::runtime_error(_fragmentShader->log().toStdString());
     }
 
-    _userShaderProgramm.addShader(_fragmentShader.get());
+   // _userShaderProgramm.addShader(_fragmentShader.get());
 }
 
 void OpenGLScene::compileShader()
 {
-    _userShaderProgramm.link();
+    _userShaderProgramm = std::make_shared<QOpenGLShaderProgram>();
 
-    _matrixUniformLocation = _userShaderProgramm.uniformLocation("resultTransformMatrix");
+    _userShaderProgramm->addShader(_vertexShader.get());
+    _userShaderProgramm->addShader(_geometryShader.get());
+    _userShaderProgramm->addShader(_fragmentShader.get());
+
+    _userShaderProgramm->link();
+
+    _matrixUniformLocation = _userShaderProgramm->uniformLocation("resultTransformMatrix");
 
     trySetRenderPipline();
 }
@@ -124,6 +145,8 @@ void OpenGLScene::setTexture(const QString& name, const QPixmap& texture)
 
 void OpenGLScene::setTargetObject(std::shared_ptr<TargetObject> object)
 {
+    this->makeCurrent();
+
     auto glf = QOpenGLContext::currentContext()->functions();
     _targetObject = object;
 
@@ -145,21 +168,20 @@ void OpenGLScene::setTargetObject(std::shared_ptr<TargetObject> object)
                 * static_cast<int>(sizeof(uint));
 
     _targetObjectVboId.setUsagePattern(QOpenGLBuffer::UsagePattern::StaticDraw);
-    _targetObjectVboId.allocate(vboSize);
-    _targetObjectVboId.write(0, _targetObject->vertices.data(), vboSize);
+    _targetObjectVboId.allocate(_targetObject->vertices.data(), vboSize);
 
     _targetObjectEboId.setUsagePattern(QOpenGLBuffer::UsagePattern::StaticDraw);
-    _targetObjectEboId.allocate(eboSize);
-    _targetObjectEboId.write(0, _targetObject->indices.data(), eboSize);
+    _targetObjectEboId.allocate(_targetObject->indices.data(), eboSize);
 
     glf->glEnableVertexAttribArray(0);
+
     glf->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), nullptr);
 
     _targetObjectVaoId.release();
-    _targetObjectVboId.release();
-    _targetObjectEboId.release();
 
     trySetRenderPipline();
+
+    this->doneCurrent();
 }
 
 void OpenGLScene::setCubeMapTexture(const QPixmap& texture)
@@ -175,7 +197,7 @@ std::shared_ptr<QPixmap> OpenGLScene::renderObjectToImage(const QSize& size)
     QOpenGLFramebufferObject imageBuffer(size);
     imageBuffer.bind();
 
-    auto glf4 = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_4_0_Core>();
+    auto glf4 = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_4_2_Core>();
 
     glf4->glViewport(0, 0, size.width(), size.height());
     resizeGL(size.width(), size.height());
@@ -194,12 +216,21 @@ std::shared_ptr<QPixmap> OpenGLScene::renderObjectToImage(const QSize& size)
     return std::make_shared<QPixmap>(QPixmap::fromImage(imageBuffer.toImage()));
 }
 
+QWidget* OpenGLScene::widget()
+{
+    return this;
+}
+
 void OpenGLScene::render()
 {
+    this->makeCurrent();
+
     auto data = _renderPipeLine.data();
     for ( size_t i = 0, size = _renderPipeLine.size(); i < size; ++i, ++data ) {
         (*data)(this);
     }
+
+    this->doneCurrent();
 }
 
 void OpenGLScene::update()
@@ -209,9 +240,11 @@ void OpenGLScene::update()
 
 void OpenGLScene::initializeGL()
 {
-    auto glf = QOpenGLContext::currentContext()->functions();
+    auto glf = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_4_2_Core>();
 
     glf->glClearColor(0, 0.2f, 0.1f, 1.0f);
+
+    if ( _targetObject ) { setTargetObject(_targetObject); }
 
     loadVertexShader();
     setFragmentShaderText("#version 420 core\n"
@@ -245,8 +278,16 @@ void OpenGLScene::paintGL()
 
 void OpenGLScene::mousePressEvent(QMouseEvent* event)
 {
+    if ( event->button() == Qt::MouseButton::RightButton ) {
+        auto targetObject = std::make_shared<TargetObject>();
+        targetObject->loadMesh("test.obj");
+
+        setTargetObject(targetObject);
+        return;
+    }
     _cameraMoves = true;
     _lastCursorPosition = event->pos();
+
 }
 
 void OpenGLScene::mouseReleaseEvent(QMouseEvent* event)
@@ -280,7 +321,7 @@ void OpenGLScene::wheelEvent(QWheelEvent* event)
 
 void OpenGLScene::trySetRenderPipline()
 {
-    if ( !_userShaderProgramm.isLinked() ) { return; }
+    if ( _userShaderProgramm && !_userShaderProgramm->isLinked() ) { return; }
     if ( !_targetObject || !*_targetObject ) { return; }
 
     setRenderPipline();
@@ -320,18 +361,24 @@ void OpenGLScene::renderTargetObject()
 {
     auto glf = QOpenGLContext::currentContext()->functions();
 
-    _userShaderProgramm.bind();
-    _targetObjectVaoId.bind();
+    _userShaderProgramm->bind();
+    D_showOpenGLErrors("OpenGLScene.cpp", 366);
 
-    _userShaderProgramm.setUniformValue(_matrixUniformLocation, _resultMatrix);
+    _userShaderProgramm->setUniformValue(_matrixUniformLocation, _resultMatrix);
+    D_showOpenGLErrors("OpenGLScene.cpp", 369);
+
+    _targetObjectVaoId.bind();
+    D_showOpenGLErrors("OpenGLScene.cpp", 372);
 
     glf->glDrawElements( GL_TRIANGLES
                        , static_cast<int>(_targetObject->indices.size())
                        , GL_UNSIGNED_INT
-                       , nullptr);
+                       , nullptr );
+    D_showOpenGLErrors("OpenGLScene.cpp", 378);
 
     _targetObjectVaoId.release();
-    _userShaderProgramm.release();
+
+    _userShaderProgramm->release();
 }
 
 void OpenGLScene::renderBackground()

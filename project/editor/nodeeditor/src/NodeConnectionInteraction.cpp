@@ -84,8 +84,14 @@ canConnect(PortIndex &portIndex, TypeConverter & converter) const
     return (converter != nullptr);
   }*/
 
-  if ( (requiredPort == PortType::In && candidateNodeDataType.id != "")
-      && connectionDataType.id != candidateNodeDataType.id ) {
+  if ( requiredPort == PortType::In
+       && candidateNodeDataType.id == NO_DATA_TYPE.id
+       && !modelTarget->acceptDataType(portIndex, connectionDataType) ) {
+      return false;
+  }
+
+  if ( candidateNodeDataType.id != NO_DATA_TYPE.id
+       && connectionDataType.id != candidateNodeDataType.id ) {
       return false;
   }
 

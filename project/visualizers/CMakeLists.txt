@@ -6,6 +6,7 @@ set( CPP_SOURCES
         LookCentralObjectCamera.cpp
         OpenGLScene.cpp
         TargetObject.cpp
+        TargetSceneWrapperWidget.cpp
 )
 
 set( QT_SRC
@@ -44,7 +45,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 target_link_libraries(visualizers PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/assimp/lib/libassimp.dll.a
 )
-else("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+else()
 target_link_libraries(visualizers PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/assimp/lib/assimp-vc140-mt.lib
 )
@@ -57,6 +58,10 @@ set_target_properties( visualizers
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/lib
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
 )
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib")
 
 ########################
 #

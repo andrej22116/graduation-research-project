@@ -98,6 +98,11 @@ public:
      */
     virtual std::shared_ptr<QPixmap> renderObjectToImage(const QSize& size) = 0;
 
+    /**
+     * @brief Return renderer widget
+     */
+    virtual QWidget* widget() = 0;
+
 public slots:
     /**
      * @brief Rendering scene
