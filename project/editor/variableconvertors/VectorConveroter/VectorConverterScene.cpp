@@ -20,20 +20,22 @@ VectorConverterScene( uchar pointsCount
 
     qreal x = -36;
     for (auto type : {PointType::Input, PointType::Output}) {
-        QPointF pointPos(x, -36);
+        QPointF pointPos(x, -48);
         for (uchar i = 0; i < _pointsCount && i < 4; ++i) {
 
             auto point = new VectorPointGraphicsItem(valueTypes[i], type);
             point->setPos(pointPos);
             addItem(point);
 
-            pointPos += {0, 24};
+            pointPos += {0, 40};
 
             if ( type == PointType::Input ) {
                 connect( point
                        , &VectorPointGraphicsItem::onTryCreateNewConnect
                        , this
                        , &VectorConverterScene::onTryCreateConnect );
+
+                _inputPoints += point;
             }
             else {
                 _outputPoints += point;
@@ -46,9 +48,58 @@ VectorConverterScene( uchar pointsCount
     }
 }
 
-QJsonValue
+
+void
 VectorConverterScene::
-toJson()
+onTryCreateConnect(VectorPointGraphicsItem* sender)
+{
+    auto connection = new VectorConnectGraphicsItem( this
+                                                   , sender );
+    addItem(connection);
+    connection->grabMouse();
+
+    prepareConnection(connection);
+}
+
+
+void
+VectorConverterScene::
+prepareConnection(VectorConnectGraphicsItem* connection)
+{
+    if ( connection->pointFrom() ) {
+        _connectionsHash[connection->pointFrom()] = connection;
+    }
+    if ( connection->pointTo() ) {
+        _connectionsHash[connection->pointTo()] = connection;
+    }
+
+    connect( connection
+           , &VectorConnectGraphicsItem::beforeDestroy
+           , this
+           , [this](VectorConnectGraphicsItem* connection) {
+        _connectionsHash[connection->pointFrom()] = nullptr;
+        if ( connection->pointTo() ) {
+            _connectionsHash[connection->pointTo()] = nullptr;
+        }
+    });
+
+    connect( connection
+           , &VectorConnectGraphicsItem::addConnection
+           , this
+           , [this](VectorConnectGraphicsItem* connection) {
+        if ( _connectionsHash[connection->pointTo()] ) {
+            this->removeItem(connection);
+            delete connection;
+            return;
+        }
+        _connectionsHash[connection->pointTo()] = connection;
+    });
+}
+
+
+QJsonObject
+VectorConverterScene::
+save() const
 {
     auto valueType2Leter = [](PointValueType type) {
         switch( type ) {
@@ -75,40 +126,55 @@ toJson()
         }
     }
 
-    return {res};
+    return {
+        {"conversion", res}
+    };
 }
+
 
 void
 VectorConverterScene::
-onTryCreateConnect(VectorPointGraphicsItem* sender)
+restore(const QJsonObject& object)
 {
-    auto connection = new VectorConnectGraphicsItem( this
-                                                   , sender
-                                                   , sender->pointValueType() );
-    addItem(connection);
-    connection->grabMouse();
+    auto value = object["conversion"];
 
-    _connectionsHash[sender] = connection;
+    if ( !value.isString() ) { return; }
 
-    connect( connection
-           , &VectorConnectGraphicsItem::beforeDestroy
-           , this
-           , [this](VectorConnectGraphicsItem* connection) {
-        _connectionsHash[connection->pointFrom()] = nullptr;
-        if ( connection->pointTo() ) {
-            _connectionsHash[connection->pointTo()] = nullptr;
+    auto string = value.toString("");
+    if ( string.length() % 2 != 0 ) {
+        return;
+    }
+
+    auto leterToPointPointer = [this]
+                               (PointType type, QChar leter)
+                               -> VectorPointGraphicsItem* {
+        int index = -1;
+
+        switch( leter.toLatin1() ) {
+            case 'r': index = 0; break;
+            case 'g': index = 1; break;
+            case 'b': index = 2; break;
+            case 'a': index = 3; break;
+            default: return nullptr;
         }
-    });
 
-    connect( connection
-           , &VectorConnectGraphicsItem::addConnection
-           , this
-           , [this](VectorConnectGraphicsItem* connection) {
-        if ( _connectionsHash[connection->pointTo()] ) {
-            this->removeItem(connection);
-            delete connection;
-            return;
+        return type == PointType::Input ? _inputPoints[index]
+                                        : _outputPoints[index];
+    };
+
+    for ( int i = 0, size = string.length(); i < size; ++i ) {
+        auto out = leterToPointPointer(PointType::Output, string[i]);
+        auto in = leterToPointPointer(PointType::Input, string[++i]);
+
+        if ( !in || !out ) {
+            continue;
         }
-        _connectionsHash[connection->pointTo()] = connection;
-    });
+
+        auto connection = new VectorConnectGraphicsItem( this
+                                                       , in
+                                                       , out );
+
+        addItem(connection);
+        prepareConnection(connection);
+    }
 }

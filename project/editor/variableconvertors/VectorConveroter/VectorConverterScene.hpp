@@ -3,12 +3,14 @@
 
 #include <QGraphicsScene>
 #include <QHash>
-#include <QSet>
+#include <QVector>
+#include <nodes/internal/Serializable.hpp>
 
 class VectorPointGraphicsItem;
 class VectorConnectGraphicsItem;
 
 class VectorConverterScene : public QGraphicsScene
+                           , public QtNodes::Serializable
 {
     Q_OBJECT
 
@@ -21,22 +23,29 @@ public:
      * whit conversions /component to component/component to component/.../
      * @return QJsonValue with convert string
      */
-    QJsonValue
-    toJson();
+    QJsonObject
+    save() const override;
+
+    void
+    restore(const QJsonObject& object) override;
 
 protected slots:
     void
     onTryCreateConnect(VectorPointGraphicsItem* sender);
 
 private:
+    void
+    prepareConnection(VectorConnectGraphicsItem* connection);
+
+private:
     using ConnectionsHash = QHash< VectorPointGraphicsItem*
                                  , VectorConnectGraphicsItem* >;
-    using OutputPointsSet = QSet<VectorPointGraphicsItem*>;
+    using PointsVector = QVector<VectorPointGraphicsItem*>;
 
     uchar _pointsCount;
     ConnectionsHash _connectionsHash;
-    OutputPointsSet _outputPoints;
-
+    PointsVector _inputPoints;
+    PointsVector _outputPoints;
 };
 
 #endif // VECTORCONVERTERSCENE_HPP

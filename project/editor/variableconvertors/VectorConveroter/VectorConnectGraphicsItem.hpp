@@ -12,8 +12,11 @@ class VectorConnectGraphicsItem : public QGraphicsObject
 
 public:
     VectorConnectGraphicsItem( QGraphicsScene* scene
+                             , VectorPointGraphicsItem* from );
+
+    VectorConnectGraphicsItem( QGraphicsScene* scene
                              , VectorPointGraphicsItem* from
-                             , PointValueType pointValueType );
+                             , VectorPointGraphicsItem* to );
 
     // QGraphicsItem interface
 public:
@@ -66,13 +69,16 @@ private:
     void
     deleteThis();
 
+    void
+    setDefaultProperties();
+
 private:
     QPointF _beginPoint;
     QPointF _endPoint;
     QPainterPath _linePath;
-    PointValueType _pointValueType;
     VectorPointGraphicsItem* _from;
     VectorPointGraphicsItem* _to;
+    PointValueType _pointValueType;
     QGraphicsScene* _scene;
 };
 

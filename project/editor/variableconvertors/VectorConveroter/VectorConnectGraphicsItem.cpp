@@ -11,24 +11,31 @@
 
 VectorConnectGraphicsItem::
 VectorConnectGraphicsItem( QGraphicsScene* scene
-                         , VectorPointGraphicsItem* from
-                         , PointValueType pointValueType )
+                         , VectorPointGraphicsItem* from )
     : _beginPoint(from->pos())
     , _endPoint(_beginPoint)
-    , _pointValueType(pointValueType)
     , _from(from)
     , _to(nullptr)
+    , _pointValueType(_from->pointValueType())
     , _scene(scene)
 {
-    setZValue(-1.0);
-    setFlag(QGraphicsItem::ItemIsMovable, true);
-    setAcceptHoverEvents(true);
+    setDefaultProperties();
+}
 
-    auto effect = new QGraphicsDropShadowEffect(this);
-    effect->setColor(VectorConverterStyle::pointColor(_pointValueType));
-    effect->setOffset({0,0});
-    effect->setBlurRadius(8);
-    setGraphicsEffect(effect);
+
+VectorConnectGraphicsItem::
+VectorConnectGraphicsItem( QGraphicsScene* scene
+                         , VectorPointGraphicsItem* from
+                         , VectorPointGraphicsItem* to )
+    : _beginPoint(from->pos())
+    , _endPoint(to->pos())
+    , _from(from)
+    , _to(to)
+    , _pointValueType(_from->pointValueType())
+    , _scene(scene)
+{
+    setDefaultProperties();
+    calculatePath();
 }
 
 
@@ -100,6 +107,22 @@ deleteThis()
     emit beforeDestroy(this);
     _scene->removeItem(this);
     delete this;
+}
+
+
+void
+VectorConnectGraphicsItem::
+setDefaultProperties()
+{
+    setZValue(-1.0);
+    setFlag(QGraphicsItem::ItemIsMovable, true);
+    setAcceptHoverEvents(true);
+
+    auto effect = new QGraphicsDropShadowEffect(this);
+    effect->setColor(VectorConverterStyle::pointColor(_pointValueType));
+    effect->setOffset({0,0});
+    effect->setBlurRadius(8);
+    setGraphicsEffect(effect);
 }
 
 

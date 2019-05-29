@@ -2,22 +2,21 @@
 #define VECTORCONVERTER_HPP
 
 #include <QGraphicsView>
+#include <nodes/internal/Serializable.hpp>
 
 class VectorConverterWidget : public QGraphicsView
+                            , public QtNodes::Serializable
 {
 public:
     VectorConverterWidget(unsigned char points = 4, QWidget* parent = nullptr);
 
-    // QGraphicsView interface
-protected:/*
-    void
-    mousePressEvent(QMouseEvent* event) override;
+    // Serializable interface
+public:
+    QJsonObject
+    save() const override;
 
     void
-    mouseReleaseEvent(QMouseEvent* event) override;
-
-    void
-    mouseMoveEvent(QMouseEvent* event) override;*/
+    restore(const QJsonObject&) override;
 };
 
 #endif // VECTORCONVERTER_HPP
