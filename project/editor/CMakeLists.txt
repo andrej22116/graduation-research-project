@@ -2,11 +2,26 @@ cmake_minimum_required( VERSION 3.14.0 FATAL_ERROR )
 project( ShaderLogickNodeEditor )
 
 set( CPP_SOURCES
+        EditorController.cpp
+
 	FunctionalNodes.cpp
         VariableNodes.cpp
+
+        nodesmodels/DefaultDataModelRegistry.cpp
+
 	nodesstore/NodeWidget.cpp
 	nodesstore/FlowLayout.cpp
         nodesstore/NodeStoreWidget.cpp
+
+        variableconvertors/VectorConveroter/VectorConnectGraphicsItem.cpp
+        variableconvertors/VectorConveroter/VectorConverterScene.cpp
+        variableconvertors/VectorConveroter/VectorConverterStyle.cpp
+        variableconvertors/VectorConveroter/VectorConverterWidget.cpp
+        variableconvertors/VectorConveroter/VectorPointGraphicsItem.cpp
+        variableconvertors/VectorConveroter/VectorConverterDataModel.cpp
+
+        variableconvertors/VectorDecomposConverter/VectorDecomposConverter.cpp
+
 	EditorGraphicsScene.cpp
         VariableWidgets.cpp
         VariableValueControlsFactory.cpp

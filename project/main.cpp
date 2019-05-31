@@ -1,3 +1,4 @@
+/*
 #include <QMainWindow>
 #include <QDockWidget>
 #include <QApplication>
@@ -27,21 +28,28 @@
 #include <QDebug>
 
 #include <editor/nodesstore/NodeStoreWidget.hpp>
+#include <editor/variableconvertors/VectorConveroter/VectorConverterDataModel.hpp>
+#include <editor/variableconvertors/VectorDecomposConverter/VectorDecomposConverter.hpp>
 
 using QtNodes::DataModelRegistry;
 using QtNodes::FlowScene;
 using QtNodes::FlowView;
 using QtNodes::ConnectionStyle;
+*/
 
+#include <QApplication>
+#include "Application.hpp"
 
 int main(int argc, char** argv) {
     QApplication application(argc, argv);
+
+    Application thisApplication(application);
 
     /*
     auto widget = new QWidget();
     widget->show();
     */
-
+    /*
     QSurfaceFormat format;
     format.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
     format.setDepthBufferSize(24);
@@ -77,9 +85,22 @@ int main(int argc, char** argv) {
     reg->registerModel<InverseSqrtFunctionalNode>("Exponential");
     reg->registerModel<ConstUserVariableNode>("SuperTest");
     reg->registerModel<UserVariableNode>("SuperTest");
+    reg->registerModel<VectorConverterDataModel>( VectorConverterDataModel::Vector2Factory()
+                                                , "Convertors" );
+    reg->registerModel<VectorConverterDataModel>( VectorConverterDataModel::Vector3Factory()
+                                                , "Convertors" );
+    reg->registerModel<VectorConverterDataModel>( VectorConverterDataModel::Vector4Factory()
+                                                , "Convertors" );
+    /*reg->registerModel<VectorDecomposConverter>( VectorDecomposConverter::Vector2Factory()
+                                               , "Convertors" );
+    reg->registerModel<VectorDecomposConverter>( VectorDecomposConverter::Vector3Factory()
+                                               , "Convertors" );
+    reg->registerModel<VectorDecomposConverter>( VectorDecomposConverter::Vector4Factory()
+                                               , "Convertors" );*/
     //reg->registerModel<DoubleNodeModel<PortType::In>>();
     //reg->registerModel<DoubleNodeModel<PortType::Out>>();
 
+    /*
     ConnectionStyle::setConnectionStyle(
     R"(
       {
@@ -96,8 +117,6 @@ int main(int argc, char** argv) {
                               | QMainWindow::GroupedDragging );
 
     mainWindow->setWindowIcon(QIcon(":/images/icons/Icon.png"));
-    //auto layout = new QGridLayout{mainWindow};
-    //mainWindow->setLayout(layout);
 
     EditorGraphicsScene scene(reg);
     FlowView view(&scene, mainWindow);
@@ -112,34 +131,6 @@ int main(int argc, char** argv) {
     dock->setAllowedAreas(Qt::DockWidgetArea::AllDockWidgetAreas);
     mainWindow->addDockWidget(Qt::DockWidgetArea::RightDockWidgetArea, dock);
 
-    /*{
-        auto scrollArea = new QScrollArea{mainWindow};
-        scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAsNeeded);
-        scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
-        scrollArea->setWidgetResizable(true);
-
-        auto leftWidget = new QWidget{scrollArea};
-        auto flowLayout = new FlowLayout{leftWidget};
-        leftWidget->setLayout(flowLayout);
-
-        dock = new QDockWidget("Nodes store", mainWindow);
-        dock->setSizePolicy(sizePolicy);
-        dock->setWidget(scrollArea);
-        dock->setAllowedAreas(Qt::DockWidgetArea::AllDockWidgetAreas);
-        mainWindow->addDockWidget(Qt::DockWidgetArea::LeftDockWidgetArea, dock);
-
-        scrollArea->setWidget(leftWidget);
-
-        auto factories = reg->registeredModelCreators();
-        for ( auto&[name, factory] : factories) {
-            auto node = new QtNodes::Node(factory());
-            auto nodeWidget = new NodeWidget(*node, *reg, leftWidget);
-            flowLayout->addWidget(nodeWidget);
-            delete node;
-        }
-
-        //leftWidget->setFixedSize(500, 500);
-    }*/
     auto nodeStore = new NodeStoreWidget(reg, mainWindow);
     dock = new QDockWidget("Nodes store", mainWindow);
     dock->setSizePolicy(sizePolicy);
@@ -166,18 +157,12 @@ int main(int argc, char** argv) {
     qDebug() << "Camera direction: " << camera.direction();
     qDebug() << "Camera position: " << camera.position();
 
-    /*
-    OpenGLScene ogls;
-    dock = new QDockWidget("Target scene", mainWindow);
-    dock->setSizePolicy(sizePolicy);
-    dock->setWidget(&ogls);
-    dock->setAllowedAreas(Qt::DockWidgetArea::AllDockWidgetAreas);
-    */
-
     TargetSceneWrapperWidget ogls( std::make_shared<OpenGLScene>() );
     ogls.showNormal();
 
     mainWindow->setStyleSheet("QWidget{background-color: rgb(60, 60, 65); color: white;}");
+
+    */
 
     return application.exec();
 }

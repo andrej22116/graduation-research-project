@@ -78,6 +78,9 @@ public:
     _registeredTypeConverters[id] = std::move(typeConverter);
   }
 
+  /// Custom method
+  void unregisterModel(const QString& modelName);
+
   std::unique_ptr<NodeDataModel>create(QString const &modelName);
 
   RegisteredModelCreatorsMap const &registeredModelCreators() const;

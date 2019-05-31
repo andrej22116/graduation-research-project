@@ -15,7 +15,7 @@ QString
 VectorConverterDataModel::
 caption() const
 {
-    return _name;
+    return _caption;
 }
 
 
@@ -59,10 +59,10 @@ portCaption( QtNodes::PortType
            , QtNodes::PortIndex portIndex ) const
 {
     switch( portIndex ) {
-    case 1: return "Red";
-    case 2: return "Green";
-    case 3: return "Blue";
-    case 4: return "Alpha";
+        case 1: return "Red";
+        case 2: return "Green";
+        case 3: return "Blue";
+        case 4: return "Alpha";
     }
 }
 
@@ -117,7 +117,8 @@ VectorConverterDataModel::
 build(uchar vectorSize)
 {
     _vectorSize = vectorSize;
-    _name = QString("Vector %1 converter").arg(_vectorSize);
+    _caption = QString("Vector%1 converter").arg(_vectorSize);
+    _name = QString("Vec%1Converter").arg(_vectorSize);
 
     _converter = new VectorConverterWidget(_vectorSize);
 

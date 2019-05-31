@@ -1,5 +1,6 @@
-#ifndef VECTORCONVERTERDATAMODEL_HPP
-#define VECTORCONVERTERDATAMODEL_HPP
+#ifndef VECTORDECOMPOSCONVERTER_HPP
+#define VECTORDECOMPOSCONVERTER_HPP
+
 
 #include <nodes/NodeDataModel>
 #include <functional>
@@ -11,13 +12,12 @@ using QtNodes::PortIndex;
 using QtNodes::NodeDataType;
 using QtNodes::NodeData;
 
-class VectorConverterWidget;
 
-class VectorConverterDataModel : public NodeDataModel
+class VectorDecomposConverter : public NodeDataModel
 {
 public:
-    VectorConverterDataModel() = default;
-    ~VectorConverterDataModel() override {}
+    VectorDecomposConverter() = default;
+    ~VectorDecomposConverter() override {}
 
     QString
     name() const override;
@@ -40,14 +40,8 @@ public:
     portCaption( PortType portType
                , PortIndex portIndex ) const override;
 
-    QWidget*
-    embeddedWidget() override;
-
     QJsonObject
     save() const override;
-
-    void
-    restore(const QJsonObject& object) override;
 
 
     using Factory = std::function<std::unique_ptr<NodeDataModel>()>;
@@ -78,8 +72,7 @@ private:
     uchar _vectorSize;
     QString _name;
     QString _caption;
-    VectorConverterWidget* _converter;
     NodeDataType _dataType;
 };
 
-#endif // VECTORCONVERTERDATAMODEL_HPP
+#endif // VECTORDECOMPOSCONVERTER_HPP

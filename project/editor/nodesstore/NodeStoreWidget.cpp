@@ -48,12 +48,12 @@ NodeStoreWidget::NodeStoreWidget(std::shared_ptr<DataModelRegistry> dataModelReg
       std::size_t sat = 120 + hash % 129;
 
       QLinearGradient gradient(QPointF(0, 0), QPointF(1, 0));
-      gradient.setColorAt(0.0, QColor::fromHsl(hue, sat, 160, 180));
-      gradient.setColorAt(1.0, QColor::fromHsl(hue, sat, 160, 0));
+      gradient.setColorAt(0.0, QColor::fromHsl(hue, sat, 160, 120));
+      gradient.setColorAt(0.9, QColor::fromHsl(hue, sat, 160, 25));
       gradient.setCoordinateMode(QGradient::ObjectBoundingMode);
 
       item->setBackground(0, gradient);
-      subItem->setBackground(0, QBrush(QColor::fromHsl(hue, sat, 160, 40)));
+      subItem->setBackground(0, QBrush(QColor::fromHsl(hue, sat, 160, 25)));
       itemWidget->setStyleSheet("background-color: transparent;");
     }
 

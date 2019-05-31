@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/WelcomWindowDialog">
+        <file alias="close-img.png">src/close.png</file>
+        <file alias="back-img.png">src/back.png</file>
+        <file alias="dialog-bacground-img.jpeg">src/background.jpeg</file>
+    </qresource>
+</RCC>

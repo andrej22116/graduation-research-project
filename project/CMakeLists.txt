@@ -11,16 +11,27 @@ find_package(Qt5 REQUIRED COMPONENTS
 )
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
 set(project_ui)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
 
-set(project_sources main.cpp)
+set(project_sources
+    ./main.cpp
+    ./Application.cpp
+    ./dialogs/WelcomeWindowDialog/WelcomeWindowDialog.cpp
+)
+
 set( project_resources
     ./resources/resources.qrc
     ./resources/resources.rc
+    ./dialogs/WelcomeWindowDialog/WelcomeWindowDialogSources.qrc
+)
+
+set( project_ui
+    ./dialogs/WelcomeWindowDialog/WelcomeWindowDialog.ui
 )
 
 add_executable(${PROJECT_NAME}
@@ -30,6 +41,7 @@ add_executable(${PROJECT_NAME}
     ${project_sources_moc}
     ${project_headers_wrapped}
     ${project_resources}
+    ${project_ui}
 )
 
 add_subdirectory(editor)

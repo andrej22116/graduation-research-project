@@ -8,6 +8,12 @@ using QtNodes::NodeDataModel;
 using QtNodes::NodeDataType;
 using QtNodes::TypeConverter;
 
+void DataModelRegistry::unregisterModel(const QString& modelName)
+{
+    _registeredItemCreators.erase(modelName);
+    _registeredModelsCategory.erase(modelName);
+}
+
 std::unique_ptr<NodeDataModel>
 DataModelRegistry::
 create(QString const &modelName)
