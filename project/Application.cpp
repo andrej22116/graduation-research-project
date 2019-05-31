@@ -42,7 +42,7 @@ Application( QApplication& application
            , this
            , &Application::onCreateSolution );
 
-    setDockNestingEnabled(true);
+    //setDockNestingEnabled(true);
     setDockOptions( QMainWindow::AllowTabbedDocks
                   | QMainWindow::AllowNestedDocks
                   | QMainWindow::VerticalTabs
@@ -51,6 +51,8 @@ Application( QApplication& application
     _editorWidget->setWidget(_editorController->editor());
     _variablesWidget->setWidget(_editorController->variables());
     _nodesWidget->setWidget(_editorController->nodesStore());
+
+    _nodesWidget->widget()->resize(_nodesWidget->widget()->sizeHint());
 
     createMenu();
 
@@ -68,7 +70,7 @@ void
 Application::
 startProject(const QString& projectPath)
 {
-    this->show();
+    this->showMaximized();
     _welcomWindowDialog->hide();
 
     onCreateEditorDockWidget();
@@ -114,6 +116,7 @@ void
 Application::
 onCreateEditorDockWidget()
 {
+    _editorWidget->show();
     addDockWidget( Qt::DockWidgetArea::RightDockWidgetArea
                  , _editorWidget
                  , Qt::Orientation::Horizontal );
@@ -124,6 +127,7 @@ void
 Application::
 onCreateEditorVariablesDockWidget()
 {
+    _variablesWidget->show();
     addDockWidget( Qt::DockWidgetArea::RightDockWidgetArea
                  , _variablesWidget
                  , Qt::Orientation::Vertical );
@@ -134,6 +138,7 @@ void
 Application::
 onCreateEditorNodesStoreDockWidget()
 {
+    _nodesWidget->show();
     addDockWidget( Qt::DockWidgetArea::LeftDockWidgetArea
                  , _nodesWidget
                  , Qt::Orientation::Horizontal );
@@ -144,6 +149,7 @@ void
 Application::
 onCreateVisualizerDockWidget()
 {
+    _visualizerWidget->show();
     addDockWidget( Qt::DockWidgetArea::RightDockWidgetArea
                  , _visualizerWidget
                  , Qt::Orientation::Vertical );
