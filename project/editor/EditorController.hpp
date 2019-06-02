@@ -20,7 +20,7 @@ using QtNodes::Serializable;
 
 class VariableController;
 class NodeStoreWidget;
-
+class VariablesControllerWidget;
 
 class EditorController : public QObject
                        , public Serializable
@@ -56,12 +56,15 @@ private:
     using DataModelRegistryPtr = std::shared_ptr<DataModelRegistry>;
     using VariableControllerPtr = std::shared_ptr<VariableController>;
     using NodeStoreWidgetPtr = std::shared_ptr<NodeStoreWidget>;
+    using VariablesControllerWidgetPtr =
+            std::shared_ptr<VariablesControllerWidget>;
 
     DataModelRegistryPtr _dataModelRegistry;
     FlowScenePtr _flowScene;
     FlowViewPtr _flowView;
     VariableControllerPtr _variableController;
     NodeStoreWidgetPtr _nodeStoreWidget;
+    VariablesControllerWidgetPtr _variablesControllerWidget;
 };
 
 #endif // EDITORCONTROLLER_HPP

@@ -5,6 +5,7 @@
 #include <nodes/ConnectionStyle>
 
 #include <nodesstore/NodeStoreWidget.hpp>
+#include <variablescontroller/VariablesControllerWidget.hpp>
 #include <nodesmodels/DefaultDataModelRegistry.hpp>
 #include <EditorGraphicsScene.hpp>
 
@@ -25,6 +26,8 @@ EditorController(QObject *parent)
       )");
 
     _nodeStoreWidget = std::make_shared<NodeStoreWidget>(_dataModelRegistry);
+    _variablesControllerWidget =
+            std::make_shared<VariablesControllerWidget>(nullptr);
 }
 
 
@@ -39,7 +42,7 @@ QWidget*
 EditorController::
 variables()
 {
-    return nullptr;
+    return _variablesControllerWidget.get();
 }
 
 QWidget*

@@ -2,8 +2,9 @@
 #define VARIABLESCONTROLLER_HPP
 
 #include <memory>
-#include <functional>
 #include <QHash>
+
+#include <QObject>
 
 /*
 namespace QtNodes {
@@ -20,27 +21,56 @@ using QtNodes::FlowScene;*/
 
 class VariableDataModel;
 
-class VariablesController
+class VariablesController : QObject
 {
+    Q_OBJECT
+
 public:
     VariablesController();
 
+    QStringList
+    defaultVariablesNames();
 
+    QStringList
+    variablesNames();
 
-    /*
-    using NodeDataModelFactoryType = std::unique_ptr<NodeDataModel>;
-    using NodeDataModelFactory = std::function<NodeDataModelFactoryType()>;
+    QStringList
+    supportedVariablesTypes();
 
-    NodeDataModelFactory
-    dataModelFactory();*/
-/*
+    QWidget*
+    getVariableEditor(const QString& name);
+
+signals:
+    void
+    variableControllerError(const QString& why);
+
+public slots:
+    void
+    onCreateVariable(const QString& name);
+
+    void
+    onRenameVariable( const QString& oldName
+                    , const QString& newName );
+
+    void
+    onRemoveVariable(const QString& name);
+
+    void
+    onChangeVariableDataModel( const QString& variableName
+                             , const QString& dataModelName );
+
+    void
+    onAddDefaultVariableToScene( const QString& name
+                               , const QString& typeName
+                               , std::shared_ptr<VariableDataModel> data);
+
+    void
+    onAddVariableToScene(const QString& name);
+
 private:
-    std::shared_ptr<QWidget> _widgetController;*/
-
-    std::function<
-
-private:
+    QHash<QString, std::shared_ptr<VariableDataModel>> _defaultVariables;
     QHash<QString, std::shared_ptr<VariableDataModel>> _variables;
+    QHash<QString, QString> _variablesTypes;
 };
 
 #endif // VARIABLESCONTROLLER_HPP

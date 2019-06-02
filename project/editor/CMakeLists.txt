@@ -13,6 +13,10 @@ set( CPP_SOURCES
 	nodesstore/FlowLayout.cpp
         nodesstore/NodeStoreWidget.cpp
 
+        variablescontroller/VariablesListWidget.cpp
+        variablescontroller/VariablesControllerWidget.cpp
+        variablescontroller/VariablesController.cpp
+
         variableconvertors/VectorConveroter/VectorConnectGraphicsItem.cpp
         variableconvertors/VectorConveroter/VectorConverterScene.cpp
         variableconvertors/VectorConveroter/VectorConverterStyle.cpp

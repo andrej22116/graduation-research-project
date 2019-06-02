@@ -15,14 +15,25 @@ public:
     using VariablesControllerPtr = std::shared_ptr<VariablesController>;
 
     explicit
-    VariablesControllerWidget( VariablesControllerPtr variableController
+    VariablesControllerWidget( VariablesControllerPtr variablesController
                              , QWidget *parent = nullptr );
 
 private:
-    VariablesListWidget* _variablesWidget;
+    void
+    bindDefaultVariablesConnectionsWithController();
+
+    void
+    bindUserVariablesConnectionsWithController();
+
+    void
+    bindVariablesEditConnectionsWithController();
+
+private:
+    VariablesListWidget* _defaultVariablesWidget;
+    VariablesListWidget* _userVariablesWidget;
     VariablesEditorWidget* _variablesEditorWidget;
 
-    VariablesControllerPtr _controller;
+    VariablesControllerPtr _variablesController;
 };
 
 #endif // VARIABLESCONTROLLERWIDGET_HPP
