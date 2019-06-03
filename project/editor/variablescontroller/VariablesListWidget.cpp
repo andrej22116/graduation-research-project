@@ -41,7 +41,16 @@ VariablesListWidget( const QString& name
     layout->addWidget(_listWidget, 2, 0, 1, 2);
 
     _listWidget->setSortingEnabled(true);
-    //_listWidget->setEditTriggers(QAbstractItemView::DoubleClicked);
+
+    connect( _listWidget
+           , &QListWidget::itemClicked
+           , this
+           , &VariablesListWidget::onSelectVariable );
+
+    connect( _listWidget
+           , &QListWidget::itemDoubleClicked
+           , this
+           , &VariablesListWidget::onDoubleClicked );
 }
 
 
@@ -78,8 +87,9 @@ void
 VariablesListWidget::
 renameVariable(const QString& oldName, const QString& newName)
 {
-    if ( _variables.find(oldName) != _variables.end() ) {
-        throw std::runtime_error("Variable not exists!");
+    if ( _variables.find(oldName) == _variables.end() ) {
+        throw std::runtime_error("[VariablesListWidget::renameVariable]:"
+                                 " Variable not exists!");
     }
 
     auto item = _variables[oldName];
@@ -115,6 +125,14 @@ onCreateVariable()
 
     insertVariable(variableName);
     emit variableCreated(variableName);
+}
+
+
+void
+VariablesListWidget::
+onSelectVariable(QListWidgetItem* item)
+{
+    emit variableSelected(item->text());
 }
 
 

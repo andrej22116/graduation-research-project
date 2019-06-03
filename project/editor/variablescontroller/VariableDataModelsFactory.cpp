@@ -1,99 +1,23 @@
 #include "VariableDataModelsFactory.hpp"
-#include <editor/ShaderNodeDataTypes.hpp>
+#include <ShaderNodeDataTypes.hpp>
 
 VariableDataModelsFactory::
 VariableDataModelsFactory()
 {
-    {
-        IntegerDataType type;
-        _supportedTypes += type.name;
-        _varFactories[type.name] = []() {
-            return std::make_shared<IntegerDataModel>();
-        };
-    }
-
-    {
-        UnsignedIntegerDataType type;
-        _supportedTypes += type.name;
-        _varFactories[type.name] = []() {
-            return std::make_shared<UnsignedIntegerDataModel>();
-        };
-    }
-
-    {
-        BooleanDataType type;
-        _supportedTypes += type.name;
-        _varFactories[type.name] = []() {
-            return std::make_shared<BooleanDataModel>();
-        };
-    }
-
-    {
-        FloatDataType type;
-        _supportedTypes += type.name;
-        _varFactories[type.name] = []() {
-            return std::make_shared<FloatDataModel>();
-        };
-    }
-
-    {
-        DoubleDataType type;
-        _supportedTypes += type.name;
-        _varFactories[type.name] = []() {
-            return std::make_shared<DoubleDataModel>();
-        };
-    }
-
-    {
-        Vec2DataType type;
-        _supportedTypes += type.name;
-        _varFactories[type.name] = []() {
-            return std::make_shared<Vec2DataModel>();
-        };
-    }
-
-    {
-        Vec3DataType type;
-        _supportedTypes += type.name;
-        _varFactories[type.name] = []() {
-            return std::make_shared<Vec3DataModel>();
-        };
-    }
-
-    {
-        Vec4DataType type;
-        _supportedTypes += type.name;
-        _varFactories[type.name] = []() {
-            return std::make_shared<Vec4DataModel>();
-        };
-    }
-
-    {
-        Matrix2DataType type;
-        _supportedTypes += type.name;
-        _varFactories[type.name] = []() {
-            return std::make_shared<Mat2x2DataModel>();
-        };
-    }
-
-    {
-        Matrix3DataType type;
-        _supportedTypes += type.name;
-        _varFactories[type.name] = []() {
-            return std::make_shared<Mat3x3DataModel>();
-        };
-    }
-
-    {
-        Matrix4DataType type;
-        _supportedTypes += type.name;
-        _varFactories[type.name] = []() {
-            return std::make_shared<Mat4x4DataModel>();
-        };
-    }
+    registerDataType<IntegerDataType, IntegerDataModel>();
+    registerDataType<UnsignedIntegerDataType, UnsignedIntegerDataModel>();
+    registerDataType<BooleanDataType, BooleanDataModel>();
+    registerDataType<FloatDataType, FloatDataModel>();
+    registerDataType<DoubleDataType, DoubleDataModel>();
+    registerDataType<Vec2DataType, Vec2DataModel>();
+    registerDataType<Vec3DataType, Vec3DataModel>();
+    registerDataType<Vec4DataType, Vec4DataModel>();
+    registerDataType<Matrix2DataType, Mat2x2DataModel>();
+    registerDataType<Matrix3DataType, Mat3x3DataModel>();
+    registerDataType<Matrix4DataType, Mat4x4DataModel>();
 }
 
-
+#include <QDebug>
 VariableDataModelsFactory::VariableDataModelPtr
 VariableDataModelsFactory::
 build(const QString& name)

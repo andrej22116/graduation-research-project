@@ -9,12 +9,15 @@
 #include <nodesmodels/DefaultDataModelRegistry.hpp>
 #include <EditorGraphicsScene.hpp>
 
+#include "variablescontroller/VariablesController.hpp"
+
 EditorController::
 EditorController(QObject *parent)
     : QObject(parent)
     , _dataModelRegistry(new DefaultDataModelRegistry)
-    , _flowScene(new EditorGraphicsScene(_dataModelRegistry, this))
-    , _flowView(new QtNodes::FlowView(_flowScene.get()))
+    , _scene(new EditorGraphicsScene(_dataModelRegistry, this))
+    , _view(new QtNodes::FlowView(_scene.get()))
+    , _variableController(new VariablesController(_view, _scene))
 {
     QtNodes::ConnectionStyle::setConnectionStyle(
     R"(
@@ -27,7 +30,7 @@ EditorController(QObject *parent)
 
     _nodeStoreWidget = std::make_shared<NodeStoreWidget>(_dataModelRegistry);
     _variablesControllerWidget =
-            std::make_shared<VariablesControllerWidget>(nullptr);
+            std::make_shared<VariablesControllerWidget>(_variableController);
 }
 
 
@@ -35,7 +38,7 @@ QWidget*
 EditorController::
 editor()
 {
-    return _flowView.get();
+    return _view.get();
 }
 
 QWidget*

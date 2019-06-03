@@ -7,6 +7,8 @@ set( CPP_SOURCES
 	FunctionalNodes.cpp
         VariableNodes.cpp
 
+        nodes/VariableNode.cpp
+
         nodesmodels/DefaultDataModelRegistry.cpp
 
 	nodesstore/NodeWidget.cpp
@@ -16,6 +18,11 @@ set( CPP_SOURCES
         variablescontroller/VariablesListWidget.cpp
         variablescontroller/VariablesControllerWidget.cpp
         variablescontroller/VariablesController.cpp
+        variablescontroller/VariableDataModelsFactory.cpp
+        variablescontroller/VariablesEditorWidget.cpp
+        variablescontroller/VariableValueEditorsFactory.cpp
+        variablescontroller/VariableValueEditors.cpp
+        variablescontroller/NodeDataTypeFactory.cpp
 
         variableconvertors/VectorConveroter/VectorConnectGraphicsItem.cpp
         variableconvertors/VectorConveroter/VectorConverterScene.cpp

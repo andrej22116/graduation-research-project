@@ -9,8 +9,8 @@
 #include <QtCore/QRectF>
 #include <QtCore/QPointF>
 
-#include <QtOpenGL>
 #include <QtWidgets>
+#include <QGLWidget>
 
 #include <QDebug>
 #include <iostream>
@@ -49,7 +49,8 @@ FlowView(QWidget *parent)
 
   setCacheMode(QGraphicsView::CacheBackground);
 
-  //setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));
+  setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));
+  //setViewport(new QOpenGLWidget);
 }
 
 
@@ -233,11 +234,14 @@ scaleUp()
   double const factor = std::pow(step, 1.0);
 
   QTransform t = transform();
+  t.scale(factor, factor);
 
-  if (t.m11() > 2.0)
+  if (t.m11() > 1.0) {
+    resetMatrix();
     return;
+  }
 
-  scale(factor, factor);
+  setTransform(t);
 }
 
 

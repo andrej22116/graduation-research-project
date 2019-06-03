@@ -15,6 +15,7 @@ public:
                        , bool needControls
                        , QWidget* parent = nullptr );
 
+public slots:
     void
     insertVariable(const QString& name);
 
@@ -33,6 +34,9 @@ signals:
     variableCreated(const QString& name);
 
     void
+    variableSelected(const QString& name);
+
+    void
     variableDoubleClicked(const QString& name);
 
 private slots:
@@ -41,6 +45,9 @@ private slots:
 
     void
     onCreateVariable();
+
+    void
+    onSelectVariable(QListWidgetItem* item);
 
     void
     onDoubleClicked(QListWidgetItem* item);

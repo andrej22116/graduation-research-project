@@ -73,6 +73,8 @@ NodeStoreWidget::NodeStoreWidget(std::shared_ptr<DataModelRegistry> dataModelReg
     connect(this, &NodeStoreWidget::clicked, this, [this](const QModelIndex &index){
         this->isExpanded(index)? this->collapse(index) : this->expand(index);
     });
+
+    setMinimumWidth(150);
 }
 
 

@@ -31,6 +31,15 @@ private:
     static VariableDataModelsFactory&
     instance();
 
+    template<typename DataType, typename DataModel>
+    void registerDataType() {
+        DataType type;
+        _supportedTypes += type.name;
+        _varFactories[type.name] = []() {
+            return std::make_shared<DataModel>();
+        };
+    }
+
 private:
     QHash<QString, std::function<VariableDataModelPtr()>> _varFactories;
     QSet<QString> _supportedTypes;

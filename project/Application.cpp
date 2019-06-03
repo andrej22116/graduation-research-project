@@ -24,6 +24,7 @@ Application( QApplication& application
 {
     setStyleSheet("QWidget{background-color: rgb(60, 60, 65); color: white;}");
 
+
     _variablesWidget->close();
     _visualizerWidget->close();
 
@@ -70,11 +71,13 @@ void
 Application::
 startProject(const QString& projectPath)
 {
+    //this->show();
     this->showMaximized();
     _welcomWindowDialog->hide();
 
     onCreateEditorDockWidget();
     onCreateEditorNodesStoreDockWidget();
+    onCreateEditorVariablesDockWidget();
 }
 
 
@@ -82,6 +85,7 @@ void
 Application::
 startWelcomeWindow()
 {
+    this->showMaximized();
     this->hide();
     _welcomWindowDialog->show();
 }
@@ -128,7 +132,7 @@ Application::
 onCreateEditorVariablesDockWidget()
 {
     _variablesWidget->show();
-    addDockWidget( Qt::DockWidgetArea::RightDockWidgetArea
+    addDockWidget( Qt::DockWidgetArea::LeftDockWidgetArea
                  , _variablesWidget
                  , Qt::Orientation::Vertical );
 }
