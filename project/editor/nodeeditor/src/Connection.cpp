@@ -378,13 +378,13 @@ dataType(PortType portType) const
     auto const & model = (portType == PortType::In) ?
                         _inNode->nodeDataModel() :
                         _outNode->nodeDataModel();
-    PortIndex index = (portType == PortType::In) ? 
+    PortIndex index = (portType == PortType::In) ?
                       _inPortIndex :
                       _outPortIndex;
 
     return model->dataType(portType, index);
   }
-  else 
+  else
   {
     Node* validNode;
     PortIndex index = INVALID;

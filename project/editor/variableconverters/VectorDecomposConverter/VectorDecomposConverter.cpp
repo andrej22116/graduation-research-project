@@ -55,10 +55,10 @@ portCaption( QtNodes::PortType
            , QtNodes::PortIndex portIndex ) const
 {
     switch( portIndex ) {
-        case 1: return "Red";
-        case 2: return "Green";
-        case 3: return "Blue";
-        case 4: return "Alpha";
+        case 0: return "Red";
+        case 1: return "Green";
+        case 2: return "Blue";
+        case 3: return "Alpha";
     }
 }
 

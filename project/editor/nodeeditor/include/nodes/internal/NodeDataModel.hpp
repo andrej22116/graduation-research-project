@@ -74,8 +74,8 @@ public:
 
   /// For input ports
   virtual
-  bool acceptDataType( PortIndex portIndex
-                     , const NodeDataType& nodeDataType ) const {
+  bool acceptDataType( PortIndex /*portIndex*/
+                     , const NodeDataType& /*nodeDataType*/ ) const {
       return true;
   }
 
@@ -105,12 +105,12 @@ public:
   /// Triggers the algorithm
   virtual
   void
-  setInData(std::shared_ptr<NodeData> nodeData,
-            PortIndex port) = 0;
+  setInData(std::shared_ptr<NodeData> /*nodeData*/,
+            PortIndex /*port*/) {}
 
   virtual
   std::shared_ptr<NodeData>
-  outData(PortIndex port) = 0;
+  outData(PortIndex /*port*/) { return nullptr; }
 
   virtual
   QWidget *

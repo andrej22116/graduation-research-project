@@ -36,6 +36,14 @@ public:
     QWidget*
     embeddedWidget() override;
 
+    QString
+    portCaption( QtNodes::PortType
+               , QtNodes::PortIndex ) const override;
+
+    bool
+    portCaptionVisible( QtNodes::PortType
+                      , QtNodes::PortIndex ) const override;
+
 public:
     void
     setName(const QString& name);

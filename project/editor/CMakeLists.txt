@@ -3,11 +3,11 @@ project( ShaderLogickNodeEditor )
 
 set( CPP_SOURCES
         EditorController.cpp
+        EditorGraphicsScene.cpp
 
-	FunctionalNodes.cpp
-        VariableNodes.cpp
-
+        nodes/FunctionalNodes.cpp
         nodes/VariableNode.cpp
+        nodes/DataTypeInteractionRules.cpp
 
         nodesmodels/DefaultDataModelRegistry.cpp
 
@@ -24,18 +24,15 @@ set( CPP_SOURCES
         variablescontroller/VariableValueEditors.cpp
         variablescontroller/NodeDataTypeFactory.cpp
 
-        variableconvertors/VectorConveroter/VectorConnectGraphicsItem.cpp
-        variableconvertors/VectorConveroter/VectorConverterScene.cpp
-        variableconvertors/VectorConveroter/VectorConverterStyle.cpp
-        variableconvertors/VectorConveroter/VectorConverterWidget.cpp
-        variableconvertors/VectorConveroter/VectorPointGraphicsItem.cpp
-        variableconvertors/VectorConveroter/VectorConverterDataModel.cpp
+        variableconverters/VectorConverter/VectorConnectGraphicsItem.cpp
+        variableconverters/VectorConverter/VectorConverterScene.cpp
+        variableconverters/VectorConverter/VectorConverterStyle.cpp
+        variableconverters/VectorConverter/VectorConverterWidget.cpp
+        variableconverters/VectorConverter/VectorPointGraphicsItem.cpp
+        variableconverters/VectorConverter/VectorConverterDataModel.cpp
 
-        variableconvertors/VectorDecomposConverter/VectorDecomposConverter.cpp
-
-	EditorGraphicsScene.cpp
-        VariableWidgets.cpp
-        VariableValueControlsFactory.cpp
+        variableconverters/VectorDecomposConverter/VectorDecomposConverter.cpp
+        variableconverters/BaseTypesConverters/BaseTypesConverters.cpp
 )
 
 set(CMAKE_AUTOMOC ON)

@@ -165,6 +165,12 @@ onChangeVariableDataModel( const QString& variableName
 
     _variables[variableName] = newDataModel;
     _variablesTypes[variableName] = dataModelName;
+
+    auto dataType = NodeDataTypeFactory::build(dataModelName);
+
+    for ( auto id : _variablesNodesIds[variableName]) {
+        static_cast<VariableNode*>(_nodesDataModels[id])->setDataType(dataType);
+    }
 }
 
 

@@ -154,9 +154,15 @@ Application::
 onCreateVisualizerDockWidget()
 {
     _visualizerWidget->show();
-    addDockWidget( Qt::DockWidgetArea::RightDockWidgetArea
+    addDockWidget( Qt::RightDockWidgetArea
                  , _visualizerWidget
                  , Qt::Orientation::Vertical );
+
+    if ( _editorWidget->isVisible() ) {
+        splitDockWidget( _visualizerWidget
+                       , _editorWidget
+                       , Qt::Orientation::Vertical );
+    }
 }
 
 

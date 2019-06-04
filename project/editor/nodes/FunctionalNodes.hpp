@@ -59,10 +59,11 @@ public:
                          , PortIndex portIndex ) const;
 
     virtual void
-    functionalConnectionCreated(const Connection&){}
+    functionalConnectionCreated( PortIndex /*portIndex*/
+                               , const NodeDataType& /*dataType*/ ){}
 
     virtual void
-    functionalConnectionDeleted(const Connection&){}
+    functionalConnectionDeleted( PortIndex /*portIndex*/ ){}
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -105,7 +106,22 @@ public:
     functionalPortCaption( PortType portType
                          , PortIndex portIndex ) const override;
 
-    NODE_NO_DATA
+    void
+    functionalConnectionCreated( PortIndex portIndex
+                               , const NodeDataType& dataType ) override;
+
+    void
+    functionalConnectionDeleted(PortIndex portIndex) override;
+
+    bool
+    acceptDataType( PortIndex portIndex
+                  , const NodeDataType& nodeDataType ) const override;
+
+private:
+    NodeDataType _firstPortDataType = NO_DATA_TYPE;
+    NodeDataType _secondPortDataType = NO_DATA_TYPE;
+    bool _firstPortUsed = false;
+    bool _secondPortUsed = false;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -140,7 +156,22 @@ public:
     functionalPortCaption( PortType portType
                          , PortIndex portIndex ) const override;
 
-    NODE_NO_DATA
+    void
+    functionalConnectionCreated( PortIndex portIndex
+                               , const NodeDataType& dataType ) override;
+
+    void
+    functionalConnectionDeleted(PortIndex portIndex) override;
+
+    bool
+    acceptDataType( PortIndex portIndex
+                  , const NodeDataType& nodeDataType ) const override;
+
+private:
+    NodeDataType _firstPortDataType = NO_DATA_TYPE;
+    NodeDataType _secondPortDataType = NO_DATA_TYPE;
+    bool _firstPortUsed = false;
+    bool _secondPortUsed = false;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -177,8 +208,6 @@ public:
 
     ConnectionPolicy
     portOutConnectionPolicy(QtNodes::PortIndex) const;
-
-    NODE_NO_DATA
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -199,7 +228,19 @@ public:
     functionalDataType( PortType portType
                       , PortIndex portIndex ) const override;
 
-    NODE_NO_DATA
+    void
+    functionalConnectionCreated( PortIndex portIndex
+                               , const NodeDataType& dataType ) override;
+
+    void
+    functionalConnectionDeleted(PortIndex portIndex) override;
+
+    bool
+    acceptDataType( PortIndex portIndex
+                  , const NodeDataType& nodeDataType ) const override;
+
+private:
+    NodeDataType _dataType = NO_DATA_TYPE;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -246,10 +287,11 @@ public:
                       , PortIndex portIndex ) const override;
 
     void
-    functionalConnectionCreated(const Connection& connection) override;
+    functionalConnectionCreated( PortIndex portIndex
+                               , const NodeDataType& dataType ) override;
 
     void
-    functionalConnectionDeleted(const Connection& connection) override;
+    functionalConnectionDeleted(PortIndex portIndex) override;
 
     bool
     acceptDataType( PortIndex portIndex

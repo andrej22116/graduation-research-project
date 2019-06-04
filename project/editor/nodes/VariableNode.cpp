@@ -1,12 +1,13 @@
 #include "VariableNode.hpp"
 #include <QPushButton>
 #include <QBoxLayout>
+#include "ShaderNodeDataTypes.hpp"
 
 VariableNode::VariableNode( const QString& name
                           , const QtNodes::NodeDataType& dataType)
     : _nodeTypeSelected(false)
-    , _name(name)
     , _dataType(dataType)
+    , _name(name)
 {
     _selectorNodeTypeWidget = new QWidget();
     auto layout = new QBoxLayout( QBoxLayout::TopToBottom
@@ -62,16 +63,34 @@ unsigned int
 VariableNode::
 nPorts(QtNodes::PortType portType) const
 {
-    return _nodeTypeSelected && portType == _nodeType ? 1 : 0;
+    if ( !_nodeTypeSelected ) {
+        return 0;
+    }
+
+    if ( _nodeType == QtNodes::PortType::In ) {
+        return portType == QtNodes::PortType::In ? 1 : 2;
+    }
+    else {
+        return portType == QtNodes::PortType::In ? 1 : 0;
+    }
 }
 
 
 QtNodes::NodeDataType
 VariableNode::
 dataType( QtNodes::PortType
-        , QtNodes::PortIndex ) const
+        , QtNodes::PortIndex portIndex ) const
 {
-    return _dataType;
+    if ( _nodeType == QtNodes::PortType::In ) {
+        switch ( portIndex ) {
+        case 0: return ActionDataType{};
+        case 1: return _dataType;
+        default: return NO_DATA_TYPE;
+        }
+    }
+    else {
+        return _dataType;
+    }
 }
 
 
@@ -98,4 +117,22 @@ setDataType(const QtNodes::NodeDataType& dataType)
 {
     _dataType = dataType;
     emit dataModelUpdated();
+}
+
+
+QString
+VariableNode::
+portCaption( QtNodes::PortType portType
+           , QtNodes::PortIndex ) const
+{
+    return portType == QtNodes::PortType::In ? "Do" : "Next";
+}
+
+
+bool
+VariableNode::
+portCaptionVisible( QtNodes::PortType
+                  , QtNodes::PortIndex portIndex ) const
+{
+    return _nodeType == QtNodes::PortType::In && portIndex == 0;
 }

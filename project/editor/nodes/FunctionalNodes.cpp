@@ -3,6 +3,7 @@
 #include "GlobalConstants.hpp"
 
 #include <nodes/Connection>
+#include "DataTypeInteractionRules.hpp"
 
 #include <QDebug>
 
@@ -49,10 +50,22 @@ functionalNPorts(QtNodes::PortType portType) const
 
 QtNodes::NodeDataType
 AdderFunctionalNode::
-functionalDataType( QtNodes::PortType
-                  , QtNodes::PortIndex ) const
+functionalDataType( QtNodes::PortType portType
+                  , QtNodes::PortIndex portIndex ) const
 {
-    return FloatDataType{};
+    if ( portType == QtNodes::PortType::Out ) {
+        return DataTypeInteractionRules::summaryType( _firstPortDataType
+                                                             , _secondPortDataType );
+    }
+
+    if ( portIndex == 1 ) {
+        return _firstPortDataType;
+    }
+    else if ( portIndex == 2 ) {
+        return _secondPortDataType;
+    }
+
+    return NO_DATA_TYPE;
 }
 
 
@@ -71,6 +84,69 @@ functionalPortCaption( QtNodes::PortType
                      , QtNodes::PortIndex ) const
 {
     return "Sum";
+}
+
+
+void
+AdderFunctionalNode::
+functionalConnectionCreated( QtNodes::PortIndex portIndex
+                           , const QtNodes::NodeDataType& dataType )
+{
+
+    if ( portIndex == 1 ) {
+        _firstPortUsed = true;
+        _firstPortDataType = dataType;
+        emit dataModelUpdated();
+    }
+    else if ( portIndex == 2 ) {
+        _secondPortUsed = true;
+        _secondPortDataType = dataType;
+        emit dataModelUpdated();
+    }
+    else {
+        return;
+    }
+}
+
+
+void
+AdderFunctionalNode::
+functionalConnectionDeleted(QtNodes::PortIndex portIndex)
+{
+    if ( portIndex == 1 ) {
+        _firstPortUsed = false;
+        _firstPortDataType = NO_DATA_TYPE;
+        emit dataModelUpdated();
+    }
+    else if ( portIndex == 2 ) {
+        _secondPortUsed = false;
+        _secondPortDataType = NO_DATA_TYPE;
+        emit dataModelUpdated();
+    }
+    else {
+        return;
+    }
+}
+
+
+bool
+AdderFunctionalNode::
+acceptDataType( QtNodes::PortIndex
+              , const QtNodes::NodeDataType& nodeDataType ) const
+{
+    if ( !_firstPortUsed && !_secondPortUsed ) {
+        return DataTypeInteractionRules::canBeAdded(nodeDataType);
+    }
+    else if ( _firstPortUsed ) {
+        return DataTypeInteractionRules::canBeAdded( _firstPortDataType
+                                                   , nodeDataType );
+    }
+    else if ( _secondPortUsed ) {
+        return DataTypeInteractionRules::canBeAdded( _secondPortDataType
+                                                   , nodeDataType );
+    }
+
+    return true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -116,10 +192,22 @@ functionalNPorts(QtNodes::PortType portType) const
 
 QtNodes::NodeDataType
 SubtractorFunctionalNode::
-functionalDataType( QtNodes::PortType
-                  , QtNodes::PortIndex ) const
+functionalDataType( QtNodes::PortType portType
+                  , QtNodes::PortIndex portIndex ) const
 {
-    return FloatDataType{};
+    if ( portType == QtNodes::PortType::Out ) {
+        return DataTypeInteractionRules::summaryType( _firstPortDataType
+                                                             , _secondPortDataType );
+    }
+
+    if ( portIndex == 1 ) {
+        return _firstPortDataType;
+    }
+    else if ( portIndex == 2 ) {
+        return _secondPortDataType;
+    }
+
+    return NO_DATA_TYPE;
 }
 
 
@@ -139,6 +227,69 @@ functionalPortCaption( QtNodes::PortType portType
 {
     if ( portType == QtNodes::PortType::Out ) { return "Difference"; }
     return portIndex == 0 ? "Minuend" : "Subtrahend";
+}
+
+
+void
+SubtractorFunctionalNode::
+functionalConnectionCreated( QtNodes::PortIndex portIndex
+                           , const QtNodes::NodeDataType& dataType )
+{
+
+    if ( portIndex == 1 ) {
+        _firstPortUsed = true;
+        _firstPortDataType = dataType;
+        emit dataModelUpdated();
+    }
+    else if ( portIndex == 2 ) {
+        _secondPortUsed = true;
+        _secondPortDataType = dataType;
+        emit dataModelUpdated();
+    }
+    else {
+        return;
+    }
+}
+
+
+void
+SubtractorFunctionalNode::
+functionalConnectionDeleted(QtNodes::PortIndex portIndex)
+{
+    if ( portIndex == 1 ) {
+        _firstPortUsed = false;
+        _firstPortDataType = NO_DATA_TYPE;
+        emit dataModelUpdated();
+    }
+    else if ( portIndex == 2 ) {
+        _secondPortUsed = false;
+        _secondPortDataType = NO_DATA_TYPE;
+        emit dataModelUpdated();
+    }
+    else {
+        return;
+    }
+}
+
+
+bool
+SubtractorFunctionalNode::
+acceptDataType( QtNodes::PortIndex
+              , const QtNodes::NodeDataType& nodeDataType ) const
+{
+    if ( !_firstPortUsed && !_secondPortUsed ) {
+        return DataTypeInteractionRules::canBeSubtracted(nodeDataType);
+    }
+    else if ( _firstPortUsed ) {
+        return DataTypeInteractionRules::canBeSubtracted( _firstPortDataType
+                                                        , nodeDataType );
+    }
+    else if ( _secondPortUsed ) {
+        return DataTypeInteractionRules::canBeSubtracted( _secondPortDataType
+                                                        , nodeDataType );
+    }
+
+    return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -305,22 +456,23 @@ DegreesFunctionalNode::
 functionalDataType( QtNodes::PortType
                   , QtNodes::PortIndex ) const
 {
-    return /*FloatDataType*/_dataType;
+    return _dataType;
 }
 
 
 void
 DegreesFunctionalNode::
-functionalConnectionCreated(const QtNodes::Connection& connection)
+functionalConnectionCreated( QtNodes::PortIndex
+                           , const QtNodes::NodeDataType& dataType )
 {
-    _dataType = connection.dataType(PortType::Out);
+    _dataType = dataType;
     emit dataModelUpdated();
 }
 
 
 void
 DegreesFunctionalNode::
-functionalConnectionDeleted(const QtNodes::Connection&)
+functionalConnectionDeleted(QtNodes::PortIndex)
 {
     _dataType = {};
     emit dataModelUpdated();
@@ -351,7 +503,35 @@ TrigonometryFunctionalNode::
 functionalDataType( QtNodes::PortType
                   , QtNodes::PortIndex ) const
 {
-    return FloatDataType{};
+    return _dataType;
+}
+
+
+void
+TrigonometryFunctionalNode::
+functionalConnectionCreated( QtNodes::PortIndex
+                           , const QtNodes::NodeDataType& dataType )
+{
+    _dataType = dataType;
+    emit dataModelUpdated();
+}
+
+
+void
+TrigonometryFunctionalNode::
+functionalConnectionDeleted(QtNodes::PortIndex)
+{
+    _dataType = NO_DATA_TYPE;
+    emit dataModelUpdated();
+}
+
+
+bool
+TrigonometryFunctionalNode::
+acceptDataType( QtNodes::PortIndex
+              , const QtNodes::NodeDataType&) const
+{
+    return true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -862,7 +1042,8 @@ inputConnectionCreated(const QtNodes::Connection& connection)
         return;
     }
 
-    functionalConnectionCreated(connection);
+    functionalConnectionCreated( connection.getPortIndex(PortType::In)
+                               , connection.dataType(PortType::Out) );
 }
 
 
@@ -874,7 +1055,7 @@ inputConnectionDeleted(const QtNodes::Connection& connection)
         return;
     }
 
-    functionalConnectionCreated(connection);
+    functionalConnectionDeleted(connection.getPortIndex(PortType::In));
 }
 
 

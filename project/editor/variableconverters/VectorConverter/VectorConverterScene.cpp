@@ -27,7 +27,7 @@ VectorConverterScene( uchar pointsCount
             point->setPos(pointPos);
             addItem(point);
 
-            pointPos += {0, 40};
+            pointPos += {0, 24};
 
             if ( type == PointType::Input ) {
                 connect( point
