@@ -10,6 +10,9 @@ VariableValueEditorsFactory()
     registerDataType<FloatDataType, FloatValueEditor>();
     registerDataType<DoubleDataType, DoubleValueEditor>();
     registerDataType<BooleanDataType, BooleanValueEditor>();
+    registerDataType<Vec2DataType, Vector2ValueEditor>();
+    registerDataType<Vec3DataType, Vector3ValueEditor>();
+    registerDataType<Vec4DataType, Vector4ValueEditor>();
 }
 
 VariableValueEditor*

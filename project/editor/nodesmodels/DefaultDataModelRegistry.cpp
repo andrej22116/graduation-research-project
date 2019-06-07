@@ -4,6 +4,7 @@
 #include <variableconverters/VectorConverter/VectorConverterDataModel.hpp>
 #include <variableconverters/VectorDecomposConverter/VectorDecomposConverter.hpp>
 #include <variableconverters/BaseTypesConverters/BaseTypesConverters.hpp>
+#include <nodes/LogickalNodes.hpp>
 
 DefaultDataModelRegistry::DefaultDataModelRegistry()
 {
@@ -79,5 +80,39 @@ DefaultDataModelRegistry::DefaultDataModelRegistry()
     registerModel<PrimitiveNodeTypeConverter> (
                 PrimitiveNodeTypeConverter::toBooleanFactory(),
                 "Primitive convertors"
+    );
+
+///////////////////////////////////////////////////////////////////////////////
+    registerModel<LogickalEqualsNode> (
+                LogickalEqualsNode::equalityFactory(),
+                "Boolean logick"
+    );
+    registerModel<LogickalEqualsNode> (
+                LogickalEqualsNode::notEqualityFactory(),
+                "Boolean logick"
+    );
+    registerModel<LogickalCompareNode> (
+                LogickalCompareNode::lessFactory(),
+                "Boolean logick"
+    );
+    registerModel<LogickalCompareNode> (
+                LogickalCompareNode::lessOrEqualFactory(),
+                "Boolean logick"
+    );
+    registerModel<LogickalEqualsNode> (
+                LogickalCompareNode::greaterFactory(),
+                "Boolean logick"
+    );
+    registerModel<LogickalEqualsNode> (
+                LogickalCompareNode::greaterOrEqualFactory(),
+                "Boolean logick"
+    );
+    registerModel<LogickalBooleanNode> (
+                LogickalBooleanNode::logicalOrFactory(),
+                "Boolean logick"
+    );
+    registerModel<LogickalBooleanNode> (
+                LogickalBooleanNode::logicalAndFactory(),
+                "Boolean logick"
     );
 }

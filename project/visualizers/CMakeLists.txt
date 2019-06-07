@@ -7,6 +7,7 @@ set( CPP_SOURCES
         OpenGLScene.cpp
         TargetObject.cpp
         TargetSceneWrapperWidget.cpp
+        VisualizerController.cpp
 )
 
 set( QT_SRC

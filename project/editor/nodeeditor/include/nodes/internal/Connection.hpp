@@ -121,6 +121,9 @@ public:
   bool
   complete() const;
 
+  bool
+  testConnection();
+
 public: // data propagation
 
   void
@@ -136,6 +139,9 @@ Q_SIGNALS:
 
   void
   connectionMadeIncomplete(Connection const&) const;
+
+  void
+  connectionInvalid(Connection&) const;
 
 private:
 

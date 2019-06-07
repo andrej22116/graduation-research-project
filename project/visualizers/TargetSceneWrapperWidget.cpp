@@ -12,7 +12,8 @@
 #include <QMenu>
 #include <QAction>
 
-TargetSceneWrapperWidget::TargetSceneWrapperWidget(QWidget* parent) :
+TargetSceneWrapperWidget::
+TargetSceneWrapperWidget(QWidget* parent) :
     QDockWidget(parent),
     centralWidget(nullptr)
 {
@@ -20,8 +21,10 @@ TargetSceneWrapperWidget::TargetSceneWrapperWidget(QWidget* parent) :
     createCentralWidget();
 }
 
-TargetSceneWrapperWidget::TargetSceneWrapperWidget( std::shared_ptr<ITargetSceneRenderer> targetSceneRenderer
-                                                  , QWidget* parent ) :
+
+TargetSceneWrapperWidget::
+TargetSceneWrapperWidget( std::shared_ptr<ITargetSceneRenderer> targetSceneRenderer
+                        , QWidget* parent ) :
     QDockWidget(parent),
     centralWidget(nullptr)
 {
@@ -30,7 +33,10 @@ TargetSceneWrapperWidget::TargetSceneWrapperWidget( std::shared_ptr<ITargetScene
     setTargetSceneRenderer(targetSceneRenderer);
 }
 
-void TargetSceneWrapperWidget::setTargetSceneRenderer(std::shared_ptr<ITargetSceneRenderer> targetSceneRenderer)
+
+void
+TargetSceneWrapperWidget::
+setTargetSceneRenderer(std::shared_ptr<ITargetSceneRenderer> targetSceneRenderer)
 {
     _targetSceneRenderer = targetSceneRenderer;
 
@@ -43,12 +49,18 @@ void TargetSceneWrapperWidget::setTargetSceneRenderer(std::shared_ptr<ITargetSce
     //this->setWidget(_targetSceneRenderer->widget());
 }
 
-std::shared_ptr<ITargetSceneRenderer> TargetSceneWrapperWidget::targetSceneRenderer()
+
+std::shared_ptr<ITargetSceneRenderer>
+TargetSceneWrapperWidget::
+targetSceneRenderer()
 {
     return _targetSceneRenderer;
 }
 
-void TargetSceneWrapperWidget::setTargetObject(const QString& pathToObject)
+
+void
+TargetSceneWrapperWidget::
+setTargetObject(const QString& pathToObject)
 {
     if ( !QFile::exists(pathToObject) ) {
         throw std::runtime_error("File " + pathToObject.toStdString() + " not exists!");
@@ -64,7 +76,10 @@ void TargetSceneWrapperWidget::setTargetObject(const QString& pathToObject)
     _targetSceneRenderer->setTargetObject(targetObject);
 }
 
-void TargetSceneWrapperWidget::setTargetObject()
+
+void
+TargetSceneWrapperWidget::
+setTargetObject()
 {
     QFileDialog dialog(this);
     dialog.setWindowTitle("Open model");
@@ -82,7 +97,10 @@ void TargetSceneWrapperWidget::setTargetObject()
     }
 }
 
-void TargetSceneWrapperWidget::createCentralWidget()
+
+void
+TargetSceneWrapperWidget::
+createCentralWidget()
 {
     if ( centralWidget ) return;
 

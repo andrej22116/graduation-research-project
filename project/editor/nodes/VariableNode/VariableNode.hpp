@@ -11,6 +11,12 @@ public:
     VariableNode( const QString& name
                 , const QtNodes::NodeDataType& dataType );
 
+    VariableNode( const QString& name
+                , const QtNodes::NodeDataType& dataType
+                , const QtNodes::PortType type);
+
+    ~VariableNode() override;
+
     // NodeDataModel interface
 public:
     QString
@@ -65,6 +71,7 @@ private:
     QtNodes::PortType _nodeType;
     QWidget* _selectorNodeTypeWidget;    
 
+    QtNodes::NodePainterDelegate* _painterDelegate;
 };
 
 #endif // VARIABLENODE_HPP

@@ -9,7 +9,7 @@
 namespace QtNodes {
 
 /// Class to allow for custom painting
-class NODE_EDITOR_PUBLIC NodePainterDelegate
+class /*NODE_EDITOR_PUBLIC*/ NodePainterDelegate
 {
 
 public:

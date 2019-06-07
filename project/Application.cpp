@@ -7,6 +7,7 @@
 #include <QMenu>
 
 #include <editor/EditorController.hpp>
+#include <visualizers/VisualizerController.hpp>
 
 Application::
 Application( QApplication& application
@@ -15,7 +16,7 @@ Application( QApplication& application
     , _application(application)
     , _welcomWindowDialog(new WelcomeWindowDialog())
     , _editorController(new EditorController(this))
-    , _visualizerController(nullptr)
+    , _visualizerController(new VisualizerController(this))
     , _compillerController(nullptr)
     , _editorWidget(new QDockWidget("Shader node editor", this))
     , _variablesWidget(new QDockWidget("Variables", this))
@@ -52,8 +53,10 @@ Application( QApplication& application
     _editorWidget->setWidget(_editorController->editor());
     _variablesWidget->setWidget(_editorController->variables());
     _nodesWidget->setWidget(_editorController->nodesStore());
+    _visualizerWidget->setWidget(_visualizerController->widget());
 
     _nodesWidget->widget()->resize(_nodesWidget->widget()->sizeHint());
+    _nodesWidget->resize(_nodesWidget->widget()->sizeHint());
 
     createMenu();
 
@@ -76,8 +79,9 @@ startProject(const QString& projectPath)
     _welcomWindowDialog->hide();
 
     onCreateEditorDockWidget();
-    onCreateEditorNodesStoreDockWidget();
+    onCreateVisualizerDockWidget();
     onCreateEditorVariablesDockWidget();
+    onCreateEditorNodesStoreDockWidget();
 }
 
 
@@ -120,6 +124,7 @@ void
 Application::
 onCreateEditorDockWidget()
 {
+    _editorWidget->setFloating(false);
     _editorWidget->show();
     addDockWidget( Qt::DockWidgetArea::RightDockWidgetArea
                  , _editorWidget
@@ -131,10 +136,17 @@ void
 Application::
 onCreateEditorVariablesDockWidget()
 {
+    _variablesWidget->setFloating(false);
     _variablesWidget->show();
     addDockWidget( Qt::DockWidgetArea::LeftDockWidgetArea
                  , _variablesWidget
                  , Qt::Orientation::Vertical );
+
+    if ( _visualizerWidget->isVisible() ) {
+        splitDockWidget( _visualizerWidget
+                       , _variablesWidget
+                       , Qt::Orientation::Horizontal );
+    }
 }
 
 
@@ -142,6 +154,7 @@ void
 Application::
 onCreateEditorNodesStoreDockWidget()
 {
+    _nodesWidget->setFloating(false);
     _nodesWidget->show();
     addDockWidget( Qt::DockWidgetArea::LeftDockWidgetArea
                  , _nodesWidget
@@ -153,6 +166,7 @@ void
 Application::
 onCreateVisualizerDockWidget()
 {
+    _visualizerWidget->setFloating(false);
     _visualizerWidget->show();
     addDockWidget( Qt::RightDockWidgetArea
                  , _visualizerWidget

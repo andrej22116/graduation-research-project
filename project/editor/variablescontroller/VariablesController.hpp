@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <QHash>
+#include <QSet>
 
 #include <QObject>
 #include "nodes/internal/Serializable.hpp"
@@ -37,9 +38,6 @@ public:
     const QStringList&
     supportedVariablesTypes();
 
-    QWidget*
-    getVariableEditor(const QString& name);
-
     // Serializable interface
 public:
     QJsonObject
@@ -53,49 +51,116 @@ signals:
     variableControllerError(const QString& why);
 
     void
-    variableChangeName( const QString& oldName
-                      , const QString& newName );
-
-    void
     variableSelected( std::shared_ptr<VariableDataModel> variableDataModel
                     , const QString& dataTypeName );
+
+    void
+    createdNewUserVariable(const QString& name);
+
+    void
+    createdNewDefaultVariable(const QString& name);
+
+    void
+    renamedUserVariable( const QString& oldName
+                       , const QString& newName );
+
+    void
+    renamedDefaultVariable( const QString& oldName
+                          , const QString& newName );
+
+    void
+    removedUserVariable(const QString& name);
+
+    void
+    removedDefaultVariable(const QString& name);
+
+    void
+    variableValueChanged(const QString& name);
 
 public slots:
     void
     onSelectVariable(const QString& name);
 
     void
-    onCreateVariable(const QString& name);
-
-    void
-    onRenameVariable( const QString& oldName
-                    , const QString& newName );
-
-    void
-    onRemoveVariable(const QString& name);
-
-    void
     onChangeVariableDataModel( const QString& variableName
                              , const QString& dataModelName );
 
     void
-    onAddDefaultVariableToScene( const QString& name
-                               , const QString& typeName
-                               , std::shared_ptr<VariableDataModel> data);
-
-    void
-    onAddVariableToScene(const QString& name);
+    addVariableToScene(const QString& name);
 
     void
     onRemoveVariableNodeFromScene(QtNodes::Node& node);
 
+    bool
+    createUserVariable(const QString& name);
+
+    void
+    createUserVariableWithSignal(const QString& name);
+
+    bool
+    renameUserVariable( const QString& oldName
+                      , const QString& newName );
+
+    void
+    renameUserVariableWithSignal( const QString& oldName
+                                , const QString& newName );
+
+    bool
+    removeUserVariable(const QString& name);
+
+    void
+    removeUserVariableWithSignal(const QString& name);
+
 private:
-    QHash<QString, std::shared_ptr<VariableDataModel>> _defaultVariables;
-    QHash<QString, std::shared_ptr<VariableDataModel>> _variables;
-    QHash<QString, QString> _variablesTypes;
-    QHash<QString, QSet<QUuid>> _variablesNodesIds;
-    QHash<QUuid, QString> _nodesIdAssociate;
-    QHash<QUuid, QtNodes::NodeDataModel*> _nodesDataModels;
+    bool
+    createDefaultVariable( const QString& name
+                         , const QString& typeName );
+
+    void
+    createDefaultVariableWithSignal( const QString& name
+                                   , const QString& typeName );
+
+    bool
+    renameDefaultVariable( const QString& oldName
+                         , const QString& newName );
+
+    void
+    renameDefaultVariableWithSignal( const QString& oldName
+                                   , const QString& newName );
+
+    bool
+    removeDefaultVariable(const QString& name);
+
+    void
+    removeDefaultVariableWithSignal(const QString& name);
+
+    bool
+    variableNameExists(const QString& name);
+
+private:
+    using DefaultVariablesSet = QSet<QString>;
+    using VariablesModelsHash = QHash< QString
+                                     , std::shared_ptr<VariableDataModel> >;
+    using VariablesTypeNamesHash = QHash<QString, QString>;
+    using VariablesNodesInSceneHash = QHash<QString, QSet<QUuid>>;
+    using VariablesNodesAssociacionHash = QHash<QUuid, QString>;
+    using VariablesNodesDataModelsHash = QHash<QUuid, QtNodes::NodeDataModel*>;
+
+    void
+    renameVariable( const QString& oldName
+                  , const QString& newName);
+
+    void
+    removeVariable( const QString& name);
+
+private:
+
+    DefaultVariablesSet _defaultVariables;
+    VariablesModelsHash _variables;
+    VariablesTypeNamesHash _variablesTypes;
+    VariablesNodesInSceneHash _variablesNodesIds;
+    VariablesNodesAssociacionHash _nodesIdAssociate;
+    VariablesNodesDataModelsHash _nodesDataModels;
     QStringList _supportedVariablesTypes;
     FlowViewPtr _view;
     EditorGraphicsScenePtr _scene;

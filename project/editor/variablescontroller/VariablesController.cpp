@@ -11,11 +11,13 @@
 #include "EditorGraphicsScene.hpp"
 #include <nodes/FlowView>
 
+#include "ShaderNodeDataTypes.hpp"
+
 using QtNodes::NodeDataModel;
 
 static const QString NAME_IS_EMPTY_MESSAGE = "Variable name cann't be empty!";
-static const QString NAME_IS_TAKEN_MESSAGE = "Variable name %1 is taken!";
-static const QString NAME_IS_RESERVED_MESSAGE = "Variable name %1 is reserved!";
+static const QString NAME_IS_TAKEN_MESSAGE = "Variable name \"%1\" is taken!";
+static const QString NAME_IS_RESERVED_MESSAGE = "Variable name \"%1\" is reserved!";
 
 VariablesController::
 VariablesController( FlowViewPtr view
@@ -32,13 +34,27 @@ VariablesController( FlowViewPtr view
            , &EditorGraphicsScene::nodeDeleted
            , this
            , &VariablesController::onRemoveVariableNodeFromScene);
+
+    {
+        Vec4DataType vec4;
+        Vec3DataType vec3;
+        Vec2DataType vec2;
+        UnsignedIntegerDataType unsignedInt;
+        createDefaultVariable("Result color", vec4.name);
+        createDefaultVariable("Time", unsignedInt.name);
+        createDefaultVariable("Vertex", vec3.name);
+        createDefaultVariable("Normal", vec3.name);
+        createDefaultVariable("Tangent", vec3.name);
+        createDefaultVariable("Bitangent", vec3.name);
+        createDefaultVariable("UV position", vec2.name);
+    }
 }
 
 QStringList
 VariablesController::
 defaultVariablesNames()
 {
-    return _defaultVariables.keys();
+    return _defaultVariables.toList();
 }
 
 
@@ -58,14 +74,6 @@ supportedVariablesTypes()
 }
 
 
-QWidget*
-VariablesController::
-getVariableEditor(const QString& name)
-{
-    return nullptr;
-}
-
-
 void
 VariablesController::
 onSelectVariable(const QString& name)
@@ -74,80 +82,6 @@ onSelectVariable(const QString& name)
     auto variableTypeName = _variablesTypes[name];
 
     emit variableSelected(variableDataModel, variableTypeName);
-}
-
-
-void
-VariablesController::
-onCreateVariable(const QString& name)
-{
-    if ( _variables.find(name) != _variables.end() ) {
-        emit variableControllerError(NAME_IS_TAKEN_MESSAGE.arg(name));
-        return;
-    }
-    else if ( _defaultVariables.find(name) != _defaultVariables.end() ) {
-        emit variableControllerError(NAME_IS_RESERVED_MESSAGE.arg(name));
-        return;
-    }
-
-    auto typeName = supportedVariablesTypes()[0];
-    auto variable = VariableDataModelsFactory::build(typeName);
-    variable->name = name;
-    variable->isConst = false;
-    variable->canBeEdited = true;
-    _variables[name] = variable;
-
-    _variablesTypes[name] = typeName;
-}
-
-
-void
-VariablesController::
-onRenameVariable( const QString& oldName
-                , const QString& newName )
-{
-    if ( _variables.find(newName) != _variables.end() ) {
-        emit variableControllerError(NAME_IS_TAKEN_MESSAGE.arg(newName));
-        return;
-    }
-    else if ( _defaultVariables.find(newName) != _defaultVariables.end() ) {
-        emit variableControllerError(NAME_IS_RESERVED_MESSAGE.arg(newName));
-        return;
-    }
-
-    _variables[newName] = _variables[oldName];
-    _variablesTypes[newName] = _variablesTypes[oldName];
-    _variablesNodesIds[newName] = _variablesNodesIds[oldName];
-
-    for ( auto id : _variablesNodesIds[newName]) {
-        _nodesIdAssociate[id] = newName;
-        static_cast<VariableNode*>(_nodesDataModels[id])->setName(newName);
-    }
-
-    _variables.remove(oldName);
-    _variablesTypes.remove(oldName);
-    _variablesNodesIds.remove(oldName);
-
-    emit variableChangeName(oldName, newName);
-}
-
-
-void
-VariablesController::
-onRemoveVariable(const QString& name)
-{
-    _variables.remove(name);
-    _defaultVariables.remove(name);
-    _variablesTypes.remove(name);
-
-    auto ids = _variablesNodesIds[name];
-    for ( auto id : ids) {
-        auto& node = *(_scene->nodes().at(id));
-        _scene->removeNode(node);
-        //onRemoveVariableNodeFromScene(node);
-    }
-
-    _variablesNodesIds.remove(name);
 }
 
 
@@ -176,17 +110,7 @@ onChangeVariableDataModel( const QString& variableName
 
 void
 VariablesController::
-onAddDefaultVariableToScene( const QString& name
-                           , const QString& typeName
-                           , std::shared_ptr<VariableDataModel> data )
-{
-    /// todo: add editor scene to contructor;
-}
-
-
-void
-VariablesController::
-onAddVariableToScene(const QString& name)
+addVariableToScene(const QString& name)
 {
     auto variableType = _variablesTypes[name];
     auto dataType = NodeDataTypeFactory::build(variableType);
@@ -214,6 +138,220 @@ onRemoveVariableNodeFromScene(QtNodes::Node& node)
     _variablesNodesIds[_nodesIdAssociate[id]].remove(id);
     _nodesIdAssociate.remove(id);
     _nodesDataModels.remove(id);
+}
+
+
+bool
+VariablesController::
+createUserVariable(const QString& name)
+{
+    if ( variableNameExists(name) ) {
+        return false;
+    }
+
+    auto typeName = supportedVariablesTypes()[0];
+    auto variable = VariableDataModelsFactory::build(typeName);
+    variable->name = name;
+    variable->isConst = false;
+    variable->canBeEdited = true;
+    _variables[name] = variable;
+
+    _variablesTypes[name] = typeName;
+
+    return true;
+}
+
+
+void
+VariablesController::
+createUserVariableWithSignal(const QString& name)
+{
+    if ( createUserVariable(name) ) {
+        emit createdNewUserVariable(name);
+    }
+}
+
+
+bool
+VariablesController::
+renameUserVariable( const QString& oldName
+                  , const QString& newName )
+{
+    if ( variableNameExists(newName) ) {
+        return false;
+    }
+
+    _variables[newName] = _variables[oldName];
+    _variables.remove(oldName);
+
+    renameVariable(oldName, newName);
+
+    return true;
+}
+
+
+void
+VariablesController::
+renameUserVariableWithSignal( const QString& oldName
+                            , const QString& newName )
+{
+    if ( renameUserVariable(oldName, newName) ) {
+        emit renamedUserVariable(oldName, newName);
+    }
+}
+
+
+bool VariablesController::
+removeUserVariable(const QString& name)
+{
+    if (  _variables.find(name) == _variables.end() ) {
+        return false;
+    }
+
+    _variables.remove(name);
+    removeVariable(name);
+
+    return true;
+}
+
+
+void VariablesController::
+removeUserVariableWithSignal(const QString& name)
+{
+    if ( removeUserVariable(name) ) {
+        emit removedUserVariable(name);
+    }
+}
+
+
+bool
+VariablesController::
+createDefaultVariable( const QString& name
+                     , const QString& typeName )
+{
+    if ( variableNameExists(name) ) {
+        return false;
+    }
+
+    _defaultVariables += name;
+    _variablesTypes[name] = typeName;
+
+    return true;
+}
+
+
+void
+VariablesController::
+createDefaultVariableWithSignal( const QString& name
+                               , const QString& typeName )
+{
+    if ( createDefaultVariable(name, typeName) ) {
+        emit createdNewDefaultVariable(name);
+    }
+}
+
+
+bool
+VariablesController::
+renameDefaultVariable( const QString& oldName
+                     , const QString& newName )
+{
+    if ( variableNameExists(newName) ) {
+        return false;
+    }
+
+    _defaultVariables.remove(oldName);
+    _defaultVariables += newName;
+    renameVariable(oldName, newName);
+
+    return true;
+}
+
+
+void
+VariablesController::
+renameDefaultVariableWithSignal( const QString& oldName
+                               , const QString& newName )
+{
+    if ( renameDefaultVariable(oldName, newName) ) {
+        emit renamedDefaultVariable(oldName, newName);
+    }
+}
+
+
+bool
+VariablesController::
+removeDefaultVariable(const QString& name)
+{
+    if (  _defaultVariables.find(name) == _defaultVariables.end() ) {
+        return false;
+    }
+
+    _defaultVariables.remove(name);
+    removeVariable(name);
+
+    return true;
+}
+
+
+void
+VariablesController::
+removeDefaultVariableWithSignal(const QString& name)
+{
+    if ( removeDefaultVariable(name) ) {
+        emit removedDefaultVariable(name);
+    }
+}
+
+
+bool
+VariablesController::
+variableNameExists(const QString& name)
+{
+    if ( _variables.find(name) != _variables.end() ) {
+        emit variableControllerError(NAME_IS_TAKEN_MESSAGE.arg(name));
+        return true;
+    }
+    else if ( _defaultVariables.find(name) != _defaultVariables.end() ) {
+        emit variableControllerError(NAME_IS_RESERVED_MESSAGE.arg(name));
+        return true;
+    }
+
+    return false;
+}
+
+
+void
+VariablesController::
+renameVariable( const QString& oldName
+              , const QString& newName)
+{
+    _variablesTypes[newName] = _variablesTypes[oldName];
+    _variablesNodesIds[newName] = _variablesNodesIds[oldName];
+
+    for ( auto id : _variablesNodesIds[newName]) {
+        _nodesIdAssociate[id] = newName;
+        static_cast<VariableNode*>(_nodesDataModels[id])->setName(newName);
+    }
+
+    _variablesTypes.remove(oldName);
+    _variablesNodesIds.remove(oldName);
+}
+
+
+void
+VariablesController::
+removeVariable( const QString& name )
+{
+    _variablesTypes.remove(name);
+
+    auto ids = _variablesNodesIds[name];
+    for ( auto id : ids) {
+        auto& node = *(_scene->nodes().at(id));
+        _scene->removeNode(node);
+    }
+
+    _variablesNodesIds.remove(name);
 }
 
 

@@ -132,7 +132,20 @@ bool
 Connection::
 complete() const
 {
-  return _inNode != nullptr && _outNode != nullptr;
+    return _inNode != nullptr && _outNode != nullptr;
+}
+
+bool
+Connection::
+testConnection()
+{
+    if ( dataType(PortType::In).id
+         != dataType(PortType::Out).id ) {
+        emit connectionInvalid(*this);
+        return false;
+    }
+
+    return true;
 }
 
 

@@ -147,6 +147,8 @@ private Q_SLOTS:
   
   void sendConnectionCreatedToNodes(Connection const& c);
   void sendConnectionDeletedToNodes(Connection const& c);
+
+  void removeInvalidConnection(Connection& c);
 };
 
 Node*

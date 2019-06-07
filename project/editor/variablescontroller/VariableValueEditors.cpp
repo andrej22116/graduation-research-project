@@ -348,7 +348,31 @@ Vector2ValueEditor::
 Vector2ValueEditor(QWidget* parent)
     : VariableValueEditor(parent)
 {
+    auto validator = new QDoubleValidator( static_cast<double>(FLT_MIN)
+                                         , static_cast<double>(FLT_MAX)
+                                         , 6, this);
 
+    auto layout = new QBoxLayout(QBoxLayout::LeftToRight, this);
+    size_t index = 0;
+    for ( auto& editor : _valuesEditors ) {
+        editor = new QLineEdit("0", this);
+        editor->setValidator(validator);
+        layout->addWidget(editor);
+
+        connect( editor
+               , &QLineEdit::textChanged
+               , this
+               , [this, index](const QString& text) {
+            auto variable = modelFromEditor<Vec2DataModel>(this);
+            if ( !variable ) {
+                return;
+            }
+
+            variable->value[index] = text.toFloat();
+        });
+
+        ++index;
+    }
 }
 
 
@@ -356,7 +380,19 @@ void
 Vector2ValueEditor::
 setVariableDataModel(VariableDataModelPtr variableDataModel)
 {
+    VariableValueEditor::setVariableDataModel(variableDataModel);
 
+    auto variable = modelToModel<Vec2DataModel>(variableDataModel);
+    if ( !variable ) {
+        return;
+    }
+
+    size_t index = 0;
+    for ( auto& editor : _valuesEditors ) {
+        auto number = static_cast<double>(variable->value[index]);
+        editor->setText(QString::number(number));
+        ++index;
+    }
 }
 
 
@@ -364,7 +400,9 @@ void
 Vector2ValueEditor::
 setDefaultValue()
 {
-
+    for ( auto& editor : _valuesEditors ) {
+        editor->setText("0");
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -374,7 +412,31 @@ Vector3ValueEditor::
 Vector3ValueEditor(QWidget* parent)
     : VariableValueEditor(parent)
 {
+    auto validator = new QDoubleValidator( static_cast<double>(FLT_MIN)
+                                         , static_cast<double>(FLT_MAX)
+                                         , 6, this);
 
+    auto layout = new QBoxLayout(QBoxLayout::LeftToRight, this);
+    size_t index = 0;
+    for ( auto& editor : _valuesEditors ) {
+        editor = new QLineEdit("0", this);
+        editor->setValidator(validator);
+        layout->addWidget(editor);
+
+        connect( editor
+               , &QLineEdit::textEdited
+               , this
+               , [this, index](const QString& text) {
+            auto variable = modelFromEditor<Vec2DataModel>(this);
+            if ( !variable ) {
+                return;
+            }
+
+            variable->value[index] = text.toFloat();
+        });
+
+        ++index;
+    }
 }
 
 
@@ -382,7 +444,19 @@ void
 Vector3ValueEditor::
 setVariableDataModel(VariableDataModelPtr variableDataModel)
 {
+    VariableValueEditor::setVariableDataModel(variableDataModel);
 
+    auto variable = modelToModel<Vec2DataModel>(variableDataModel);
+    if ( !variable ) {
+        return;
+    }
+
+    size_t index = 0;
+    for ( auto& editor : _valuesEditors ) {
+        auto number = static_cast<double>(variable->value[index]);
+        editor->setText(QString::number(number));
+        ++index;
+    }
 }
 
 
@@ -390,7 +464,9 @@ void
 Vector3ValueEditor::
 setDefaultValue()
 {
-
+    for ( auto& editor : _valuesEditors ) {
+        editor->setText("0");
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -400,7 +476,31 @@ Vector4ValueEditor::
 Vector4ValueEditor(QWidget* parent)
     : VariableValueEditor(parent)
 {
+    auto validator = new QDoubleValidator( static_cast<double>(FLT_MIN)
+                                         , static_cast<double>(FLT_MAX)
+                                         , 6, this);
 
+    auto layout = new QBoxLayout(QBoxLayout::LeftToRight, this);
+    size_t index = 0;
+    for ( auto& editor : _valuesEditors ) {
+        editor = new QLineEdit("0", this);
+        editor->setValidator(validator);
+        layout->addWidget(editor);
+
+        connect( editor
+               , &QLineEdit::textEdited
+               , this
+               , [this, index](const QString& text) {
+            auto variable = modelFromEditor<Vec2DataModel>(this);
+            if ( !variable ) {
+                return;
+            }
+
+            variable->value[index] = text.toFloat();
+        });
+
+        ++index;
+    }
 }
 
 
@@ -408,7 +508,19 @@ void
 Vector4ValueEditor::
 setVariableDataModel(VariableDataModelPtr variableDataModel)
 {
+    VariableValueEditor::setVariableDataModel(variableDataModel);
 
+    auto variable = modelToModel<Vec2DataModel>(variableDataModel);
+    if ( !variable ) {
+        return;
+    }
+
+    size_t index = 0;
+    for ( auto& editor : _valuesEditors ) {
+        auto number = static_cast<double>(variable->value[index]);
+        editor->setText(QString::number(number));
+        ++index;
+    }
 }
 
 
@@ -416,7 +528,9 @@ void
 Vector4ValueEditor::
 setDefaultValue()
 {
-
+    for ( auto& editor : _valuesEditors ) {
+        editor->setText("0");
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////

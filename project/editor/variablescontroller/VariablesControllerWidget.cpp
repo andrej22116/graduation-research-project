@@ -36,6 +36,11 @@ VariablesControllerWidget( VariablesControllerPtr variablesController
 
     _variablesEditorWidget->setSupportedTypes(
                 variablesController->supportedVariablesTypes() );
+
+    for (auto& varName : _variablesController->defaultVariablesNames() ) {
+        _defaultVariablesWidget->insertVariable(varName);
+    }
+
 }
 
 
@@ -47,7 +52,7 @@ bindDefaultVariablesConnectionsWithController()
     vc->connect( _defaultVariablesWidget
                , &VariablesListWidget::variableDoubleClicked
                , vc.get()
-               , &VariablesController::onAddVariableToScene );
+               , &VariablesController::addVariableToScene );
 }
 
 
@@ -59,22 +64,22 @@ bindUserVariablesConnectionsWithController()
     vc->connect( _userVariablesWidget
                , &VariablesListWidget::variableCreated
                , vc.get()
-               , &VariablesController::onCreateVariable );
+               , &VariablesController::createUserVariable );
 
     vc->connect( vc.get()
-               , &VariablesController::variableChangeName
+               , &VariablesController::renamedUserVariable
                , _userVariablesWidget
                , &VariablesListWidget::renameVariable );
 
     vc->connect( _userVariablesWidget
                , &VariablesListWidget::variableRemoved
                , vc.get()
-               , &VariablesController::onRemoveVariable );
+               , &VariablesController::removeUserVariable );
 
     vc->connect( _userVariablesWidget
                , &VariablesListWidget::variableDoubleClicked
                , vc.get()
-               , &VariablesController::onAddVariableToScene );
+               , &VariablesController::addVariableToScene );
 
     vc->connect( _userVariablesWidget
                , &VariablesListWidget::variableSelected
@@ -96,7 +101,12 @@ bindVariablesEditConnectionsWithController()
     vc->connect( _variablesEditorWidget
                , &VariablesEditorWidget::variableNameChanged
                , vc.get()
-               , &VariablesController::onRenameVariable );
+               , &VariablesController::renameUserVariableWithSignal );
+
+    vc->connect( vc.get()
+               , &VariablesController::variableControllerError
+               , _variablesEditorWidget
+               , &VariablesEditorWidget::onChangeVariableNameError );
 
     vc->connect( _variablesEditorWidget
                , &VariablesEditorWidget::variableTypeChanged

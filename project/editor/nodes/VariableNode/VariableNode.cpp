@@ -2,12 +2,14 @@
 #include <QPushButton>
 #include <QBoxLayout>
 #include "ShaderNodeDataTypes.hpp"
+#include "VariableNodePainterDelegate.hpp"
 
 VariableNode::VariableNode( const QString& name
                           , const QtNodes::NodeDataType& dataType)
     : _nodeTypeSelected(false)
     , _dataType(dataType)
     , _name(name)
+    , _painterDelegate(new VariableNodePainterDelegate)
 {
     _selectorNodeTypeWidget = new QWidget();
     auto layout = new QBoxLayout( QBoxLayout::TopToBottom
@@ -40,6 +42,23 @@ VariableNode::VariableNode( const QString& name
         delete _selectorNodeTypeWidget;
         _selectorNodeTypeWidget = nullptr;
     });
+}
+
+VariableNode::
+VariableNode( const QString& name
+            , const QtNodes::NodeDataType& dataType
+            , const QtNodes::PortType type )
+    : _nodeTypeSelected(true)
+    , _dataType(dataType)
+    , _name(name)
+    , _nodeType(type)
+    , _painterDelegate(new VariableNodePainterDelegate)
+{
+}
+
+VariableNode::~VariableNode()
+{
+    delete _painterDelegate;
 }
 
 
@@ -152,4 +171,5 @@ QtNodes::NodePainterDelegate*
 VariableNode::
 painterDelegate() const
 {
+    return _painterDelegate;
 }

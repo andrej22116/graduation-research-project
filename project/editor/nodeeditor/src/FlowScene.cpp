@@ -575,6 +575,12 @@ setupConnectionSignals(Connection const& c)
           this,
           &FlowScene::connectionDeleted,
           Qt::UniqueConnection);
+
+  connect(&c,
+          &Connection::connectionInvalid,
+          this,
+          &FlowScene::removeInvalidConnection,
+          Qt::UniqueConnection);
 }
 
 
@@ -605,6 +611,13 @@ sendConnectionDeletedToNodes(Connection const& c)
 
   from->nodeDataModel()->outputConnectionDeleted(c);
   to->nodeDataModel()->inputConnectionDeleted(c);
+}
+
+void
+FlowScene::
+removeInvalidConnection(QtNodes::Connection& c)
+{
+    deleteConnection(c);
 }
 
 

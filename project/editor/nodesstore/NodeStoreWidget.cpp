@@ -74,7 +74,7 @@ NodeStoreWidget::NodeStoreWidget(std::shared_ptr<DataModelRegistry> dataModelReg
         this->isExpanded(index)? this->collapse(index) : this->expand(index);
     });
 
-    setMinimumWidth(150);
+    setMinimumWidth(200);
 }
 
 

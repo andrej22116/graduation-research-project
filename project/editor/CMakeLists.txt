@@ -5,9 +5,11 @@ set( CPP_SOURCES
         EditorController.cpp
         EditorGraphicsScene.cpp
 
+        nodes/VariableNode/VariableNode.cpp
+        nodes/VariableNode/VariableNodePainterDelegate.cpp
         nodes/FunctionalNodes.cpp
-        nodes/VariableNode.cpp
         nodes/DataTypeInteractionRules.cpp
+        nodes/LogickalNodes.cpp
 
         nodesmodels/DefaultDataModelRegistry.cpp
 
