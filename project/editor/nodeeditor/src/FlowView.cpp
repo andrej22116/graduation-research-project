@@ -137,6 +137,10 @@ contextMenuEvent(QContextMenuEvent *event)
   QMap<QString, QTreeWidgetItem*> topLevelItems;
   for (auto const &cat : _scene->registry().categories())
   {
+    if ( cat.toLower() == "base" ) {
+      continue;
+    }
+
     auto item = new QTreeWidgetItem(treeView);
     item->setText(0, cat);
     item->setData(0, Qt::UserRole, skipText);

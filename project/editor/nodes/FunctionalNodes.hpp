@@ -10,9 +10,35 @@ using QtNodes::NodeDataType;
 using QtNodes::NodeData;
 using QtNodes::Connection;
 
-#define NODE_NO_DATA \
-    void setInData( std::shared_ptr<NodeData>, PortIndex) override {} \
-    std::shared_ptr<NodeData> outData(PortIndex) override { return nullptr; }
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+class BeginNode : public NodeDataModel {
+public:
+    QString
+    name() const override;
+
+    QString
+    caption() const override;
+
+    unsigned int
+    nPorts( PortType portType ) const override final;
+
+    NodeDataType
+    dataType( PortType portType
+            , PortIndex portIndex ) const override final;
+
+    bool
+    portCaptionVisible( PortType portType
+                      , PortIndex portIndex ) const override final;
+
+    QString
+    portCaption( PortType portType
+               , PortIndex portIndex ) const override final;
+
+    ConnectionPolicy
+    portOutConnectionPolicy(QtNodes::PortIndex) const override;
+};
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -40,7 +66,8 @@ public:
     void
     inputConnectionDeleted(const Connection& connection) override final;
 
-    NODE_NO_DATA
+    ConnectionPolicy
+    portOutConnectionPolicy(QtNodes::PortIndex) const override;
 
 public:
     virtual unsigned int
@@ -206,8 +233,6 @@ public:
     functionalPortCaption( PortType portType
                          , PortIndex portIndex ) const override;
 
-    ConnectionPolicy
-    portOutConnectionPolicy(QtNodes::PortIndex) const;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -259,10 +284,6 @@ public:
 
     QJsonObject
     save() const override;
-
-    NodeDataType
-    functionalDataType( PortType portType
-                      , PortIndex portIndex ) const override;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -281,21 +302,6 @@ public:
 
     QJsonObject
     save() const override;
-
-    NodeDataType
-    functionalDataType( PortType portType
-                      , PortIndex portIndex ) const override;
-
-    void
-    functionalConnectionCreated( PortIndex portIndex
-                               , const NodeDataType& dataType ) override;
-
-    void
-    functionalConnectionDeleted(PortIndex portIndex) override;
-
-    bool
-    acceptDataType( PortIndex portIndex
-                  , const NodeDataType& nodeDataType ) const override;
 
 private:
     NodeDataType _dataType;

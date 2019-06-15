@@ -250,22 +250,6 @@ void Node::onDataModelUpdated()
   _nodeGeometry.recalculateSize();
   _nodeGraphicsObject->update();
   _nodeGraphicsObject->moveConnections();
-  for(PortType type: {PortType::In, PortType::Out})
-  {
-      for(auto& conn_set : nodeState().getEntries(type))
-      {
-          bool canComplete = true;
-          do {
-              canComplete = true;
-              for(auto& pair: conn_set)
-              {
-                  Connection* conn = pair.second;
-                  if ( conn && !conn->testConnection() ) {
-                    canComplete = false;
-                    break;
-                  }
-              }
-          } while ( !canComplete );
-      }
-  }
+
+  emit needTestConnections(nodeState());
 }

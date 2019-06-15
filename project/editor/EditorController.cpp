@@ -9,6 +9,11 @@
 #include <nodesmodels/DefaultDataModelRegistry.hpp>
 #include <EditorGraphicsScene.hpp>
 
+#include <QFile>
+#include <QDir>
+#include <QJsonDocument>
+#include <QJsonArray>
+
 #include "variablescontroller/VariablesController.hpp"
 
 EditorController::
@@ -31,6 +36,8 @@ EditorController(QObject *parent)
     _nodeStoreWidget = std::make_shared<NodeStoreWidget>(_dataModelRegistry);
     _variablesControllerWidget =
             std::make_shared<VariablesControllerWidget>(_variableController);
+
+    _dataModelRegistry->postRegisterModels();
 }
 
 
@@ -56,16 +63,42 @@ nodesStore()
 }
 
 
-QJsonObject
+void
 EditorController::
-save() const
+save(const QString& path) const
 {
-    return {};
+    if (!path.isEmpty())
+    {
+        auto nodesObj = _scene->toJson();
+        nodesObj["variables"] = _variableController->save();
+
+        QFile file(path);
+        if (file.open(QIODevice::WriteOnly))
+        {
+            file.write(QJsonDocument{nodesObj}.toJson());
+        }
+    }
 }
 
 
 void
 EditorController::
-restore(const QJsonObject&)
+restore(const QString& path)
 {
+    if (!QFileInfo::exists(path))
+      return;
+
+    QFile file(path);
+
+    if (!file.open(QIODevice::ReadOnly))
+      return;
+
+    QByteArray wholeFile = file.readAll();
+    QJsonObject const jsonDocument = QJsonDocument::fromJson(wholeFile)
+                                     .object();
+
+    _scene->clearScene();
+    _scene->fromJson(jsonDocument);
+
+    _variableController->restore(jsonDocument["variables"].toArray());
 }

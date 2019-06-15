@@ -30,11 +30,9 @@ QJsonObject
 AdderFunctionalNode::
 save() const
 {
-    QJsonObject nodeJSON;
+    QJsonObject nodeJSON = QtNodes::NodeDataModel::save();
 
-    nodeJSON[JSON_NODE] = name();
     nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
-    nodeJSON[JSON_NAME] = SHORT_NAME_OF_ADDER_FUNCTIONAL_NODE;
 
     return nodeJSON;
 }
@@ -172,11 +170,9 @@ QJsonObject
 SubtractorFunctionalNode::
 save() const
 {
-    QJsonObject nodeJSON;
+    QJsonObject nodeJSON = QtNodes::NodeDataModel::save();
 
-    nodeJSON[JSON_NODE] = name();
     nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
-    nodeJSON[JSON_NAME] = SHORT_NAME_OF_SUBSTRACTOR_FUNCTIONAL_NODE;
 
     return nodeJSON;
 }
@@ -315,11 +311,9 @@ QJsonObject
 ConditionFunctionalNode::
 save() const
 {
-    QJsonObject nodeJSON;
+    QJsonObject nodeJSON = QtNodes::NodeDataModel::save();
 
-    nodeJSON[JSON_NODE] = name();
     nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
-    nodeJSON[JSON_NAME] = SHORT_NAME_OF_CONDITION_FUNCTIONAL_NODE;
 
     return nodeJSON;
 }
@@ -370,13 +364,6 @@ functionalPortCaption( QtNodes::PortType portType
 }
 
 
-NodeDataModel::ConnectionPolicy
-ConditionFunctionalNode::
-portOutConnectionPolicy(QtNodes::PortIndex) const
-{
-    return NodeDataModel::ConnectionPolicy::One;
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -400,22 +387,11 @@ QJsonObject
 RadiansFunctionalNode::
 save() const
 {
-    QJsonObject nodeJSON;
+    QJsonObject nodeJSON = QtNodes::NodeDataModel::save();
 
-    nodeJSON[JSON_NODE] = name();
     nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
-    nodeJSON[JSON_NAME] = SHORT_NAME_OF_RADIANS_FUNCTIONAL_NODE;
 
     return nodeJSON;
-}
-
-
-QtNodes::NodeDataType
-RadiansFunctionalNode::
-functionalDataType( QtNodes::PortType
-                  , QtNodes::PortIndex) const
-{
-    return FloatDataType{};
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -441,50 +417,11 @@ QJsonObject
 DegreesFunctionalNode::
 save() const
 {
-    QJsonObject nodeJSON;
+    QJsonObject nodeJSON = QtNodes::NodeDataModel::save();
 
-    nodeJSON[JSON_NODE] = name();
     nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
-    nodeJSON[JSON_NAME] = SHORT_NAME_OF_DEGREES_FUNCTIONAL_NODE;
 
     return nodeJSON;
-}
-
-
-QtNodes::NodeDataType
-DegreesFunctionalNode::
-functionalDataType( QtNodes::PortType
-                  , QtNodes::PortIndex ) const
-{
-    return _dataType;
-}
-
-
-void
-DegreesFunctionalNode::
-functionalConnectionCreated( QtNodes::PortIndex
-                           , const QtNodes::NodeDataType& dataType )
-{
-    _dataType = dataType;
-    emit dataModelUpdated();
-}
-
-
-void
-DegreesFunctionalNode::
-functionalConnectionDeleted(QtNodes::PortIndex)
-{
-    _dataType = {};
-    emit dataModelUpdated();
-}
-
-
-bool
-DegreesFunctionalNode::
-acceptDataType( QtNodes::PortIndex
-              , const QtNodes::NodeDataType& dataType ) const
-{
-    return dataType.id != ActionDataType{}.id;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -557,11 +494,9 @@ QJsonObject
 SinFunctionalNode::
 save() const
 {
-    QJsonObject nodeJSON;
+    QJsonObject nodeJSON = QtNodes::NodeDataModel::save();
 
-    nodeJSON[JSON_NODE] = name();
     nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
-    nodeJSON[JSON_NAME] = SHORT_NAME_OF_SIN_FUNCTIONAL_NODE;
 
     return nodeJSON;
 }
@@ -589,11 +524,9 @@ QJsonObject
 CosFunctionalNode::
 save() const
 {
-    QJsonObject nodeJSON;
+    QJsonObject nodeJSON = QtNodes::NodeDataModel::save();
 
-    nodeJSON[JSON_NODE] = name();
     nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
-    nodeJSON[JSON_NAME] = SHORT_NAME_OF_COS_FUNCTIONAL_NODE;
 
     return nodeJSON;
 }
@@ -621,11 +554,9 @@ QJsonObject
 TanFunctionalNode::
 save() const
 {
-    QJsonObject nodeJSON;
+    QJsonObject nodeJSON = QtNodes::NodeDataModel::save();
 
-    nodeJSON[JSON_NODE] = name();
     nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
-    nodeJSON[JSON_NAME] = SHORT_NAME_OF_TAN_FUNCTIONAL_NODE;
 
     return nodeJSON;
 }
@@ -653,11 +584,9 @@ QJsonObject
 CtanFunctionalNode::
 save() const
 {
-    QJsonObject nodeJSON;
+    QJsonObject nodeJSON = QtNodes::NodeDataModel::save();
 
-    nodeJSON[JSON_NODE] = name();
     nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
-    nodeJSON[JSON_NAME] = SHORT_NAME_OF_CTAN_FUNCTIONAL_NODE;
 
     return nodeJSON;
 }
@@ -685,11 +614,9 @@ QJsonObject
 ArcSinFunctionalNode::
 save() const
 {
-    QJsonObject nodeJSON;
+    QJsonObject nodeJSON = QtNodes::NodeDataModel::save();
 
-    nodeJSON[JSON_NODE] = name();
     nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
-    nodeJSON[JSON_NAME] = SHORT_NAME_OF_ARC_SIN_FUNCTIONAL_NODE;
 
     return nodeJSON;
 }
@@ -717,11 +644,9 @@ QJsonObject
 ArcCosFunctionalNode::
 save() const
 {
-    QJsonObject nodeJSON;
+    QJsonObject nodeJSON = QtNodes::NodeDataModel::save();
 
-    nodeJSON[JSON_NODE] = name();
     nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
-    nodeJSON[JSON_NAME] = SHORT_NAME_OF_ARC_COS_FUNCTIONAL_NODE;
 
     return nodeJSON;
 }
@@ -749,11 +674,9 @@ QJsonObject
 ArcTanFunctionalNode::
 save() const
 {
-    QJsonObject nodeJSON;
+    QJsonObject nodeJSON = QtNodes::NodeDataModel::save();
 
-    nodeJSON[JSON_NODE] = name();
     nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
-    nodeJSON[JSON_NAME] = SHORT_NAME_OF_ARC_TAN_FUNCTIONAL_NODE;
 
     return nodeJSON;
 }
@@ -781,11 +704,9 @@ QJsonObject
 PowFunctionalNode::
 save() const
 {
-    QJsonObject nodeJSON;
+    QJsonObject nodeJSON = QtNodes::NodeDataModel::save();
 
-    nodeJSON[JSON_NODE] = name();
     nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
-    nodeJSON[JSON_NAME] = SHORT_NAME_OF_POWER_FUNCTIONAL_NODE;
 
     return nodeJSON;
 }
@@ -813,11 +734,9 @@ QJsonObject
 ExpFunctionalNode::
 save() const
 {
-    QJsonObject nodeJSON;
+    QJsonObject nodeJSON = QtNodes::NodeDataModel::save();
 
-    nodeJSON[JSON_NODE] = name();
     nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
-    nodeJSON[JSON_NAME] = SHORT_NAME_OF_EXP_FUNCTIONAL_NODE;
 
     return nodeJSON;
 }
@@ -845,11 +764,9 @@ QJsonObject
 Exp2FunctionalNode::
 save() const
 {
-    QJsonObject nodeJSON;
+    QJsonObject nodeJSON = QtNodes::NodeDataModel::save();
 
-    nodeJSON[JSON_NODE] = name();
     nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
-    nodeJSON[JSON_NAME] = SHORT_NAME_OF_EXP2_FUNCTIONAL_NODE;
 
     return nodeJSON;
 }
@@ -877,11 +794,9 @@ QJsonObject
 LogFunctionalNode::
 save() const
 {
-    QJsonObject nodeJSON;
+    QJsonObject nodeJSON = QtNodes::NodeDataModel::save();
 
-    nodeJSON[JSON_NODE] = name();
     nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
-    nodeJSON[JSON_NAME] = SHORT_NAME_OF_LOG_FUNCTIONAL_NODE;
 
     return nodeJSON;
 }
@@ -909,11 +824,9 @@ QJsonObject
 Log2FunctionalNode::
 save() const
 {
-    QJsonObject nodeJSON;
+    QJsonObject nodeJSON = QtNodes::NodeDataModel::save();
 
-    nodeJSON[JSON_NODE] = name();
     nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
-    nodeJSON[JSON_NAME] = SHORT_NAME_OF_LOG2_FUNCTIONAL_NODE;
 
     return nodeJSON;
 }
@@ -941,11 +854,9 @@ QJsonObject
 SqrtFunctionalNode::
 save() const
 {
-    QJsonObject nodeJSON;
+    QJsonObject nodeJSON = QtNodes::NodeDataModel::save();
 
-    nodeJSON[JSON_NODE] = name();
     nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
-    nodeJSON[JSON_NAME] = SHORT_NAME_OF_SQRT_FUNCTIONAL_NODE;
 
     return nodeJSON;
 }
@@ -973,11 +884,9 @@ QJsonObject
 InverseSqrtFunctionalNode::
 save() const
 {
-    QJsonObject nodeJSON;
+    QJsonObject nodeJSON = QtNodes::NodeDataModel::save();
 
-    nodeJSON[JSON_NODE] = name();
     nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
-    nodeJSON[JSON_NAME] = SHORT_NAME_OF_ISQRT_FUNCTIONAL_NODE;
 
     return nodeJSON;
 }
@@ -1076,6 +985,75 @@ functionalPortCaption( QtNodes::PortType
     return "";
 }
 
+
+NodeDataModel::ConnectionPolicy
+FunctionalNode::
+portOutConnectionPolicy(QtNodes::PortIndex portIndex) const
+{
+    return portIndex == 0 ? NodeDataModel::ConnectionPolicy::One
+                          : NodeDataModel::ConnectionPolicy::Many;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
+QString
+BeginNode::
+name() const
+{
+    return "begin";
+}
+
+
+QString
+BeginNode::
+caption() const
+{
+    return "Begin node";
+}
+
+
+unsigned int
+BeginNode::
+nPorts(QtNodes::PortType portType) const
+{
+    return portType == QtNodes::PortType::Out ? 1 : 0;
+}
+
+
+QtNodes::NodeDataType
+BeginNode::
+dataType( QtNodes::PortType
+        , QtNodes::PortIndex ) const
+{
+    return ActionDataType{};
+}
+
+
+bool
+BeginNode::
+portCaptionVisible( QtNodes::PortType
+                  , QtNodes::PortIndex ) const
+{
+    return true;
+}
+
+
+QString
+BeginNode::
+portCaption( QtNodes::PortType
+           , QtNodes::PortIndex ) const
+{
+    return "Begin do";
+}
+
+
+NodeDataModel::ConnectionPolicy
+BeginNode::
+portOutConnectionPolicy(QtNodes::PortIndex) const
+{
+    return NodeDataModel::ConnectionPolicy::One;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////

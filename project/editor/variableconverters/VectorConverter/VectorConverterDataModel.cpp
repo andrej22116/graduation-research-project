@@ -76,7 +76,9 @@ QJsonObject
 VectorConverterDataModel::
 save() const
 {
-    return _converter->save();
+    auto obj = QtNodes::NodeDataModel::save();
+    obj["convertor"] = _converter->save();
+    return obj;
 }
 
 

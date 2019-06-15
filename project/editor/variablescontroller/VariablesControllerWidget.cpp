@@ -67,6 +67,11 @@ bindUserVariablesConnectionsWithController()
                , &VariablesController::createUserVariable );
 
     vc->connect( vc.get()
+               , &VariablesController::createdNewUserVariable
+               , _userVariablesWidget
+               , &VariablesListWidget::insertVariable );
+
+    vc->connect( vc.get()
                , &VariablesController::renamedUserVariable
                , _userVariablesWidget
                , &VariablesListWidget::renameVariable );

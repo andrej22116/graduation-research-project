@@ -8,6 +8,8 @@ class VariableNode : public QtNodes::NodeDataModel
     Q_OBJECT
 
 public:
+    VariableNode();
+
     VariableNode( const QString& name
                 , const QtNodes::NodeDataType& dataType );
 
@@ -56,12 +58,30 @@ public:
     QtNodes::NodePainterDelegate*
     painterDelegate() const override;
 
+    // Serializable interface
+public:
+    QJsonObject
+    save() const override;
+
+    void
+    restore(const QJsonObject&) override;
+
 public:
     void
-    setName(const QString& name);
+    setVariableName(const QString& name);
+
+    QString
+    variableName() const;
 
     void
     setDataType(const QtNodes::NodeDataType& dataType);
+
+    QtNodes::NodeDataType
+    dataType() const;
+
+private:
+    void
+    createSelectorWidget();
 
 private:
     bool _nodeTypeSelected;

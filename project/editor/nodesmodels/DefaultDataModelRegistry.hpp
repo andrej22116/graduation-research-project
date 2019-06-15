@@ -7,6 +7,12 @@ class DefaultDataModelRegistry : public QtNodes::DataModelRegistry
 {
 public:
     DefaultDataModelRegistry();
+
+    void
+    registerModels();
+
+    void
+    postRegisterModels();
 };
 
 #endif // DEFAULTDATAMODELREGISTRY_HPP

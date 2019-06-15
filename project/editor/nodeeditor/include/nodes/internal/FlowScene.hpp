@@ -98,6 +98,10 @@ public:
 
   void loadFromMemory(const QByteArray& data);
 
+  void fromJson(const QJsonObject& json);
+
+  QJsonObject toJson() const;
+
 Q_SIGNALS:
 
   /**
@@ -141,6 +145,8 @@ private:
   std::unordered_map<QUuid, UniqueNode>       _nodes;
   std::shared_ptr<DataModelRegistry>          _registry;
 
+  bool _restoreMode;
+
 private Q_SLOTS:
 
   void setupConnectionSignals(Connection const& c);
@@ -149,6 +155,8 @@ private Q_SLOTS:
   void sendConnectionDeletedToNodes(Connection const& c);
 
   void removeInvalidConnection(Connection& c);
+
+  void testNodeConnections(NodeState& node);
 };
 
 Node*

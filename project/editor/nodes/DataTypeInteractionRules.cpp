@@ -9,33 +9,34 @@
 
 QHash<QString, int> DataTypeInteractionRules::_typesLevels {
     {NO_DATA_TYPE.id, 0},
-    {BooleanDataType{}.id, 1},
-    {UnsignedIntegerDataType{}.id, 2},
-    {IntegerDataType{}.id, 3},
-    {FloatDataType{}.id, 4},
-    {DoubleDataType{}.id, 5},
-    {UnsignedIntegerVec2DataType{}.id, 6},
-    {UnsignedIntegerVec3DataType{}.id, 7},
-    {UnsignedIntegerVec4DataType{}.id, 8},
-    {IntegerVec2DataType{}.id, 9},
-    {IntegerVec3DataType{}.id, 10},
-    {IntegerVec4DataType{}.id, 11},
-    {Vec2DataType{}.id, 12},
-    {Vec3DataType{}.id, 13},
-    {Vec4DataType{}.id, 14},
-    {DoubleVec2DataType{}.id, 15},
-    {DoubleVec3DataType{}.id, 16},
-    {DoubleVec4DataType{}.id, 17},
-    {Matrix2DataType{}.id, 18},
-    {Matrix3DataType{}.id, 19},
-    {Matrix4DataType{}.id, 20},
-    {DoubleMatrix2DataType{}.id, 21},
-    {DoubleMatrix3DataType{}.id, 22},
-    {DoubleMatrix4DataType{}.id, 23},
+    {ActionDataType{}.id, 1},
+    {BooleanDataType{}.id, 2},
+    {UnsignedIntegerDataType{}.id, 3},
+    {IntegerDataType{}.id, 4},
+    {FloatDataType{}.id, 5},
+    {DoubleDataType{}.id, 6},
+    {UnsignedIntegerVec2DataType{}.id, 7},
+    {UnsignedIntegerVec3DataType{}.id, 8},
+    {UnsignedIntegerVec4DataType{}.id, 9},
+    {IntegerVec2DataType{}.id, 10},
+    {IntegerVec3DataType{}.id, 11},
+    {IntegerVec4DataType{}.id, 12},
+    {Vec2DataType{}.id, 13},
+    {Vec3DataType{}.id, 14},
+    {Vec4DataType{}.id, 15},
+    {DoubleVec2DataType{}.id, 16},
+    {DoubleVec3DataType{}.id, 17},
+    {DoubleVec4DataType{}.id, 18},
+    {Matrix2DataType{}.id, 19},
+    {Matrix3DataType{}.id, 20},
+    {Matrix4DataType{}.id, 21},
+    {DoubleMatrix2DataType{}.id, 22},
+    {DoubleMatrix3DataType{}.id, 23},
+    {DoubleMatrix4DataType{}.id, 24},
 };
 
 class Graph {
-    std::array<std::array<int, 23>, 23> _adjacencyMatrix;
+    std::array<std::array<int, 24>, 24> _adjacencyMatrix;
 
 public:
     Graph() {
@@ -79,7 +80,7 @@ bool
 DataTypeInteractionRules::
 canBeMultiped(const QtNodes::NodeDataType& dataType)
 {
-    return true;
+    return canBeMultiped(dataType, NO_DATA_TYPE);
 }
 
 

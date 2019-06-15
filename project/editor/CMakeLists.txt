@@ -7,6 +7,7 @@ set( CPP_SOURCES
 
         nodes/VariableNode/VariableNode.cpp
         nodes/VariableNode/VariableNodePainterDelegate.cpp
+        nodes/ConstVariables/ConstVariablesNodes.cpp
         nodes/FunctionalNodes.cpp
         nodes/DataTypeInteractionRules.cpp
         nodes/LogickalNodes.cpp
@@ -25,6 +26,7 @@ set( CPP_SOURCES
         variablescontroller/VariableValueEditorsFactory.cpp
         variablescontroller/VariableValueEditors.cpp
         variablescontroller/NodeDataTypeFactory.cpp
+        variablescontroller/NodeDataTypeSerializer.cpp
 
         variableconverters/VectorConverter/VectorConnectGraphicsItem.cpp
         variableconverters/VectorConverter/VectorConverterScene.cpp

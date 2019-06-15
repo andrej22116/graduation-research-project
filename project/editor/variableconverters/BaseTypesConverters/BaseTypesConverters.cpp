@@ -59,7 +59,11 @@ QJsonObject
 PrimitiveNodeTypeConverter::
 save() const
 {
-    return {};
+    auto obj = QtNodes::NodeDataModel::save();
+
+    obj["from"] = _inDataType.id;
+
+    return obj;
 }
 
 

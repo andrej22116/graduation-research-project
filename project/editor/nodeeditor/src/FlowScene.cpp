@@ -43,6 +43,7 @@ FlowScene(std::shared_ptr<DataModelRegistry> registry,
           QObject * parent)
   : QGraphicsScene(parent)
   , _registry(std::move(registry))
+  , _restoreMode(false)
 {
   setItemIndexMethod(QGraphicsScene::NoIndex);
 
@@ -201,6 +202,11 @@ createNode(std::unique_ptr<NodeDataModel> && dataModel)
 
   node->setGraphicsObject(std::move(ngo));
 
+  connect( node.get()
+         , &Node::needTestConnections
+         , this
+         , &FlowScene::testNodeConnections );
+
   auto nodePtr = node.get();
   _nodes[node->id()] = std::move(node);
 
@@ -225,12 +231,18 @@ restoreNode(QJsonObject const& nodeJson)
   auto ngo  = detail::make_unique<NodeGraphicsObject>(*this, *node);
   node->setGraphicsObject(std::move(ngo));
 
+  connect( node.get()
+         , &Node::needTestConnections
+         , this
+         , &FlowScene::testNodeConnections );
+
   node->restore(nodeJson);
 
   auto nodePtr = node.get();
   _nodes[node->id()] = std::move(node);
 
   nodeCreated(*nodePtr);
+
   return *nodePtr;
 }
 
@@ -512,35 +524,7 @@ QByteArray
 FlowScene::
 saveToMemory() const
 {
-  QJsonObject sceneJson;
-
-  QJsonArray nodesJsonArray;
-
-  for (auto const & pair : _nodes)
-  {
-    auto const &node = pair.second;
-
-    nodesJsonArray.append(node->save());
-  }
-
-  sceneJson["nodes"] = nodesJsonArray;
-
-  QJsonArray connectionJsonArray;
-  for (auto const & pair : _connections)
-  {
-    auto const &connection = pair.second;
-
-    QJsonObject connectionJson = connection->save();
-
-    if (!connectionJson.isEmpty())
-      connectionJsonArray.append(connectionJson);
-  }
-
-  sceneJson["connections"] = connectionJsonArray;
-
-  QJsonDocument document(sceneJson);
-
-  return document.toJson();
+  return QJsonDocument{toJson()}.toJson();
 }
 
 
@@ -549,20 +533,69 @@ FlowScene::
 loadFromMemory(const QByteArray& data)
 {
   QJsonObject const jsonDocument = QJsonDocument::fromJson(data).object();
+  fromJson(jsonDocument);
+}
 
-  QJsonArray nodesJsonArray = jsonDocument["nodes"].toArray();
 
-  for (QJsonValueRef node : nodesJsonArray)
-  {
-    restoreNode(node.toObject());
-  }
+void
+FlowScene::
+fromJson(const QJsonObject& json)
+{
+    _restoreMode = true;
 
-  QJsonArray connectionJsonArray = jsonDocument["connections"].toArray();
+    QJsonArray nodesJsonArray = json["nodes"].toArray();
 
-  for (QJsonValueRef connection : connectionJsonArray)
-  {
-    restoreConnection(connection.toObject());
-  }
+    for (QJsonValueRef node : nodesJsonArray)
+    {
+      restoreNode(node.toObject());
+    }
+
+    QJsonArray connectionJsonArray = json["connections"].toArray();
+
+    for (QJsonValueRef connection : connectionJsonArray)
+    {
+      restoreConnection(connection.toObject());
+    }
+
+    _restoreMode = false;
+
+    for ( auto& node : nodes() ) {
+        node.second->onDataModelUpdated();
+    }
+}
+
+
+QJsonObject
+FlowScene::
+toJson() const
+{
+    QJsonObject sceneJson;
+
+    QJsonArray nodesJsonArray;
+
+    for (auto const & pair : _nodes)
+    {
+      auto const &node = pair.second;
+
+      nodesJsonArray.append(node->save());
+    }
+
+    sceneJson["nodes"] = nodesJsonArray;
+
+    QJsonArray connectionJsonArray;
+    for (auto const & pair : _connections)
+    {
+      auto const &connection = pair.second;
+
+      QJsonObject connectionJson = connection->save();
+
+      if (!connectionJson.isEmpty())
+        connectionJsonArray.append(connectionJson);
+    }
+
+    sceneJson["connections"] = connectionJsonArray;
+
+    return sceneJson;
 }
 
 
@@ -618,6 +651,33 @@ FlowScene::
 removeInvalidConnection(QtNodes::Connection& c)
 {
     deleteConnection(c);
+}
+
+
+void
+FlowScene::
+testNodeConnections(QtNodes::NodeState& state)
+{
+    if ( _restoreMode ) { return; }
+
+    for(PortType type: {PortType::In, PortType::Out})
+    {
+        for(auto& conn_set : state.getEntries(type))
+        {
+            bool canComplete = true;
+            do {
+                canComplete = true;
+                for(auto& pair: conn_set)
+                {
+                    Connection* conn = pair.second;
+                    if ( conn && !conn->testConnection() ) {
+                      canComplete = false;
+                      break;
+                    }
+                }
+            } while ( !canComplete );
+        }
+    }
 }
 
 

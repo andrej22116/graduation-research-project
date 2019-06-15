@@ -106,6 +106,9 @@ public Q_SLOTS: // data propagation
   void
   onDataModelUpdated();
 
+signals:
+  void needTestConnections(NodeState& state);
+
 private:
 
   // addressing

@@ -2,11 +2,11 @@
 #define VARIABLESCONTROLLER_HPP
 
 #include <memory>
+#include <functional>
 #include <QHash>
 #include <QSet>
 
 #include <QObject>
-#include "nodes/internal/Serializable.hpp"
 
 namespace QtNodes {
     class Node;
@@ -16,9 +16,9 @@ namespace QtNodes {
 
 class VariableDataModel;
 class EditorGraphicsScene;
+class VariableNode;
 
 class VariablesController : public QObject
-                          , public QtNodes::Serializable
 {
     Q_OBJECT
 
@@ -38,13 +38,13 @@ public:
     const QStringList&
     supportedVariablesTypes();
 
-    // Serializable interface
+
 public:
-    QJsonObject
-    save() const override;
+    QJsonArray
+    save() const;
 
     void
-    restore(const QJsonObject&) override;
+    restore(const QJsonArray&);
 
 signals:
     void

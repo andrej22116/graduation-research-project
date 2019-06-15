@@ -4,9 +4,19 @@
 #include <variableconverters/VectorConverter/VectorConverterDataModel.hpp>
 #include <variableconverters/VectorDecomposConverter/VectorDecomposConverter.hpp>
 #include <variableconverters/BaseTypesConverters/BaseTypesConverters.hpp>
+#include <nodes/VariableNode/VariableNode.hpp>
 #include <nodes/LogickalNodes.hpp>
+#include <nodes/ConstVariables/ConstVariablesNodes.hpp>
 
 DefaultDataModelRegistry::DefaultDataModelRegistry()
+{
+    registerModels();
+}
+
+
+void
+DefaultDataModelRegistry::
+registerModels()
 {
     registerModel<AdderFunctionalNode>("Math");
     registerModel<SubtractorFunctionalNode>("Math");
@@ -33,6 +43,16 @@ DefaultDataModelRegistry::DefaultDataModelRegistry()
     registerModel<Log2FunctionalNode>("Exponential");
     registerModel<SqrtFunctionalNode>("Exponential");
     registerModel<InverseSqrtFunctionalNode>("Exponential");
+
+///////////////////////////////////////////////////////////////////////////////
+    registerModel<FloatConstVariableNode>("Constants");
+    registerModel<DoubleConstVariableNode>("Constants");
+    registerModel<IntegerConstVariableNode>("Constants");
+    registerModel<UnsignedIntegerConstVariableNode>("Constants");
+    registerModel<BooleanConstVariableNode>("Constants");
+    registerModel<Vec2ConstVariableNode>("Constants");
+    registerModel<Vec3ConstVariableNode>("Constants");
+    registerModel<Vec4ConstVariableNode>("Constants");
 
 ///////////////////////////////////////////////////////////////////////////////
     registerModel<VectorConverterDataModel>(
@@ -114,5 +134,14 @@ DefaultDataModelRegistry::DefaultDataModelRegistry()
     registerModel<LogickalBooleanNode> (
                 LogickalBooleanNode::logicalAndFactory(),
                 "Boolean logick"
-    );
+                );
+}
+
+
+void
+DefaultDataModelRegistry::
+postRegisterModels()
+{
+    registerModel<BeginNode>("Base");
+    registerModel<VariableNode>("Base");
 }

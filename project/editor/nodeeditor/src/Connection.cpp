@@ -139,8 +139,13 @@ bool
 Connection::
 testConnection()
 {
-    if ( dataType(PortType::In).id
-         != dataType(PortType::Out).id ) {
+    auto noDt = NO_DATA_TYPE;
+    auto dtIn = dataType(PortType::In);
+    auto dtOut = dataType(PortType::Out);
+
+    if ( dtIn.id == noDt.id
+         || dtOut.id == noDt.id
+         || dtIn.id != dtOut.id ) {
         emit connectionInvalid(*this);
         return false;
     }

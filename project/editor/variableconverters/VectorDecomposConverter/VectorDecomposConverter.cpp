@@ -63,14 +63,6 @@ portCaption( QtNodes::PortType
 }
 
 
-QJsonObject
-VectorDecomposConverter::
-save() const
-{
-    return {};
-}
-
-
 VectorDecomposConverter::Factory
 VectorDecomposConverter::
 Vector2Factory()

@@ -40,10 +40,6 @@ public:
     portCaption( PortType portType
                , PortIndex portIndex ) const override;
 
-    QJsonObject
-    save() const override;
-
-
     using Factory = std::function<std::unique_ptr<NodeDataModel>()>;
 
     static Factory

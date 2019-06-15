@@ -4,25 +4,19 @@
 #include <QObject>
 #include <memory>
 
-#include <nodes/internal/Serializable.hpp>
-
 namespace QtNodes {
     class FlowView;
-    class DataModelRegistry;
 }
 
 using QtNodes::FlowView;
-using QtNodes::DataModelRegistry;
-using QtNodes::Serializable;
-
 
 class VariablesController;
 class NodeStoreWidget;
 class VariablesControllerWidget;
 class EditorGraphicsScene;
+class DefaultDataModelRegistry;
 
 class EditorController : public QObject
-                       , public Serializable
 {
     Q_OBJECT
 
@@ -40,11 +34,11 @@ public:
     nodesStore();
 
 public:
-    QJsonObject
-    save() const override;
+    void
+    save(const QString& path) const;
 
     void
-    restore(const QJsonObject&) override;
+    restore(const QString& path);
 
 private:
 
@@ -52,7 +46,7 @@ private:
 private:
     using FlowViewPtr = std::shared_ptr<FlowView>;
     using EditorGraphicsScenePtr = std::shared_ptr<EditorGraphicsScene>;
-    using DataModelRegistryPtr = std::shared_ptr<DataModelRegistry>;
+    using DataModelRegistryPtr = std::shared_ptr<DefaultDataModelRegistry>;
     using VariablesControllerPtr = std::shared_ptr<VariablesController>;
     using NodeStoreWidgetPtr = std::shared_ptr<NodeStoreWidget>;
     using VariablesControllerWidgetPtr =

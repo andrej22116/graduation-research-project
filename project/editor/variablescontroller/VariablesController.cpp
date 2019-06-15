@@ -2,14 +2,17 @@
 #include <nodes/NodeDataModel>
 #include <nodes/Node>
 #include <QUuid>
+#include <QJsonArray>
+#include <QJsonObject>
 
 #include "VariableDataModelsFactory.hpp"
 #include "VariableValueEditorsFactory.hpp"
 #include "NodeDataTypeFactory.hpp"
-#include "nodes/VariableNode.hpp"
+#include "nodes/VariableNode/VariableNode.hpp"
 
 #include "EditorGraphicsScene.hpp"
 #include <nodes/FlowView>
+#include "variablescontroller/NodeDataTypeSerializer.hpp"
 
 #include "ShaderNodeDataTypes.hpp"
 
@@ -331,7 +334,8 @@ renameVariable( const QString& oldName
 
     for ( auto id : _variablesNodesIds[newName]) {
         _nodesIdAssociate[id] = newName;
-        static_cast<VariableNode*>(_nodesDataModels[id])->setName(newName);
+        static_cast<VariableNode*>
+                (_nodesDataModels[id])->setVariableName(newName);
     }
 
     _variablesTypes.remove(oldName);
@@ -355,20 +359,70 @@ removeVariable( const QString& name )
 }
 
 
-QJsonObject
+QJsonArray
 VariablesController::
 save() const
 {
-    //QJsonObject obj;
+    QJsonArray array;
 
+    for ( auto& variable : _variables.keys() ) {
+        QJsonObject obj;
+        obj["name"] = variable;
+        obj["type"] = _variablesTypes[variable];
 
-    return {
-    };
+        auto value = NodeDataTypeSerializer::serialize( _variablesTypes[variable]
+                                                      , _variables[variable] );
+
+        obj["value"] = value;
+
+        array.push_back(obj);
+    }
+
+    return array;
 }
 
 
 void
 VariablesController::
-restore(const QJsonObject&)
+restore(const QJsonArray& array)
 {
+    for ( auto variable : array ) {
+        auto varObj = variable.toObject();
+        auto name = varObj["name"].toString();
+        auto type = varObj["type"].toString();
+
+        createUserVariableWithSignal(name);
+        onChangeVariableDataModel(name, type);
+
+        NodeDataTypeSerializer::deserialize( varObj["value"].toObject()
+                                           , type
+                                           , _variables[name]);
+    }
+
+    QVector<QtNodes::Node*> blackList;
+
+    _scene->iterateOverNodes([&](QtNodes::Node* node){
+        auto variableModel = dynamic_cast<VariableNode*>
+                             (node->nodeDataModel());
+        if ( !variableModel ) {
+            return;
+        }
+
+        auto variableName = variableModel->variableName();
+
+        if ( _variables.find(variableName) == _variables.end()
+             && _defaultVariables.find(variableName) == _defaultVariables.end()) {
+            blackList.push_back(node);
+            return;
+        }
+
+        _variablesNodesIds[variableName] += node->id();
+        _nodesIdAssociate[node->id()] = variableName;
+        _nodesDataModels[node->id()] = node->nodeDataModel();
+    });
+
+
+    for ( auto& node : blackList ) {
+        _scene->removeNode(*node);
+    }
 }
