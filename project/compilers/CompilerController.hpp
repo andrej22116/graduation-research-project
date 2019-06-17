@@ -10,12 +10,18 @@ class QThread;
 class ICompiler;
 class CompilerWrapper;
 
-class CompilerController : public QObject
+#if defined(SHARED_LIBRARY)
+#  define COMPILERS_EXPORT Q_DECL_EXPORT
+#else
+#  define COMPILERS_EXPORT Q_DECL_IMPORT
+#endif
+
+class COMPILERS_EXPORT CompilerController : public QObject
 {
     Q_OBJECT
 
 public:
-    CompilerController();
+    CompilerController(QObject* parent = nullptr);
 
     const QStringList&
     supportedCompilers() const;

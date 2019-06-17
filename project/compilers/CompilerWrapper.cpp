@@ -1,5 +1,4 @@
 #include "CompilerWrapper.hpp"
-#include <QDebug>
 
 CompilerWrapper::
 CompilerWrapper(QObject *parent)
@@ -85,6 +84,7 @@ CompilerWrapper::
 onNextStep()
 {
     _compiler->nextStep();
+
     if ( _compiling ) {
         emit nextStep();
     }

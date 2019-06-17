@@ -5,8 +5,9 @@
 #include "DefaultGlslCompiler/DefaultGlslCompiler.hpp"
 
 CompilerController::
-CompilerController()
-    : _compileThread(new QThread(this))
+CompilerController(QObject* parent)
+    : QObject(parent)
+    , _compileThread(new QThread(this))
     , _compileWrapper(new CompilerWrapper())
 {
     _compileWrapper->moveToThread(_compileThread.get());
