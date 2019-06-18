@@ -18,6 +18,10 @@
 class QTimer;
 class QOpenGLShaderProgram;
 class ICamera;
+class QOpenGLFramebufferObject;
+class QOpenGLContext;
+class QLabel;
+
 
 class OpenGLScene : public QOpenGLWidget
                   , public ITargetSceneRenderer
@@ -64,9 +68,6 @@ public:
 public slots:
     void render() override;
 
-private slots:
-    void update();
-
     // QOpenGLWidget interface
 protected:
     void initializeGL() override;
@@ -98,9 +99,18 @@ private:
 
     void renderTargetObject();
 
+    void renderSsao();
+
     void renderBackground();
 
     void renderServiceInfo();
+
+private:
+    void
+    createDsBuffer();
+
+    void
+    createLppBuffer();
 
 private: /// Buffers OpenGL -- Unused!
     //GLuint _bufferIdAlbedo;
@@ -114,6 +124,9 @@ private: /// Shaders
     std::shared_ptr<QOpenGLShader> _vertexShader;
     std::shared_ptr<QOpenGLShader> _geometryShader;
     std::shared_ptr<QOpenGLShader> _fragmentShader;
+    QString _vertexShaderText;
+    QString _geometryShaderText;
+    QString _fragmentShaderText;
 
 private: /// Params and sources
     QMap<QString, GLuint> _textures;
@@ -125,7 +138,14 @@ private: /// Target object sources
     QOpenGLBuffer _targetObjectVboId;
     QOpenGLBuffer _targetObjectEboId;
 
+private:
+    using FrameBufferPtr = std::shared_ptr<QOpenGLFramebufferObject>;
+    FrameBufferPtr _differedShadingBuffer;
+    QWidget* _testWidget;
+    QLabel* _testWidgetLabel;
+
 private: /// Rendering
+    QOpenGLContext* _sharedContext;
     /**
      * @brief Used for set rendere function call order
      */

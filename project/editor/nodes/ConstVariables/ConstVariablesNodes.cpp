@@ -20,7 +20,7 @@ FloatConstVariableNode()
 {
     _widget = new QLineEdit("");
     _widget->setMaximumWidth(75);
-    auto validator = new QDoubleValidator(FLT_MIN, FLT_MAX, 6, _widget);
+    auto validator = new QDoubleValidator(-FLT_MAX, FLT_MAX, 6, _widget);
     validator->setLocale(QLocale{QLocale::C});
     _widget->setValidator(validator);
 }
@@ -31,6 +31,8 @@ FloatConstVariableNode::
 save() const
 {
     auto obj = QtNodes::NodeDataModel::save();
+
+    obj[JSON_TYPE] = JSON_TYPE_CONST_VARIABLE;
     obj[JSON_VALUE] = _widget->text();
 
     return obj;
@@ -111,7 +113,7 @@ DoubleConstVariableNode()
 {
     _widget = new QLineEdit("");
     _widget->setMaximumWidth(75);
-    auto validator = new QDoubleValidator(DBL_MIN, DBL_MAX, 12, _widget);
+    auto validator = new QDoubleValidator(-DBL_MAX, DBL_MAX, 12, _widget);
     validator->setLocale(QLocale{QLocale::C});
     _widget->setValidator(validator);
 }
@@ -122,6 +124,8 @@ DoubleConstVariableNode::
 save() const
 {
     auto obj = QtNodes::NodeDataModel::save();
+
+    obj[JSON_TYPE] = JSON_TYPE_CONST_VARIABLE;
     obj[JSON_VALUE] = _widget->text();
 
     return obj;
@@ -224,6 +228,8 @@ BooleanConstVariableNode::
 save() const
 {
     auto obj = QtNodes::NodeDataModel::save();
+
+    obj[JSON_TYPE] = JSON_TYPE_CONST_VARIABLE;
     obj[JSON_VALUE] = _widget->isChecked();
 
     return obj;
@@ -315,6 +321,8 @@ IntegerConstVariableNode::
 save() const
 {
     auto obj = QtNodes::NodeDataModel::save();
+
+    obj[JSON_TYPE] = JSON_TYPE_CONST_VARIABLE;
     obj[JSON_VALUE] = _widget->text();
 
     return obj;
@@ -406,6 +414,8 @@ UnsignedIntegerConstVariableNode::
 save() const
 {
     auto obj = QtNodes::NodeDataModel::save();
+
+    obj[JSON_TYPE] = JSON_TYPE_CONST_VARIABLE;
     obj[JSON_VALUE] = _widget->text();
 
     return obj;
@@ -485,7 +495,7 @@ Vec2ConstVariableNode::
 Vec2ConstVariableNode()
 {
     _widget = new QWidget();
-    auto validator = new QDoubleValidator(FLT_MIN, FLT_MAX, 6, _widget);
+    auto validator = new QDoubleValidator(-FLT_MAX, FLT_MAX, 6, _widget);
     validator->setLocale(QLocale{QLocale::C});
 
     auto layout = new QBoxLayout(QBoxLayout::TopToBottom, _widget);
@@ -512,6 +522,8 @@ Vec2ConstVariableNode::
 save() const
 {
     auto obj = QtNodes::NodeDataModel::save();
+
+    obj[JSON_TYPE] = JSON_TYPE_CONST_VARIABLE;
     obj[JSON_VALUE] = QJsonObject{
         {"r", _editors[0]->text()},
         {"g", _editors[1]->text()}
@@ -596,7 +608,7 @@ Vec3ConstVariableNode::
 Vec3ConstVariableNode()
 {
     _widget = new QWidget();
-    auto validator = new QDoubleValidator(FLT_MIN, FLT_MAX, 6, _widget);
+    auto validator = new QDoubleValidator(-FLT_MAX, FLT_MAX, 6, _widget);
     validator->setLocale(QLocale{QLocale::C});
 
     auto layout = new QBoxLayout(QBoxLayout::TopToBottom, _widget);
@@ -624,6 +636,8 @@ Vec3ConstVariableNode::
 save() const
 {
     auto obj = QtNodes::NodeDataModel::save();
+
+    obj[JSON_TYPE] = JSON_TYPE_CONST_VARIABLE;
     obj[JSON_VALUE] = QJsonObject{
         {"r", _editors[0]->text()},
         {"g", _editors[1]->text()},
@@ -710,7 +724,7 @@ Vec4ConstVariableNode::
 Vec4ConstVariableNode()
 {
     _widget = new QWidget();
-    auto validator = new QDoubleValidator(FLT_MIN, FLT_MAX, 6, _widget);
+    auto validator = new QDoubleValidator(-FLT_MAX, FLT_MAX, 6, _widget);
     validator->setLocale(QLocale{QLocale::C});
 
     auto layout = new QBoxLayout(QBoxLayout::TopToBottom, _widget);
@@ -739,6 +753,8 @@ Vec4ConstVariableNode::
 save() const
 {
     auto obj = QtNodes::NodeDataModel::save();
+
+    obj[JSON_TYPE] = JSON_TYPE_CONST_VARIABLE;
     obj[JSON_VALUE] = QJsonObject{
         {"r", _editors[0]->text()},
         {"g", _editors[1]->text()},

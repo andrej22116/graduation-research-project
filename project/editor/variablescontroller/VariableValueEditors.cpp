@@ -8,6 +8,7 @@
 #include <QDoubleValidator>
 #include <cinttypes>
 #include <cfloat>
+#include <QLocale>
 
 #include "VariableDataModels.hpp"
 
@@ -183,6 +184,7 @@ FloatValueEditor(QWidget* parent)
 
     auto layout = new QBoxLayout(QBoxLayout::LeftToRight, this);
     auto validator = new QDoubleValidator(FLT_MIN, FLT_MAX, 6, _valueEdit);
+    validator->setLocale(QLocale{QLocale::C});
 
     _valueEdit->setValidator(validator);
 
@@ -243,6 +245,7 @@ DoubleValueEditor(QWidget* parent)
 
     auto layout = new QBoxLayout(QBoxLayout::LeftToRight, this);
     auto validator = new QDoubleValidator(DBL_MIN, DBL_MAX, 15, _valueEdit);
+    validator->setLocale(QLocale{QLocale::C});
 
     _valueEdit->setValidator(validator);
 
@@ -351,6 +354,7 @@ Vector2ValueEditor(QWidget* parent)
     auto validator = new QDoubleValidator( static_cast<double>(FLT_MIN)
                                          , static_cast<double>(FLT_MAX)
                                          , 6, this);
+    validator->setLocale(QLocale{QLocale::C});
 
     auto layout = new QBoxLayout(QBoxLayout::LeftToRight, this);
     size_t index = 0;
@@ -415,6 +419,7 @@ Vector3ValueEditor(QWidget* parent)
     auto validator = new QDoubleValidator( static_cast<double>(FLT_MIN)
                                          , static_cast<double>(FLT_MAX)
                                          , 6, this);
+    validator->setLocale(QLocale{QLocale::C});
 
     auto layout = new QBoxLayout(QBoxLayout::LeftToRight, this);
     size_t index = 0;
@@ -479,6 +484,7 @@ Vector4ValueEditor(QWidget* parent)
     auto validator = new QDoubleValidator( static_cast<double>(FLT_MIN)
                                          , static_cast<double>(FLT_MAX)
                                          , 6, this);
+    validator->setLocale(QLocale{QLocale::C});
 
     auto layout = new QBoxLayout(QBoxLayout::LeftToRight, this);
     size_t index = 0;

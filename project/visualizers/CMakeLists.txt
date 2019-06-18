@@ -39,6 +39,11 @@ target_link_libraries( visualizers
     Qt5::Widgets
 )
 
+target_compile_definitions( visualizers
+  PRIVATE
+    SHARED_LIBRARY
+)
+
 include_directories( visualizers
     ${CMAKE_CURRENT_SOURCE_DIR}/assimp/include
 )

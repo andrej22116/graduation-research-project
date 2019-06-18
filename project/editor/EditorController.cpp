@@ -102,3 +102,16 @@ restore(const QString& path)
 
     _variableController->restore(jsonDocument["variables"].toArray());
 }
+
+
+void
+EditorController::
+onBeginCompiling()
+{
+    auto nodesObj = _scene->toJson();
+    nodesObj["variables"] = _variableController->save();
+
+    auto sources = std::make_shared<QJsonObject>(std::move(nodesObj));
+
+    emit compile(sources);
+}

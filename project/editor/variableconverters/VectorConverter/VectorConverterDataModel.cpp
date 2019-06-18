@@ -2,6 +2,7 @@
 #include "VectorConverterWidget.hpp"
 
 #include <ShaderNodeDataTypes.hpp>
+#include <nodes/Connection>
 
 QString
 VectorConverterDataModel::
@@ -38,7 +39,9 @@ dataType( QtNodes::PortType portType
     }
 
     switch( portIndex ) {
-    case 0: return NO_DATA_TYPE;
+    case 0: {
+
+    };
     default: return FloatDataType();
     }
 }
@@ -63,6 +66,7 @@ portCaption( QtNodes::PortType
         case 2: return "Green";
         case 3: return "Blue";
         case 4: return "Alpha";
+        default: return "";
     }
 }
 
@@ -78,6 +82,7 @@ save() const
 {
     auto obj = QtNodes::NodeDataModel::save();
     obj["convertor"] = _converter->save();
+    obj["in_vec_t"] = _inputVectorType.id;
     return obj;
 }
 
@@ -87,6 +92,53 @@ VectorConverterDataModel::
 restore(const QJsonObject& object)
 {
     _converter->restore(object);
+}
+
+
+void
+VectorConverterDataModel::
+inputConnectionCreated(const QtNodes::Connection& connection)
+{
+    if ( connection.getPortIndex(QtNodes::PortType::In) != 0 ) {
+        return;
+    }
+
+    _inputVectorType = connection.dataType(QtNodes::PortType::Out);
+    emit dataModelUpdated();
+}
+
+
+void
+VectorConverterDataModel::
+inputConnectionDeleted(const QtNodes::Connection& connection)
+{
+    if ( connection.getPortIndex(QtNodes::PortType::In) != 0 ) {
+        return;
+    }
+
+    _inputVectorType = NO_DATA_TYPE;
+    emit dataModelUpdated();
+}
+
+
+bool
+VectorConverterDataModel::
+acceptDataType( QtNodes::PortIndex portIndex
+              , const QtNodes::NodeDataType& nodeDataType ) const
+{
+    if ( portIndex != 0 ) {
+        return true;
+    }
+
+    if (  nodeDataType.id == "v3" && _vectorSize < 3 ) {
+        return false;
+    }
+
+    if (  nodeDataType.id == "v4" && _vectorSize < 4 ) {
+        return false;
+    }
+
+    return true;
 }
 
 

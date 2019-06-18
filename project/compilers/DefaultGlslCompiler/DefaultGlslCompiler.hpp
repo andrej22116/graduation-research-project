@@ -82,6 +82,15 @@ private:
 
     QHash<QString, QString> _dataTypeAssociation;
     QHash<QString, std::function<QString(const QJsonValue&)>> _constConvertors;
+    QHash<QString, std::function<void( const QUuid&
+                                     , const QJsonObject& )>> _functionalConvertors;
+    std::function<void( const QUuid&
+                      , const QJsonObject&
+                      , const QChar)> _makeBaseArithmetickString;
+    std::function<void( const QUuid&
+                      , const QJsonObject&
+                      , const QString&)> _makeTrigonometryString;
+
 
     std::unique_ptr<QTextStream> _textStream;
 

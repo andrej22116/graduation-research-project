@@ -147,6 +147,7 @@ public:
 private:
     NodeDataType _firstPortDataType = NO_DATA_TYPE;
     NodeDataType _secondPortDataType = NO_DATA_TYPE;
+    NodeDataType _resultDataType = NO_DATA_TYPE;
     bool _firstPortUsed = false;
     bool _secondPortUsed = false;
 };
@@ -197,6 +198,109 @@ public:
 private:
     NodeDataType _firstPortDataType = NO_DATA_TYPE;
     NodeDataType _secondPortDataType = NO_DATA_TYPE;
+    NodeDataType _resultDataType = NO_DATA_TYPE;
+    bool _firstPortUsed = false;
+    bool _secondPortUsed = false;
+};
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+class MultiplyFunctionalNode : public FunctionalNode {
+public:
+    MultiplyFunctionalNode(){}
+    ~MultiplyFunctionalNode() override {}
+
+    QString
+    name() const override;
+
+    QString
+    caption() const override;
+
+    QJsonObject
+    save() const override;
+
+    unsigned int
+    functionalNPorts( PortType portType ) const override;
+
+    NodeDataType
+    functionalDataType( PortType portType
+                      , PortIndex portIndex ) const override;
+
+    bool
+    functionalPortCaptionVisible( PortType portType
+                                , PortIndex portIndex ) const override;
+
+    QString
+    functionalPortCaption( PortType portType
+                         , PortIndex portIndex ) const override;
+
+    void
+    functionalConnectionCreated( PortIndex portIndex
+                               , const NodeDataType& dataType ) override;
+
+    void
+    functionalConnectionDeleted(PortIndex portIndex) override;
+
+    bool
+    acceptDataType( PortIndex portIndex
+                  , const NodeDataType& nodeDataType ) const override;
+
+private:
+    NodeDataType _firstPortDataType = NO_DATA_TYPE;
+    NodeDataType _secondPortDataType = NO_DATA_TYPE;
+    NodeDataType _resultDataType = NO_DATA_TYPE;
+    bool _firstPortUsed = false;
+    bool _secondPortUsed = false;
+};
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+class DivisionFunctionalNode : public FunctionalNode {
+public:
+    DivisionFunctionalNode(){}
+    ~DivisionFunctionalNode() override {}
+
+    QString
+    name() const override;
+
+    QString
+    caption() const override;
+
+    QJsonObject
+    save() const override;
+
+    unsigned int
+    functionalNPorts( PortType portType ) const override;
+
+    NodeDataType
+    functionalDataType( PortType portType
+                      , PortIndex portIndex ) const override;
+
+    bool
+    functionalPortCaptionVisible( PortType portType
+                                , PortIndex portIndex ) const override;
+
+    QString
+    functionalPortCaption( PortType portType
+                         , PortIndex portIndex ) const override;
+
+    void
+    functionalConnectionCreated( PortIndex portIndex
+                               , const NodeDataType& dataType ) override;
+
+    void
+    functionalConnectionDeleted(PortIndex portIndex) override;
+
+    bool
+    acceptDataType( PortIndex portIndex
+                  , const NodeDataType& nodeDataType ) const override;
+
+private:
+    NodeDataType _firstPortDataType = NO_DATA_TYPE;
+    NodeDataType _secondPortDataType = NO_DATA_TYPE;
+    NodeDataType _resultDataType = NO_DATA_TYPE;
     bool _firstPortUsed = false;
     bool _secondPortUsed = false;
 };
@@ -264,6 +368,9 @@ public:
     acceptDataType( PortIndex portIndex
                   , const NodeDataType& nodeDataType ) const override;
 
+    QJsonObject
+    save() const override;
+
 private:
     NodeDataType _dataType = NO_DATA_TYPE;
 };
@@ -281,9 +388,6 @@ public:
 
     QString
     caption() const override;
-
-    QJsonObject
-    save() const override;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -299,9 +403,6 @@ public:
 
     QString
     caption() const override;
-
-    QJsonObject
-    save() const override;
 
 private:
     NodeDataType _dataType;
@@ -320,9 +421,6 @@ public:
 
     QString
     caption() const override;
-
-    QJsonObject
-    save() const override;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -338,9 +436,6 @@ public:
 
     QString
     caption() const override;
-
-    QJsonObject
-    save() const override;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -356,9 +451,6 @@ public:
 
     QString
     caption() const override;
-
-    QJsonObject
-    save() const override;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -374,9 +466,6 @@ public:
 
     QString
     caption() const override;
-
-    QJsonObject
-    save() const override;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -392,9 +481,6 @@ public:
 
     QString
     caption() const override;
-
-    QJsonObject
-    save() const override;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -410,9 +496,6 @@ public:
 
     QString
     caption() const override;
-
-    QJsonObject
-    save() const override;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -428,9 +511,6 @@ public:
 
     QString
     caption() const override;
-
-    QJsonObject
-    save() const override;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -449,9 +529,6 @@ public:
 
     QString
     caption() const override;
-
-    QJsonObject
-    save() const override;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -467,9 +544,6 @@ public:
 
     QString
     caption() const override;
-
-    QJsonObject
-    save() const override;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -485,9 +559,6 @@ public:
 
     QString
     caption() const override;
-
-    QJsonObject
-    save() const override;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -503,9 +574,6 @@ public:
 
     QString
     caption() const override;
-
-    QJsonObject
-    save() const override;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -521,9 +589,6 @@ public:
 
     QString
     caption() const override;
-
-    QJsonObject
-    save() const override;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -540,9 +605,6 @@ public:
 
     QString
     caption() const override;
-
-    QJsonObject
-    save() const override;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -559,9 +621,6 @@ public:
 
     QString
     caption() const override;
-
-    QJsonObject
-    save() const override;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

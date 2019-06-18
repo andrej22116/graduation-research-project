@@ -33,6 +33,9 @@ save() const
     QJsonObject nodeJSON = QtNodes::NodeDataModel::save();
 
     nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
+    nodeJSON["in_1_t"] = _firstPortDataType.id;
+    nodeJSON["in_2_t"] = _secondPortDataType.id;
+    nodeJSON["out_t"] = _resultDataType.id;
 
     return nodeJSON;
 }
@@ -52,8 +55,7 @@ functionalDataType( QtNodes::PortType portType
                   , QtNodes::PortIndex portIndex ) const
 {
     if ( portType == QtNodes::PortType::Out ) {
-        return DataTypeInteractionRules::summaryType( _firstPortDataType
-                                                             , _secondPortDataType );
+        return _resultDataType;
     }
 
     if ( portIndex == 1 ) {
@@ -72,7 +74,7 @@ AdderFunctionalNode::
 functionalPortCaptionVisible( QtNodes::PortType portType
                             , QtNodes::PortIndex portIndex ) const
 {
-    return portType == QtNodes::PortType::Out && portIndex == 0;
+    return portType == QtNodes::PortType::Out && portIndex == 1;
 }
 
 
@@ -94,16 +96,20 @@ functionalConnectionCreated( QtNodes::PortIndex portIndex
     if ( portIndex == 1 ) {
         _firstPortUsed = true;
         _firstPortDataType = dataType;
-        emit dataModelUpdated();
     }
     else if ( portIndex == 2 ) {
         _secondPortUsed = true;
         _secondPortDataType = dataType;
-        emit dataModelUpdated();
     }
     else {
         return;
     }
+
+    _resultDataType = DataTypeInteractionRules::
+                      summaryType( _firstPortDataType
+                                 , _secondPortDataType );
+
+    emit dataModelUpdated();
 }
 
 
@@ -114,16 +120,21 @@ functionalConnectionDeleted(QtNodes::PortIndex portIndex)
     if ( portIndex == 1 ) {
         _firstPortUsed = false;
         _firstPortDataType = NO_DATA_TYPE;
-        emit dataModelUpdated();
     }
     else if ( portIndex == 2 ) {
         _secondPortUsed = false;
         _secondPortDataType = NO_DATA_TYPE;
-        emit dataModelUpdated();
     }
     else {
         return;
     }
+
+    _resultDataType = DataTypeInteractionRules::
+                      summaryType( _firstPortDataType
+                                 , _secondPortDataType );
+
+    emit dataModelUpdated();
+
 }
 
 
@@ -173,6 +184,9 @@ save() const
     QJsonObject nodeJSON = QtNodes::NodeDataModel::save();
 
     nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
+    nodeJSON["in_1_t"] = _firstPortDataType.id;
+    nodeJSON["in_2_t"] = _secondPortDataType.id;
+    nodeJSON["out_t"] = _resultDataType.id;
 
     return nodeJSON;
 }
@@ -192,8 +206,7 @@ functionalDataType( QtNodes::PortType portType
                   , QtNodes::PortIndex portIndex ) const
 {
     if ( portType == QtNodes::PortType::Out ) {
-        return DataTypeInteractionRules::summaryType( _firstPortDataType
-                                                             , _secondPortDataType );
+        return _resultDataType;
     }
 
     if ( portIndex == 1 ) {
@@ -235,16 +248,20 @@ functionalConnectionCreated( QtNodes::PortIndex portIndex
     if ( portIndex == 1 ) {
         _firstPortUsed = true;
         _firstPortDataType = dataType;
-        emit dataModelUpdated();
     }
     else if ( portIndex == 2 ) {
         _secondPortUsed = true;
         _secondPortDataType = dataType;
-        emit dataModelUpdated();
     }
     else {
         return;
     }
+
+    _resultDataType = DataTypeInteractionRules::
+                      summaryType( _firstPortDataType
+                                 , _secondPortDataType );
+
+    emit dataModelUpdated();
 }
 
 
@@ -255,16 +272,20 @@ functionalConnectionDeleted(QtNodes::PortIndex portIndex)
     if ( portIndex == 1 ) {
         _firstPortUsed = false;
         _firstPortDataType = NO_DATA_TYPE;
-        emit dataModelUpdated();
     }
     else if ( portIndex == 2 ) {
         _secondPortUsed = false;
         _secondPortDataType = NO_DATA_TYPE;
-        emit dataModelUpdated();
     }
     else {
         return;
     }
+
+    _resultDataType = DataTypeInteractionRules::
+                      summaryType( _firstPortDataType
+                                 , _secondPortDataType );
+
+    emit dataModelUpdated();
 }
 
 
@@ -382,18 +403,6 @@ caption() const
     return "To radians";
 }
 
-
-QJsonObject
-RadiansFunctionalNode::
-save() const
-{
-    QJsonObject nodeJSON = QtNodes::NodeDataModel::save();
-
-    nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
-
-    return nodeJSON;
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -410,18 +419,6 @@ DegreesFunctionalNode::
 caption() const
 {
     return "To degrees";
-}
-
-
-QJsonObject
-DegreesFunctionalNode::
-save() const
-{
-    QJsonObject nodeJSON = QtNodes::NodeDataModel::save();
-
-    nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
-
-    return nodeJSON;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -471,6 +468,19 @@ acceptDataType( QtNodes::PortIndex
     return true;
 }
 
+
+QJsonObject
+TrigonometryFunctionalNode::
+save() const
+{
+    QJsonObject nodeJSON = QtNodes::NodeDataModel::save();
+
+    nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
+    nodeJSON["out_t"] = _dataType.id;
+
+    return nodeJSON;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -487,18 +497,6 @@ SinFunctionalNode::
 caption() const
 {
     return "Sine";
-}
-
-
-QJsonObject
-SinFunctionalNode::
-save() const
-{
-    QJsonObject nodeJSON = QtNodes::NodeDataModel::save();
-
-    nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
-
-    return nodeJSON;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -519,18 +517,6 @@ caption() const
     return "Cosine";
 }
 
-
-QJsonObject
-CosFunctionalNode::
-save() const
-{
-    QJsonObject nodeJSON = QtNodes::NodeDataModel::save();
-
-    nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
-
-    return nodeJSON;
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -547,18 +533,6 @@ TanFunctionalNode::
 caption() const
 {
     return "Tangent";
-}
-
-
-QJsonObject
-TanFunctionalNode::
-save() const
-{
-    QJsonObject nodeJSON = QtNodes::NodeDataModel::save();
-
-    nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
-
-    return nodeJSON;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -579,18 +553,6 @@ caption() const
     return "Cotangent";
 }
 
-
-QJsonObject
-CtanFunctionalNode::
-save() const
-{
-    QJsonObject nodeJSON = QtNodes::NodeDataModel::save();
-
-    nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
-
-    return nodeJSON;
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -607,18 +569,6 @@ ArcSinFunctionalNode::
 caption() const
 {
     return "Arc sine";
-}
-
-
-QJsonObject
-ArcSinFunctionalNode::
-save() const
-{
-    QJsonObject nodeJSON = QtNodes::NodeDataModel::save();
-
-    nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
-
-    return nodeJSON;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -639,18 +589,6 @@ caption() const
     return "Arc cosine";
 }
 
-
-QJsonObject
-ArcCosFunctionalNode::
-save() const
-{
-    QJsonObject nodeJSON = QtNodes::NodeDataModel::save();
-
-    nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
-
-    return nodeJSON;
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -667,18 +605,6 @@ ArcTanFunctionalNode::
 caption() const
 {
     return "Arc tangent";
-}
-
-
-QJsonObject
-ArcTanFunctionalNode::
-save() const
-{
-    QJsonObject nodeJSON = QtNodes::NodeDataModel::save();
-
-    nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
-
-    return nodeJSON;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -699,18 +625,6 @@ caption() const
     return "Power";
 }
 
-
-QJsonObject
-PowFunctionalNode::
-save() const
-{
-    QJsonObject nodeJSON = QtNodes::NodeDataModel::save();
-
-    nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
-
-    return nodeJSON;
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -727,18 +641,6 @@ ExpFunctionalNode::
 caption() const
 {
     return "Exponentiation";
-}
-
-
-QJsonObject
-ExpFunctionalNode::
-save() const
-{
-    QJsonObject nodeJSON = QtNodes::NodeDataModel::save();
-
-    nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
-
-    return nodeJSON;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -759,18 +661,6 @@ caption() const
     return "Exponentiation 2";
 }
 
-
-QJsonObject
-Exp2FunctionalNode::
-save() const
-{
-    QJsonObject nodeJSON = QtNodes::NodeDataModel::save();
-
-    nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
-
-    return nodeJSON;
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -787,18 +677,6 @@ LogFunctionalNode::
 caption() const
 {
     return "Logarithm";
-}
-
-
-QJsonObject
-LogFunctionalNode::
-save() const
-{
-    QJsonObject nodeJSON = QtNodes::NodeDataModel::save();
-
-    nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
-
-    return nodeJSON;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -819,18 +697,6 @@ caption() const
     return "Logarithm base 2";
 }
 
-
-QJsonObject
-Log2FunctionalNode::
-save() const
-{
-    QJsonObject nodeJSON = QtNodes::NodeDataModel::save();
-
-    nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
-
-    return nodeJSON;
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -847,18 +713,6 @@ SqrtFunctionalNode::
 caption() const
 {
     return "Sqrt";
-}
-
-
-QJsonObject
-SqrtFunctionalNode::
-save() const
-{
-    QJsonObject nodeJSON = QtNodes::NodeDataModel::save();
-
-    nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
-
-    return nodeJSON;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -880,16 +734,7 @@ caption() const
 }
 
 
-QJsonObject
-InverseSqrtFunctionalNode::
-save() const
-{
-    QJsonObject nodeJSON = QtNodes::NodeDataModel::save();
 
-    nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
-
-    return nodeJSON;
-}
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -1053,6 +898,315 @@ BeginNode::
 portOutConnectionPolicy(QtNodes::PortIndex) const
 {
     return NodeDataModel::ConnectionPolicy::One;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+QString
+MultiplyFunctionalNode::
+name() const
+{
+    return "Multiply";
+}
+
+
+QString
+MultiplyFunctionalNode::
+caption() const
+{
+    return "Multiply";
+}
+
+
+QJsonObject
+MultiplyFunctionalNode::
+save() const
+{
+    QJsonObject nodeJSON = QtNodes::NodeDataModel::save();
+
+    nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
+    nodeJSON["in_1_t"] = _firstPortDataType.id;
+    nodeJSON["in_2_t"] = _secondPortDataType.id;
+    nodeJSON["out_t"] = _resultDataType.id;
+
+    return nodeJSON;
+}
+
+
+unsigned int
+MultiplyFunctionalNode::
+functionalNPorts(QtNodes::PortType portType) const
+{
+    return portType == QtNodes::PortType::In ? 2 : 1;
+}
+
+
+QtNodes::NodeDataType
+MultiplyFunctionalNode::
+functionalDataType( QtNodes::PortType portType
+                  , QtNodes::PortIndex portIndex ) const
+{
+    if ( portType == QtNodes::PortType::Out ) {
+        return _resultDataType;
+    }
+
+    if ( portIndex == 1 ) {
+        return _firstPortDataType;
+    }
+    else if ( portIndex == 2 ) {
+        return _secondPortDataType;
+    }
+
+    return NO_DATA_TYPE;
+}
+
+
+bool
+MultiplyFunctionalNode::
+functionalPortCaptionVisible( QtNodes::PortType
+                            , QtNodes::PortIndex ) const
+{
+    return true;
+}
+
+
+QString
+MultiplyFunctionalNode::
+functionalPortCaption( QtNodes::PortType portType
+                     , QtNodes::PortIndex portIndex) const
+{
+    if ( portType == QtNodes::PortType::Out ) {
+        return "Product";
+    }
+    return portIndex == 1 ? "Multiplicands" : "Multiplier";
+}
+
+
+void
+MultiplyFunctionalNode::
+functionalConnectionCreated( QtNodes::PortIndex portIndex
+                           , const QtNodes::NodeDataType& dataType )
+{
+
+    if ( portIndex == 1 ) {
+        _firstPortUsed = true;
+        _firstPortDataType = dataType;
+    }
+    else if ( portIndex == 2 ) {
+        _secondPortUsed = true;
+        _secondPortDataType = dataType;
+    }
+    else {
+        return;
+    }
+
+    _resultDataType = DataTypeInteractionRules::
+                      summaryType( _firstPortDataType
+                                 , _secondPortDataType );
+
+    emit dataModelUpdated();
+}
+
+
+void
+MultiplyFunctionalNode::
+functionalConnectionDeleted(QtNodes::PortIndex portIndex)
+{
+    if ( portIndex == 1 ) {
+        _firstPortUsed = false;
+        _firstPortDataType = NO_DATA_TYPE;
+    }
+    else if ( portIndex == 2 ) {
+        _secondPortUsed = false;
+        _secondPortDataType = NO_DATA_TYPE;
+    }
+    else {
+        return;
+    }
+
+    _resultDataType = DataTypeInteractionRules::
+                      summaryType( _firstPortDataType
+                                 , _secondPortDataType );
+
+    emit dataModelUpdated();
+
+}
+
+
+bool
+MultiplyFunctionalNode::
+acceptDataType( QtNodes::PortIndex
+              , const QtNodes::NodeDataType& nodeDataType ) const
+{
+    if ( !_firstPortUsed && !_secondPortUsed ) {
+        return DataTypeInteractionRules::canBeMultiped(nodeDataType);
+    }
+    else if ( _firstPortUsed ) {
+        return DataTypeInteractionRules::canBeMultiped( _firstPortDataType
+                                                   , nodeDataType );
+    }
+    else if ( _secondPortUsed ) {
+        return DataTypeInteractionRules::canBeMultiped( _secondPortDataType
+                                                      , nodeDataType );
+    }
+
+    return true;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+
+QString
+DivisionFunctionalNode::
+name() const
+{
+    return "Division";
+}
+
+
+QString
+DivisionFunctionalNode::
+caption() const
+{
+    return "Division";
+}
+
+
+QJsonObject
+DivisionFunctionalNode::
+save() const
+{
+    QJsonObject nodeJSON = QtNodes::NodeDataModel::save();
+
+    nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
+    nodeJSON["in_1_t"] = _firstPortDataType.id;
+    nodeJSON["in_2_t"] = _secondPortDataType.id;
+    nodeJSON["out_t"] = _resultDataType.id;
+
+    return nodeJSON;
+}
+
+
+unsigned int
+DivisionFunctionalNode::
+functionalNPorts(QtNodes::PortType portType) const
+{
+    return portType == QtNodes::PortType::In ? 2 : 1;
+}
+
+
+QtNodes::NodeDataType
+DivisionFunctionalNode::
+functionalDataType( QtNodes::PortType portType
+                  , QtNodes::PortIndex portIndex ) const
+{
+    if ( portType == QtNodes::PortType::Out ) {
+        return _resultDataType;
+    }
+
+    if ( portIndex == 1 ) {
+        return _firstPortDataType;
+    }
+    else if ( portIndex == 2 ) {
+        return _secondPortDataType;
+    }
+
+    return NO_DATA_TYPE;
+}
+
+
+bool
+DivisionFunctionalNode::
+functionalPortCaptionVisible( QtNodes::PortType
+                            , QtNodes::PortIndex ) const
+{
+    return true;
+}
+
+
+QString
+DivisionFunctionalNode::
+functionalPortCaption( QtNodes::PortType portType
+                     , QtNodes::PortIndex portIndex ) const
+{
+    if ( portType == QtNodes::PortType::Out ) {
+        return "Quotient";
+    }
+    return portIndex == 1 ? "Dividend" : "Divisor";
+}
+
+
+void
+DivisionFunctionalNode::
+functionalConnectionCreated( QtNodes::PortIndex portIndex
+                           , const QtNodes::NodeDataType& dataType )
+{
+
+    if ( portIndex == 1 ) {
+        _firstPortUsed = true;
+        _firstPortDataType = dataType;
+    }
+    else if ( portIndex == 2 ) {
+        _secondPortUsed = true;
+        _secondPortDataType = dataType;
+    }
+    else {
+        return;
+    }
+
+    _resultDataType = DataTypeInteractionRules::
+                      summaryType( _firstPortDataType
+                                 , _secondPortDataType );
+
+    emit dataModelUpdated();
+}
+
+
+void
+DivisionFunctionalNode::
+functionalConnectionDeleted(QtNodes::PortIndex portIndex)
+{
+    if ( portIndex == 1 ) {
+        _firstPortUsed = false;
+        _firstPortDataType = NO_DATA_TYPE;
+    }
+    else if ( portIndex == 2 ) {
+        _secondPortUsed = false;
+        _secondPortDataType = NO_DATA_TYPE;
+    }
+    else {
+        return;
+    }
+
+    _resultDataType = DataTypeInteractionRules::
+                      summaryType( _firstPortDataType
+                                 , _secondPortDataType );
+
+    emit dataModelUpdated();
+
+}
+
+
+bool
+DivisionFunctionalNode::
+acceptDataType( QtNodes::PortIndex
+              , const QtNodes::NodeDataType& nodeDataType ) const
+{
+    if ( !_firstPortUsed && !_secondPortUsed ) {
+        return DataTypeInteractionRules::canBeMultiped(nodeDataType);
+    }
+    else if ( _firstPortUsed ) {
+        return DataTypeInteractionRules::canBeMultiped( _firstPortDataType
+                                                   , nodeDataType );
+    }
+    else if ( _secondPortUsed ) {
+        return DataTypeInteractionRules::canBeMultiped( _secondPortDataType
+                                                      , nodeDataType );
+    }
+
+    return true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

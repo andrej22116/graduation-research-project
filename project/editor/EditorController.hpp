@@ -16,7 +16,13 @@ class VariablesControllerWidget;
 class EditorGraphicsScene;
 class DefaultDataModelRegistry;
 
-class EditorController : public QObject
+#if defined(SHARED_LIBRARY)
+#  define EDITOR_EXPORT Q_DECL_EXPORT
+#else
+#  define EDITOR_EXPORT Q_DECL_IMPORT
+#endif
+
+class EDITOR_EXPORT EditorController : public QObject
 {
     Q_OBJECT
 
@@ -39,6 +45,14 @@ public:
 
     void
     restore(const QString& path);
+
+signals:
+    void
+    compile(std::shared_ptr<QJsonObject> sources);
+
+public slots:
+    void
+    onBeginCompiling();
 
 private:
 

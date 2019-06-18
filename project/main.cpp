@@ -4,9 +4,9 @@
 #include "Application.hpp"
 
 int main(int argc, char** argv) {
-    QCoreApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
+    //QCoreApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
 
-    /*QSurfaceFormat format;
+    QSurfaceFormat format;
     format.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
     format.setDepthBufferSize(24);
     format.setStencilBufferSize(8);
@@ -14,7 +14,7 @@ int main(int argc, char** argv) {
     format.setRenderableType(QSurfaceFormat::OpenGL);
     format.setVersion(4, 2);
     format.setProfile(QSurfaceFormat::CoreProfile);
-    QSurfaceFormat::setDefaultFormat(format);*/
+    QSurfaceFormat::setDefaultFormat(format);
 
     QApplication application(argc, argv);
 

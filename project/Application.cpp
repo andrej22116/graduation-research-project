@@ -8,6 +8,7 @@
 
 #include <editor/EditorController.hpp>
 #include <visualizers/VisualizerController.hpp>
+#include <compilers/CompilerController.hpp>
 
 Application::
 Application( QApplication& application
@@ -17,7 +18,7 @@ Application( QApplication& application
     , _welcomWindowDialog(new WelcomeWindowDialog())
     , _editorController(new EditorController(this))
     , _visualizerController(new VisualizerController(this))
-    , _compillerController(nullptr)
+    , _compilerController(new CompilerController(this))
     , _editorWidget(new QDockWidget("Shader node editor", this))
     , _variablesWidget(new QDockWidget("Variables", this))
     , _nodesWidget(new QDockWidget("Nodes store", this))
@@ -60,6 +61,18 @@ Application( QApplication& application
 
     createMenu();
 
+    connect( _editorController.get()
+           , &EditorController::compile
+           , _compilerController.get()
+           , [this](std::shared_ptr<QJsonObject> sources){
+        _compilerController->compile("", sources);
+    });
+
+    connect( _compilerController.get()
+           , &CompilerController::compileComplete
+           , _visualizerController.get()
+           , &VisualizerController::setFragmentShaderText );
+
     auto args = _application.arguments();
     if ( args.size() == 2 ) {
         startProject(args[1]);
@@ -74,7 +87,7 @@ void
 Application::
 startProject(const QString& projectPath)
 {
-    //this->show();
+    _solutionPath = projectPath;
     this->showMaximized();
     _welcomWindowDialog->hide();
 
@@ -82,6 +95,8 @@ startProject(const QString& projectPath)
     onCreateVisualizerDockWidget();
     onCreateEditorVariablesDockWidget();
     onCreateEditorNodesStoreDockWidget();
+
+    _editorController->restore(projectPath);
 }
 
 
@@ -183,17 +198,27 @@ onCreateVisualizerDockWidget()
 void
 Application::
 onSaveSolution()
+{   
+    _editorController->save(_solutionPath);
+}
+
+
+void
+Application::
+onExportProject()
 {
 
 }
 
-#include <QDebug>
+
 void
 Application::
 createMenu()
 {
     auto menuBar = new QMenuBar(this);
     setMenuBar(menuBar);
+
+///////////////////////////////////////////////////////////////////////////////
 
     auto file = menuBar->addMenu("&File");
 
@@ -204,34 +229,73 @@ createMenu()
     open->setShortcut(QKeySequence("Ctrl+O"));
 
     auto save = file->addAction("Save project");
+    connect( save
+           , &QAction::triggered
+           , this
+           , &Application::onSaveSolution );
     save->setShortcut(QKeySequence("Ctrl+S"));
 
-    auto saveAs = file->addAction("Save project as...");
-    saveAs->setShortcut(QKeySequence("Ctrl+Shift+S"));
+    /*auto saveAs = file->addAction("Save project as...");
+    saveAs->setShortcut(QKeySequence("Ctrl+Shift+S"));*/
+
+    file->addSeparator();
+
+    auto exportProj = file->addAction("Export to...");
+    connect( exportProj
+           , &QAction::triggered
+           , this
+           , &Application::onExportProject );
 
     file->addSeparator();
 
     auto exit = file->addAction("Exit");
-    connect(exit, &QAction::triggered, this, &Application::onExit);
+    connect( exit
+           , &QAction::triggered
+           , this
+           , &Application::onExit );
     exit->setShortcut({"Alt+F4"});
+
+///////////////////////////////////////////////////////////////////////////////
+
+    auto tools = menuBar->addMenu("&Tools");
+    auto compile = tools->addAction("Compile");
+    connect( compile
+           , &QAction::triggered
+           , _editorController.get()
+           , &EditorController::onBeginCompiling );
+    compile->setShortcut({"Ctrl+B"});
+
+///////////////////////////////////////////////////////////////////////////////
 
     //auto edit = menuBar->addMenu("&Edit");
     auto window = menuBar->addMenu("&Window");
 
     auto openEditor = window->addAction("Editor window");
-    connect(openEditor, &QAction::triggered, this, &Application::onCreateEditorDockWidget);
+    connect( openEditor
+           , &QAction::triggered
+           , this
+           , &Application::onCreateEditorDockWidget );
     openEditor->setShortcut({"Ctrl+Shift+E"});
 
     auto openVariables =  window->addAction("Variables window");
-    connect(openVariables, &QAction::triggered, this, &Application::onCreateEditorVariablesDockWidget);
+    connect( openVariables
+           , &QAction::triggered
+           , this
+           , &Application::onCreateEditorVariablesDockWidget );
     openVariables->setShortcut({"Ctrl+Shift+V"});
 
     auto openNodesStore = window->addAction("Nodes store window");
-    connect(openNodesStore, &QAction::triggered, this, &Application::onCreateEditorNodesStoreDockWidget);
+    connect( openNodesStore
+           , &QAction::triggered
+           , this
+           , &Application::onCreateEditorNodesStoreDockWidget );
     openNodesStore->setShortcut({"Ctrl+Shift+N"});
 
     auto openVisualizer = window->addAction("Visualizer window");
-    connect(openVisualizer, &QAction::triggered, this, &Application::onCreateVisualizerDockWidget);
+    connect( openVisualizer
+           , &QAction::triggered
+           , this
+           , &Application::onCreateVisualizerDockWidget );
     openVisualizer->setShortcut({"Ctrl+Alt+V"});
 
     /*auto action = file.addAction( "&Create project"

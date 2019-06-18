@@ -21,51 +21,204 @@ DefaultGlslCompiler()
     _nodesTypesHandlers["var"] = &DefaultGlslCompiler::handleVariableNode;
     _nodesTypesHandlers["fun"] = &DefaultGlslCompiler::handleFunctionalNode;
 
+    _dataTypeAssociation["Boolean"] = "bool";
+    _dataTypeAssociation["Float"] = "float";
+    _dataTypeAssociation["Double"] = "double";
+    _dataTypeAssociation["Integer"] = "int";
+    _dataTypeAssociation["Unsigned integer"] = "uint";
+    _dataTypeAssociation["Vec2"] = "vec2";
+    _dataTypeAssociation["Vec3"] = "vec3";
+    _dataTypeAssociation["Vec4"] = "vec4";
+    _dataTypeAssociation["bool"] = "bool";
+    _dataTypeAssociation["float"] = "float";
+    _dataTypeAssociation["double"] = "double";
+    _dataTypeAssociation["int"] = "int";
+    _dataTypeAssociation["uint"] = "uint";
+    _dataTypeAssociation["v2"] = "vec2";
+    _dataTypeAssociation["v3"] = "vec3";
+    _dataTypeAssociation["v4"] = "vec4";
+    _dataTypeAssociation["const_bool"] = "bool";
     _dataTypeAssociation["const_float"] = "float";
     _dataTypeAssociation["const_double"] = "double";
-    _dataTypeAssociation["const_bool"] = "bool";
     _dataTypeAssociation["const_integer"] = "int";
     _dataTypeAssociation["const_uinteger"] = "uint";
-    _dataTypeAssociation["const_bool"] = "bool";
     _dataTypeAssociation["const_vec2"] = "vec2";
     _dataTypeAssociation["const_vec3"] = "vec3";
     _dataTypeAssociation["const_vec4"] = "vec4";
 
-    _constConvertors["const_float"] = [](const QJsonValue& value){
+    _constConvertors["float"] = [](const QJsonValue& value){
         return QString::number(value.toDouble());
     };
-    _constConvertors["const_double"] = [](const QJsonValue& value){
+    _constConvertors["double"] = [](const QJsonValue& value){
         return QString::number(value.toDouble());
     };
-    _constConvertors["const_bool"] = [](const QJsonValue& value){
+    _constConvertors["bool"] = [](const QJsonValue& value){
         return QString::number(value.toBool());
     };
-    _constConvertors["const_integer"] = [](const QJsonValue& value){
+    _constConvertors["int"] = [](const QJsonValue& value){
         return QString::number(value.toInt());
     };
-    _constConvertors["const_uinteger"] = [](const QJsonValue& value){
+    _constConvertors["uint"] = [](const QJsonValue& value){
         return QString::number(value.toString().toUInt());
     };
-    _constConvertors["const_bool"] = [](const QJsonValue& value){
-        return QString::number(value.toBool());
-    };
-    _constConvertors["const_vec2"] = [](const QJsonValue& value){
+    _constConvertors["vec2"] = [](const QJsonValue& value){
         auto obj = value.toObject();
         return QString("vec2(%1, %2)").arg(obj["r"].toString())
                                       .arg(obj["g"].toString());
     };
-    _constConvertors["const_vec3"] = [](const QJsonValue& value){
+    _constConvertors["vec3"] = [](const QJsonValue& value){
         auto obj = value.toObject();
         return QString("vec3(%1, %2, %3)").arg(obj["r"].toString())
                                           .arg(obj["g"].toString())
                                           .arg(obj["b"].toString());
     };
-    _constConvertors["const_vec4"] = [](const QJsonValue& value){
+    _constConvertors["vec4"] = [](const QJsonValue& value){
         auto obj = value.toObject();
         return QString("vec4(%1, %2, %3, %4)").arg(obj["r"].toString())
                                               .arg(obj["g"].toString())
                                               .arg(obj["b"].toString())
                                               .arg(obj["a"].toString());
+    };
+
+
+    _makeBaseArithmetickString = [this]( const QUuid& id
+                                       , const QJsonObject& obj
+                                       , const QChar operation ) {
+        auto varName = QString("%1_res_%2")
+                       .arg(obj["name"].toString())
+                       .arg(_f_res_index++);
+
+        auto firstArgType = obj["in_1_t"].toString();
+        auto secondArgType = obj["in_2_t"].toString();
+        auto resultArgType = obj["out_t"].toString();
+        auto correctResultTypeName = _dataTypeAssociation[resultArgType];
+        auto firstArg = _nodesStringValuesForDeploy[_dependencis[id][1]];
+        auto secondArg = _nodesStringValuesForDeploy[_dependencis[id][2]];
+        if ( firstArgType != resultArgType ) {
+            firstArg = QString("((%1)%2)")
+                       .arg(correctResultTypeName)
+                       .arg(firstArg);
+        }
+        if ( secondArgType != resultArgType ) {
+            secondArg = QString("((%1)%2)")
+                        .arg(correctResultTypeName)
+                        .arg(secondArg);
+        }
+
+        _nodesStringValuesForDeploy[id] = varName;
+        _finalNodesStringValues.push_back(
+                    QString("%1 %2 = %3 %4 %5;")
+                    .arg(correctResultTypeName)
+                    .arg(varName)
+                    .arg(firstArg)
+                    .arg(operation)
+                    .arg(secondArg));
+    };
+
+    _functionalConvertors["Adder"] = [&]( const QUuid& id
+                                        , const QJsonObject& obj ) {
+        _makeBaseArithmetickString(id, obj, '+');
+    };
+    _functionalConvertors["Substractor"] = [&]( const QUuid& id
+                                              , const QJsonObject& obj ) {
+        _makeBaseArithmetickString(id, obj, '-');
+    };
+    _functionalConvertors["Division"] = [&]( const QUuid& id
+                                           , const QJsonObject& obj ) {
+        _makeBaseArithmetickString(id, obj, '/');
+    };
+    _functionalConvertors["Multiply"] = [&]( const QUuid& id
+                                           , const QJsonObject& obj ) {
+        _makeBaseArithmetickString(id, obj, '*');
+    };
+
+    _makeTrigonometryString = [this]( const QUuid& id
+                                    , const QJsonObject& obj
+                                    , const QString& funName ) {
+        auto varName = QString("%1_res_%2")
+                       .arg(funName)
+                       .arg(_f_res_index++);
+
+        auto resultType = obj["out_t"].toString();
+        if ( resultType != "float"
+             && resultType != "v2"
+             && resultType != "v3"
+             && resultType != "v4" ) {
+            resultType = QString("(float)%1")
+                         .arg(_dataTypeAssociation[resultType]);
+        }
+        else {
+            resultType = _dataTypeAssociation[resultType];
+        }
+
+
+        _nodesStringValuesForDeploy[id] = varName;
+        _finalNodesStringValues.push_back(
+                    QString("%1 %2 = %3(%4);")
+                    .arg(resultType)
+                    .arg(varName)
+                    .arg(funName)
+                    .arg(_nodesStringValuesForDeploy[_dependencis[id][1]]));
+    };
+    _functionalConvertors["To radians"] = [&]( const QUuid& id
+                                        , const QJsonObject& obj ) {
+        _makeTrigonometryString(id, obj, "");
+    };
+    _functionalConvertors["To degrees"] = [&]( const QUuid& id
+                                              , const QJsonObject& obj ) {
+        _makeTrigonometryString(id, obj, "");
+    };
+    _functionalConvertors["Sine"] = [&]( const QUuid& id
+                                           , const QJsonObject& obj ) {
+        _makeTrigonometryString(id, obj, "sin");
+    };
+    _functionalConvertors["Cosine"] = [&]( const QUuid& id
+                                           , const QJsonObject& obj ) {
+        _makeTrigonometryString(id, obj, "cos");
+    };
+    _functionalConvertors["Tangent"] = [&]( const QUuid& id
+                                           , const QJsonObject& obj ) {
+        _makeTrigonometryString(id, obj, "tan");
+    };
+    _functionalConvertors["Cotangent"] = [&]( const QUuid& id
+                                           , const QJsonObject& obj ) {
+        _makeTrigonometryString(id, obj, "tan");
+    };
+    _functionalConvertors["Arc sine"] = [&]( const QUuid& id
+                                           , const QJsonObject& obj ) {
+        _makeTrigonometryString(id, obj, "asin");
+    };
+    _functionalConvertors["Arc cosine"] = [&]( const QUuid& id
+                                           , const QJsonObject& obj ) {
+        _makeTrigonometryString(id, obj, "acos");
+    };
+    _functionalConvertors["Arc tangent"] = [&]( const QUuid& id
+                                           , const QJsonObject& obj ) {
+        _makeTrigonometryString(id, obj, "atan");
+    };
+    _functionalConvertors["Exponentiation"] = [&]( const QUuid& id
+                                           , const QJsonObject& obj ) {
+        _makeTrigonometryString(id, obj, "exp");
+    };
+    _functionalConvertors["Exponentiation 2"] = [&]( const QUuid& id
+                                           , const QJsonObject& obj ) {
+        _makeTrigonometryString(id, obj, "exp2");
+    };
+    _functionalConvertors["Logarithm"] = [&]( const QUuid& id
+                                           , const QJsonObject& obj ) {
+        _makeTrigonometryString(id, obj, "log");
+    };
+    _functionalConvertors["Logarithm base 2"] = [&]( const QUuid& id
+                                           , const QJsonObject& obj ) {
+        _makeTrigonometryString(id, obj, "log2");
+    };
+    _functionalConvertors["Sqrt"] = [&]( const QUuid& id
+                                           , const QJsonObject& obj ) {
+        _makeTrigonometryString(id, obj, "sqrt");
+    };
+    _functionalConvertors["Inverse sqrt"] = [&]( const QUuid& id
+                                           , const QJsonObject& obj ) {
+        _makeTrigonometryString(id, obj, "inversesqrt");
     };
 }
 
@@ -115,14 +268,17 @@ hashVariables()
     auto variables = sourceObj["variables"].toArray();
     for ( auto variable : variables) {
         auto variableObj = variable.toObject();
-        //auto type = variableObj[""].toString();
-        //auto name = variableObj[""].toString();
-        //auto value =
+        auto type = _dataTypeAssociation[variableObj["type"].toString()];
+        auto name = variableObj["name"]
+                    .toString()
+                    .split(QRegExp("\\W+"), QString::SkipEmptyParts)
+                    .join("");
+        auto value = _constConvertors[type](variableObj["value"]);
 
-        //_finalNodesStringValues.push_back( QString("%1 %2 = %3;")
-        //                                   .arg(type)
-        //                                   .arg(name)
-        //                                   .arg(value)
+        _finalNodesStringValues.push_back( QString("%1 %2 = %3;")
+                                           .arg(type)
+                                           .arg(name)
+                                           .arg(value));
     }
 
     _procent += 7.0;
@@ -318,8 +474,8 @@ DefaultGlslCompiler::
 handleConstVariableNode( const QUuid& id
                        , const QJsonObject& obj )
 {
-    auto string = _constConvertors[obj["name"].toString()](obj["val"]);
-    _nodesStringValuesForDeploy[id] = string;
+    auto typeName = _dataTypeAssociation[obj["name"].toString()];
+    _nodesStringValuesForDeploy[id] = _constConvertors[typeName](obj["val"]);
 }
 
 
@@ -328,20 +484,7 @@ DefaultGlslCompiler::
 handleFunctionalNode( const QUuid& id
                     , const QJsonObject& obj )
 {
-    auto name = obj["name"].toString();
-
-    if ( name == "Adder" ) {
-        auto varName = QString("%1_%2")
-                       .arg("add_res")
-                       .arg(_f_res_index++);
-        _nodesStringValuesForDeploy[id] = varName;
-        _finalNodesStringValues.push_back(
-                    QString("%1 %2 = %3 + %4;")
-                    .arg("vec4")
-                    .arg(varName)
-                    .arg(_nodesStringValuesForDeploy[_dependencis[id][1]])
-                    .arg(_nodesStringValuesForDeploy[_dependencis[id][2]]));
-    }
+    _functionalConvertors[obj["name"].toString()](id, obj);
 }
 
 
@@ -350,5 +493,6 @@ DefaultGlslCompiler::
 handleConverterNode( const QUuid& id
                    , const QJsonObject& obj )
 {
-
+    //auto string = _constConvertors[obj["name"].toString()](obj["val"]);
+    //_nodesStringValuesForDeploy[id] = string;
 }

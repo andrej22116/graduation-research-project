@@ -2,6 +2,8 @@
 #include "TargetSceneWrapperWidget.hpp"
 #include "OpenGLScene.hpp"
 
+#include <QFile>
+
 VisualizerController::
 VisualizerController(QObject *parent)
     : QObject(parent)
@@ -11,12 +13,14 @@ VisualizerController(QObject *parent)
                 std::make_shared<OpenGLScene>(_wrapperWidget.get()));
 }
 
+
 QWidget*
 VisualizerController::
 widget()
 {
     return _wrapperWidget.get();
 }
+
 
 void
 VisualizerController::
@@ -25,6 +29,7 @@ updateSupportedDevicesList()
 
 }
 
+
 const QStringList&
 VisualizerController::
 supportedDevicesList() const
@@ -32,9 +37,20 @@ supportedDevicesList() const
     return _supportedDevices;
 }
 
+
 void
 VisualizerController::
 setVisualizer(const QString& /*visualizerName*/)
 {
 
+}
+
+
+void
+VisualizerController::
+setFragmentShaderText(const QString& text)
+{
+    _wrapperWidget->targetSceneRenderer()->setFragmentShaderText(text);
+    _wrapperWidget->targetSceneRenderer()->compileShader();
+    _wrapperWidget->targetSceneRenderer()->render();
 }

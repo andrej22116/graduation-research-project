@@ -20,9 +20,11 @@ registerModels()
 {
     registerModel<AdderFunctionalNode>("Math");
     registerModel<SubtractorFunctionalNode>("Math");
+    registerModel<MultiplyFunctionalNode>("Math");
+    registerModel<DivisionFunctionalNode>("Math");
 
 ///////////////////////////////////////////////////////////////////////////////
-    registerModel<ConditionFunctionalNode>("Logick");
+    //registerModel<ConditionFunctionalNode>("Logick");
 
 ///////////////////////////////////////////////////////////////////////////////
     registerModel<RadiansFunctionalNode>("Trigonometry");
@@ -36,7 +38,7 @@ registerModels()
     registerModel<ArcTanFunctionalNode>("Trigonometry");
 
 ///////////////////////////////////////////////////////////////////////////////
-    registerModel<PowFunctionalNode>("Exponential");
+    //registerModel<PowFunctionalNode>("Exponential");
     registerModel<ExpFunctionalNode>("Exponential");
     registerModel<Exp2FunctionalNode>("Exponential");
     registerModel<LogFunctionalNode>("Exponential");
@@ -67,7 +69,7 @@ registerModels()
                 VectorConverterDataModel::Vector4Factory(),
                 "Vector convertors"
     );
-    registerModel<VectorDecomposConverter>(
+    /*registerModel<VectorDecomposConverter>(
                 VectorDecomposConverter::Vector2Factory(),
                 "Vector convertors"
     );
@@ -78,7 +80,7 @@ registerModels()
     registerModel<VectorDecomposConverter> (
                 VectorDecomposConverter::Vector4Factory(),
                 "Vector convertors"
-    );
+    );*/
 
 ///////////////////////////////////////////////////////////////////////////////
     registerModel<PrimitiveNodeTypeConverter> (

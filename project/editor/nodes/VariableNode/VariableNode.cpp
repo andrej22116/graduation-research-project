@@ -217,6 +217,8 @@ VariableNode::
 save() const
 {
     auto obj = QtNodes::NodeDataModel::save();
+
+    obj[JSON_TYPE] = JSON_TYPE_VARIABLE;
     obj[JSON_NAME] = _name;
 
     switch ( _nodeType ) {

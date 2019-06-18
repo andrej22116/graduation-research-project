@@ -54,6 +54,11 @@ target_link_libraries( editor
 	nodes
 )
 
+target_compile_definitions( editor
+  PRIVATE
+    SHARED_LIBRARY
+)
+
 set(CMAKE_AUTOMOC ON)
 
 target_compile_options( editor

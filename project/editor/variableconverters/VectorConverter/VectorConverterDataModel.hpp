@@ -10,6 +10,7 @@ using QtNodes::PortType;
 using QtNodes::PortIndex;
 using QtNodes::NodeDataType;
 using QtNodes::NodeData;
+using QtNodes::Connection;
 
 class VectorConverterWidget;
 
@@ -49,6 +50,16 @@ public:
     void
     restore(const QJsonObject& object) override;
 
+    void
+    inputConnectionCreated(const Connection& connection) override;
+
+    void
+    inputConnectionDeleted(const Connection& connection) override;
+
+    bool
+    acceptDataType( PortIndex portIndex
+                  , const NodeDataType& nodeDataType ) const override;
+
 
     using Factory = std::function<std::unique_ptr<NodeDataModel>()>;
 
@@ -60,12 +71,6 @@ public:
 
     static Factory
     Vector4Factory();
-
-
-    /// @warning This is dummy!
-    void setInData(std::shared_ptr<NodeData>, PortIndex) override {}
-    /// @warning This is dummy!
-    std::shared_ptr<NodeData> outData(PortIndex) override { return nullptr; }
 
 private:
     void
@@ -80,6 +85,7 @@ private:
     QString _caption;
     VectorConverterWidget* _converter;
     NodeDataType _dataType;
+    NodeDataType _inputVectorType;
 };
 
 #endif // VECTORCONVERTERDATAMODEL_HPP

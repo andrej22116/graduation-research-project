@@ -6,7 +6,13 @@
 
 class TargetSceneWrapperWidget;
 
-class VisualizerController : public QObject
+#if defined(SHARED_LIBRARY)
+#  define VISUALIZER_EXPORT Q_DECL_EXPORT
+#else
+#  define VISUALIZER_EXPORT Q_DECL_IMPORT
+#endif
+
+class VISUALIZER_EXPORT VisualizerController : public QObject
 {
     Q_OBJECT
 
@@ -24,6 +30,10 @@ public:
 
     void
     setVisualizer(const QString& visualizerName = "");
+
+public slots:
+    void
+    setFragmentShaderText(const QString& text);
 
 private:
     std::shared_ptr<TargetSceneWrapperWidget> _wrapperWidget;

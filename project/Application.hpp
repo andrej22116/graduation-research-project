@@ -7,7 +7,7 @@
 class WelcomeWindowDialog;
 class EditorController;
 class VisualizerController;
-class CompillerController;
+class CompilerController;
 
 class Application : public QMainWindow
 {
@@ -55,6 +55,8 @@ private slots:
     void
     onSaveSolution();
 
+    void
+    onExportProject();
 
 private:
     void
@@ -67,7 +69,7 @@ private:
     std::shared_ptr<WelcomeWindowDialog> _welcomWindowDialog;
     std::shared_ptr<EditorController> _editorController;
     std::shared_ptr<VisualizerController> _visualizerController;
-    std::shared_ptr<CompillerController> _compillerController;
+    std::shared_ptr<CompilerController> _compilerController;
 
     QDockWidget* _editorWidget;
     QDockWidget* _variablesWidget;

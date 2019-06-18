@@ -61,7 +61,7 @@ save() const
 {
     auto obj = QtNodes::NodeDataModel::save();
 
-    obj["from"] = _inDataType.id;
+    obj["to"] = _outDataType.id;
 
     return obj;
 }

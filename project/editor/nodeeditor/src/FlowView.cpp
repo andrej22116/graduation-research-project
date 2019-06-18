@@ -45,12 +45,12 @@ FlowView(QWidget *parent)
   setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-  QGLFormat format(QGL::SampleBuffers);
+  /*QGLFormat format(QGL::SampleBuffers);
   format.setDepthBufferSize(24);
   format.setStencilBufferSize(8);
   format.setSamples(8);
   auto viewport = new QGLWidget(QGLFormat(format));
-  setViewport(viewport);
+  setViewport(viewport);*/
   //setViewport(new QOpenGLWidget);
 }
 

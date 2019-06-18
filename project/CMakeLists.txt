@@ -46,11 +46,13 @@ add_executable(${PROJECT_NAME}
 
 add_subdirectory(editor)
 add_subdirectory(visualizers)
+add_subdirectory(compilers)
 
 target_link_libraries(${PROJECT_NAME}
   PUBLIC
     editor
     visualizers
+    compilers
 )
 
 set_target_properties(${PROJECT_NAME}

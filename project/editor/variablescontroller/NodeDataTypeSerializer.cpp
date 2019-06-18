@@ -65,7 +65,7 @@ NodeDataTypeSerializer()
         }
 
         QJsonObject obj;
-        obj["value"] = static_cast<double>(model->value);
+        obj["value"] = QString::number(static_cast<double>(model->value));
 
         return obj;
     }, []( const QJsonObject& json
@@ -86,7 +86,7 @@ NodeDataTypeSerializer()
         }
 
         QJsonObject obj;
-        obj["value"] = model->value;
+        obj["value"] = QString::number(model->value);
 
         return obj;
     }, []( const QJsonObject& json
@@ -128,8 +128,8 @@ NodeDataTypeSerializer()
         }
 
         QJsonObject obj;
-        obj["value_r"] = static_cast<double>(model->value[0]);
-        obj["value_g"] = static_cast<double>(model->value[1]);
+        obj["r"] = QString::number(static_cast<double>(model->value[0]));
+        obj["g"] = QString::number(static_cast<double>(model->value[1]));
 
         return obj;
     }, []( const QJsonObject& json
@@ -139,8 +139,8 @@ NodeDataTypeSerializer()
             return;
         }
 
-        model->value[0] = static_cast<float>(json["value_r"].toDouble());
-        model->value[1] = static_cast<float>(json["value_g"].toDouble());
+        model->value[0] = static_cast<float>(json["r"].toDouble());
+        model->value[1] = static_cast<float>(json["g"].toDouble());
     });
 
     registerDataType<Vec3DataType>(
@@ -151,9 +151,9 @@ NodeDataTypeSerializer()
         }
 
         QJsonObject obj;
-        obj["value_r"] = static_cast<double>(model->value[0]);
-        obj["value_g"] = static_cast<double>(model->value[1]);
-        obj["value_b"] = static_cast<double>(model->value[2]);
+        obj["r"] = QString::number(static_cast<double>(model->value[0]));
+        obj["g"] = QString::number(static_cast<double>(model->value[1]));
+        obj["b"] = QString::number(static_cast<double>(model->value[2]));
 
         return obj;
     }, []( const QJsonObject& json
@@ -163,9 +163,9 @@ NodeDataTypeSerializer()
             return;
         }
 
-        model->value[0] = static_cast<float>(json["value_r"].toDouble());
-        model->value[1] = static_cast<float>(json["value_g"].toDouble());
-        model->value[2] = static_cast<float>(json["value_b"].toDouble());
+        model->value[0] = static_cast<float>(json["r"].toDouble());
+        model->value[1] = static_cast<float>(json["g"].toDouble());
+        model->value[2] = static_cast<float>(json["b"].toDouble());
     });
 
     registerDataType<Vec4DataType>(
@@ -176,10 +176,10 @@ NodeDataTypeSerializer()
         }
 
         QJsonObject obj;
-        obj["value_r"] = static_cast<double>(model->value[0]);
-        obj["value_g"] = static_cast<double>(model->value[1]);
-        obj["value_b"] = static_cast<double>(model->value[2]);
-        obj["value_a"] = static_cast<double>(model->value[3]);
+        obj["r"] = QString::number(static_cast<double>(model->value[0]));
+        obj["g"] = QString::number(static_cast<double>(model->value[1]));
+        obj["b"] = QString::number(static_cast<double>(model->value[2]));
+        obj["a"] = QString::number(static_cast<double>(model->value[3]));
 
         return obj;
     }, []( const QJsonObject& json
@@ -189,10 +189,10 @@ NodeDataTypeSerializer()
             return;
         }
 
-        model->value[0] = static_cast<float>(json["value_r"].toDouble());
-        model->value[1] = static_cast<float>(json["value_g"].toDouble());
-        model->value[2] = static_cast<float>(json["value_b"].toDouble());
-        model->value[3] = static_cast<float>(json["value_a"].toDouble());
+        model->value[0] = static_cast<float>(json["r"].toDouble());
+        model->value[1] = static_cast<float>(json["g"].toDouble());
+        model->value[2] = static_cast<float>(json["b"].toDouble());
+        model->value[3] = static_cast<float>(json["a"].toDouble());
     });
 }
 
