@@ -69,15 +69,25 @@ save(const QString& path) const
 {
     if (!path.isEmpty())
     {
-        auto nodesObj = _scene->toJson();
-        nodesObj["variables"] = _variableController->save();
+        auto json = save();
 
         QFile file(path);
         if (file.open(QIODevice::WriteOnly))
         {
-            file.write(QJsonDocument{nodesObj}.toJson());
+            file.write(QJsonDocument{json}.toJson());
         }
     }
+}
+
+
+QJsonObject
+EditorController::
+save() const
+{
+    auto json = _scene->toJson();
+    json["variables"] = _variableController->save();
+
+    return json;
 }
 
 

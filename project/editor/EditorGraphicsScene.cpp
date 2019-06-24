@@ -9,29 +9,24 @@
 #include <unordered_map>
 
 
-EditorGraphicsScene::EditorGraphicsScene( std::shared_ptr<QtNodes::DataModelRegistry> registry
-                                        , QObject* parent) :
-    QtNodes::FlowScene(registry, parent)
+EditorGraphicsScene::
+EditorGraphicsScene( std::shared_ptr<QtNodes::DataModelRegistry> registry
+                   , QObject* parent)
+    : QtNodes::FlowScene(registry, parent)
 {
 
 }
 
-EditorGraphicsScene::EditorGraphicsScene(QObject* parent) :
-    QtNodes::FlowScene(parent)
+EditorGraphicsScene::
+EditorGraphicsScene(QObject* parent)
+    : QtNodes::FlowScene(parent)
 {
 }
 
-void EditorGraphicsScene::dragEnterEvent(QGraphicsSceneDragDropEvent* event)
-{
-    if ( event->mimeData()->hasFormat("ShaderNodes/Node") ) {
-        event->accept();
-    }
-    else {
-        event->ignore();
-    }
-}
 
-void EditorGraphicsScene::dragMoveEvent(QGraphicsSceneDragDropEvent* event)
+void
+EditorGraphicsScene::
+dragEnterEvent(QGraphicsSceneDragDropEvent* event)
 {
     if ( event->mimeData()->hasFormat("ShaderNodes/Node") ) {
         event->accept();
@@ -41,7 +36,23 @@ void EditorGraphicsScene::dragMoveEvent(QGraphicsSceneDragDropEvent* event)
     }
 }
 
-void EditorGraphicsScene::dropEvent(QGraphicsSceneDragDropEvent* event)
+
+void
+EditorGraphicsScene::
+dragMoveEvent(QGraphicsSceneDragDropEvent* event)
+{
+    if ( event->mimeData()->hasFormat("ShaderNodes/Node") ) {
+        event->accept();
+    }
+    else {
+        event->ignore();
+    }
+}
+
+
+void
+EditorGraphicsScene::
+dropEvent(QGraphicsSceneDragDropEvent* event)
 {
     if ( event->mimeData()->hasFormat("ShaderNodes/Node") ) {
         auto data = event->mimeData()->data("ShaderNodes/Node");

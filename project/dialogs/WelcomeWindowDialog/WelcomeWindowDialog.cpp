@@ -5,6 +5,7 @@
 #include <QFileDialog>
 
 #include <QDebug>
+#include <QMessageBox>
 #include <QGraphicsDropShadowEffect>
 
 
@@ -30,6 +31,16 @@ WelcomeWindowDialog(QWidget *parent) :
            , &QPushButton::clicked
            , this
            , &WelcomeWindowDialog::onOpenSolutionCreatorPage );
+
+    connect( ui->selectSolutionPathButton
+           , &QPushButton::clicked
+           , this
+           , &WelcomeWindowDialog::onSelectSolutionFolder );
+
+    connect( ui->createNewSolutionButton
+           , &QPushButton::clicked
+           , this
+           , &WelcomeWindowDialog::onCreateNewSolution );
 
     connect( ui->openProjectButton
            , &QPushButton::clicked
@@ -72,6 +83,22 @@ onSelectSolutionPath()
 
 void
 WelcomeWindowDialog::
+onSelectSolutionFolder()
+{
+    auto folder = QFileDialog::getExistingDirectory( this
+                                                   , "Select solution path"
+                                                   , "" );
+
+    if ( folder.isEmpty() ) {
+        return;
+    }
+
+    ui->editPath->setText(folder);
+}
+
+
+void
+WelcomeWindowDialog::
 onOpenSolutionCreatorPage()
 {
     ui->labelWidget->show();
@@ -93,9 +120,27 @@ void
 WelcomeWindowDialog::
 onCreateNewSolution()
 {
+    if ( ui->editPath->text().isEmpty()
+         || ui->editName->text().isEmpty() ) {
+        QMessageBox::critical( this
+                             , "Error!"
+                             , QString("Invalid data!") );
+    }
+
+    if ( !QDir(ui->editPath->text()).exists() ) {
+        QMessageBox::critical( this
+                             , "Error!"
+                             , QString("Folder \"%1\" not exists!")
+                               .arg(ui->editPath->text()) );
+        return;
+    }
+
     QJsonObject solutionProperties;
 
-    emit createSolution("", "", true, solutionProperties);
+    emit createSolution(ui->editPath->text()
+                       , ui->editName->text()
+                       , ui->checkBoxCreateFolder->isChecked()
+                       , solutionProperties);
 }
 
 

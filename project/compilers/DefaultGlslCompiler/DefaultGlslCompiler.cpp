@@ -16,10 +16,28 @@ DefaultGlslCompiler()
     QLocale::setDefault(QLocale::C);
 
     _reservedVariablesNames["Result color"] = "FinalColor";
+    _reservedVariablesIncludes["FinalColor"] = "out vec4 FinalColor;";
+
+    _reservedVariablesNames["Fragment normal"] = "fNormal";
+    _reservedVariablesIncludes["fNormal"] = "in vec3 fNormal;";
+
+    _reservedVariablesNames["Fragment position"] = "fPos";
+    _reservedVariablesIncludes["fPos"] = "in vec3 fPos;";
+
+    _reservedVariablesNames["Fragment tangent"] = "fTan";
+    _reservedVariablesIncludes["fTan"] = "in vec3 fTan;";
+
+    _reservedVariablesNames["Fragment bitangent"] = "fBitan";
+    _reservedVariablesIncludes["fBitan"] = "in vec3 fBitan;";
+
+    _reservedVariablesNames["Time"] = "time";
+    _reservedVariablesIncludes["time"] = "uniform float time;";
+
 
     _nodesTypesHandlers["const_var"] = &DefaultGlslCompiler::handleConstVariableNode;
     _nodesTypesHandlers["var"] = &DefaultGlslCompiler::handleVariableNode;
     _nodesTypesHandlers["fun"] = &DefaultGlslCompiler::handleFunctionalNode;
+    _nodesTypesHandlers["converter"] = &DefaultGlslCompiler::handleConverterNode;
 
     _dataTypeAssociation["Boolean"] = "bool";
     _dataTypeAssociation["Float"] = "float";
@@ -47,19 +65,21 @@ DefaultGlslCompiler()
     _dataTypeAssociation["const_vec4"] = "vec4";
 
     _constConvertors["float"] = [](const QJsonValue& value){
-        return QString::number(value.toDouble());
+        return value.toString();
     };
     _constConvertors["double"] = [](const QJsonValue& value){
-        return QString::number(value.toDouble());
+        qDebug() << "Double convert: " << value;
+        qDebug() << "Double convert: " << value.toString();;
+        return value.toString();
     };
     _constConvertors["bool"] = [](const QJsonValue& value){
         return QString::number(value.toBool());
     };
     _constConvertors["int"] = [](const QJsonValue& value){
-        return QString::number(value.toInt());
+        return value.toString();
     };
     _constConvertors["uint"] = [](const QJsonValue& value){
-        return QString::number(value.toString().toUInt());
+        return value.toString();
     };
     _constConvertors["vec2"] = [](const QJsonValue& value){
         auto obj = value.toObject();
@@ -94,12 +114,14 @@ DefaultGlslCompiler()
         auto correctResultTypeName = _dataTypeAssociation[resultArgType];
         auto firstArg = _nodesStringValuesForDeploy[_dependencis[id][1]];
         auto secondArg = _nodesStringValuesForDeploy[_dependencis[id][2]];
-        if ( firstArgType != resultArgType ) {
+        if ( firstArgType != "float"
+             && firstArgType != resultArgType ) {
             firstArg = QString("((%1)%2)")
                        .arg(correctResultTypeName)
                        .arg(firstArg);
         }
-        if ( secondArgType != resultArgType ) {
+        if ( secondArgType != "float"
+             && secondArgType != resultArgType ) {
             secondArg = QString("((%1)%2)")
                         .arg(correctResultTypeName)
                         .arg(secondArg);
@@ -220,6 +242,41 @@ DefaultGlslCompiler()
                                            , const QJsonObject& obj ) {
         _makeTrigonometryString(id, obj, "inversesqrt");
     };
+
+    _functionalConvertors["Normalize"] = [&]( const QUuid& id
+                                           , const QJsonObject& ) {
+        auto str = QString("normalize(%1)")
+                   .arg(_nodesStringValuesForDeploy[_dependencis[id][0]]);
+        _nodesStringValuesForDeploy[id] = str;
+    };
+    _functionalConvertors["Dot"] = [&]( const QUuid& id
+                                           , const QJsonObject& ) {
+        auto str = QString("dot(%1, %2)")
+                   .arg(_nodesStringValuesForDeploy[_dependencis[id][0]])
+                   .arg(_nodesStringValuesForDeploy[_dependencis[id][1]]);
+        _nodesStringValuesForDeploy[id] = str;
+    };
+    _functionalConvertors["Reflect"] = [&]( const QUuid& id
+                                       , const QJsonObject& ) {
+        auto str = QString("reflect(%1, %2)")
+                   .arg(_nodesStringValuesForDeploy[_dependencis[id][0]])
+                   .arg(_nodesStringValuesForDeploy[_dependencis[id][1]]);
+        _nodesStringValuesForDeploy[id] = str;
+    };
+    _functionalConvertors["Power"] = [&]( const QUuid& id
+                                       , const QJsonObject& ) {
+        auto str = QString("pow(%1, %2)")
+                   .arg(_nodesStringValuesForDeploy[_dependencis[id][1]])
+                   .arg(_nodesStringValuesForDeploy[_dependencis[id][2]]);
+        _nodesStringValuesForDeploy[id] = str;
+    };
+    _functionalConvertors["Maximum"] = [&]( const QUuid& id
+                                       , const QJsonObject& ) {
+        auto str = QString("max(%1, %2)")
+                   .arg(_nodesStringValuesForDeploy[_dependencis[id][0]])
+                   .arg(_nodesStringValuesForDeploy[_dependencis[id][1]]);
+        _nodesStringValuesForDeploy[id] = str;
+    };
 }
 
 
@@ -228,7 +285,7 @@ DefaultGlslCompiler::
 compile(std::shared_ptr<QJsonObject> sources)
 {
     _sources = sources;
-    _currentFunction = &DefaultGlslCompiler::writeHeader;
+    _currentFunction = &DefaultGlslCompiler::hashVariables;
 }
 
 
@@ -248,12 +305,17 @@ writeHeader()
     emit compileChangeState(procent, "Create header...");
 
     *_textStream << "#version 420 core" << endl << endl;
-    *_textStream << "out vec4 FinalColor;" << endl << endl;
+
+    for ( auto& inputVariableName : _defaultVariables ) {
+        *_textStream << _reservedVariablesIncludes[inputVariableName] << endl;
+    }
+
+    *_textStream << endl;
     *_textStream << "void main()" << endl << "{" << endl;
 
 
     _procent += 1.0;
-    _currentFunction = &DefaultGlslCompiler::hashVariables;
+    _currentFunction = &DefaultGlslCompiler::buildResult;
 }
 
 
@@ -407,7 +469,7 @@ generateSources()
     }
 
     _procent += 10.0;
-    _currentFunction = &DefaultGlslCompiler::buildResult;
+    _currentFunction = &DefaultGlslCompiler::writeHeader;
 }
 
 
@@ -447,6 +509,7 @@ handleVariableNode( const QUuid& id
 
     if ( _reservedVariablesNames.contains(name) ) {
         name = _reservedVariablesNames[name];
+        _defaultVariables += name;
     }
     else {
         name = name.split(QRegExp("\\W+"), QString::SkipEmptyParts).join("");
@@ -493,6 +556,54 @@ DefaultGlslCompiler::
 handleConverterNode( const QUuid& id
                    , const QJsonObject& obj )
 {
+    QString string;
     //auto string = _constConvertors[obj["name"].toString()](obj["val"]);
-    //_nodesStringValuesForDeploy[id] = string;
+
+    if ( obj["name"] == "Vec4Converter" ) {
+        int vecSize = 0;
+        if ( obj["in_vec_t"] == "v2" ) {
+            vecSize = 2;
+        }
+        else if ( obj["in_vec_t"] == "v3" ) {
+            vecSize = 3;
+        }
+        else if ( obj["in_vec_t"] == "v4" ) {
+            vecSize = 4;
+        }
+
+        QHash<QChar, QString> associations;
+
+        associations['r'] = !_dependencis[id].contains(1)
+                            ? vecSize >= 2
+                            ? _nodesStringValuesForDeploy[_dependencis[id][0]] + ".r"
+                            : "0.0"
+                            : _nodesStringValuesForDeploy[_dependencis[id][1]];
+
+        associations['g'] = !_dependencis[id].contains(2)
+                            ? vecSize >= 2
+                            ? _nodesStringValuesForDeploy[_dependencis[id][0]] + ".g"
+                            : "0.0"
+                            : _nodesStringValuesForDeploy[_dependencis[id][2]];
+
+        associations['b'] = !_dependencis[id].contains(3)
+                            ? vecSize >= 3
+                            ? _nodesStringValuesForDeploy[_dependencis[id][0]] + ".b"
+                            : "0.0"
+                            : _nodesStringValuesForDeploy[_dependencis[id][3]];
+
+        associations['a'] = !_dependencis[id].contains(4)
+                            ? vecSize == 4
+                            ? _nodesStringValuesForDeploy[_dependencis[id][0]] + ".a"
+                            : "0.0"
+                            : _nodesStringValuesForDeploy[_dependencis[id][4]];
+
+        auto convertString = obj["convertor"]["conversion"].toString();
+        string = QString("vec4(%1, %2, %3, %4)")
+                 .arg(associations[convertString[1]])
+                 .arg(associations[convertString[3]])
+                 .arg(associations[convertString[5]])
+                 .arg(associations[convertString[7]]);
+    }
+
+    _nodesStringValuesForDeploy[id] = string;
 }

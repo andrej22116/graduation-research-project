@@ -305,6 +305,60 @@ private:
     bool _secondPortUsed = false;
 };
 
+
+class PowFunctionalNode : public FunctionalNode {
+public:
+    PowFunctionalNode() = default;
+    ~PowFunctionalNode() override {}
+
+    /**
+     * @brief Name
+     * @return Model name
+     */
+    QString
+    name() const override;
+
+    /**
+     * @brief caption
+     * @return Node title
+     */
+    QString
+    caption() const override;
+
+    QJsonObject
+    save() const override;
+
+    unsigned int
+    functionalNPorts( PortType portType ) const override;
+
+    NodeDataType
+    functionalDataType( PortType portType
+                      , PortIndex portIndex ) const override;
+
+    bool
+    functionalPortCaptionVisible( PortType portType
+                                , PortIndex portIndex ) const override;
+
+    QString
+    functionalPortCaption( PortType portType
+                         , PortIndex portIndex ) const override;
+
+    void
+    functionalConnectionCreated( PortIndex portIndex
+                               , const NodeDataType& dataType ) override;
+
+    void
+    functionalConnectionDeleted(PortIndex portIndex) override;
+
+    bool
+    acceptDataType( PortIndex portIndex
+                  , const NodeDataType& nodeDataType ) const override;
+
+private:
+    NodeDataType _type;
+    int _connectionsCount;
+};
+
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -518,21 +572,6 @@ public:
 ///
 /// Exponential
 ///
-
-class PowFunctionalNode : public TrigonometryFunctionalNode {
-public:
-    PowFunctionalNode(){}
-    ~PowFunctionalNode() override {}
-
-    QString
-    name() const override;
-
-    QString
-    caption() const override;
-};
-
-///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
 
 class ExpFunctionalNode : public TrigonometryFunctionalNode {
 public:

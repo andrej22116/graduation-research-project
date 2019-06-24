@@ -11,6 +11,8 @@ set( CPP_SOURCES
         nodes/FunctionalNodes.cpp
         nodes/DataTypeInteractionRules.cpp
         nodes/LogickalNodes.cpp
+        nodes/CommonFunctionalNodes.cpp
+        nodes/GeometrycFunctionalNodes.cpp
 
         nodesmodels/DefaultDataModelRegistry.cpp
 

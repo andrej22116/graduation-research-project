@@ -625,6 +625,88 @@ caption() const
     return "Power";
 }
 
+
+QJsonObject
+PowFunctionalNode::
+save() const
+{
+    QJsonObject nodeJSON = QtNodes::NodeDataModel::save();
+
+    nodeJSON[JSON_TYPE] = JSON_TYPE_FUNCTION;
+    nodeJSON["out_t"] = _type.id;
+
+    return nodeJSON;
+}
+
+
+unsigned int
+PowFunctionalNode::
+functionalNPorts(QtNodes::PortType portType) const
+{
+    return portType == QtNodes::PortType::In ? 2 : 1;
+}
+
+
+QtNodes::NodeDataType
+PowFunctionalNode::
+functionalDataType( QtNodes::PortType
+                  , QtNodes::PortIndex ) const
+{
+    return _type;
+}
+
+
+bool
+PowFunctionalNode::
+functionalPortCaptionVisible( QtNodes::PortType portType
+                            , QtNodes::PortIndex ) const
+{
+    return portType == QtNodes::PortType::In;
+}
+
+
+QString
+PowFunctionalNode::
+functionalPortCaption( QtNodes::PortType
+                     , QtNodes::PortIndex portIndex ) const
+{
+    return portIndex == 1 ? "Value" : "Power";
+}
+
+
+void
+PowFunctionalNode::
+functionalConnectionCreated( QtNodes::PortIndex
+                           , const QtNodes::NodeDataType& dataType )
+{
+    if ( _connectionsCount == 0 ) {
+        _type = dataType;
+        emit dataModelUpdated();
+    }
+    ++_connectionsCount;
+}
+
+
+void
+PowFunctionalNode::
+functionalConnectionDeleted(QtNodes::PortIndex)
+{
+    --_connectionsCount;
+    if ( _connectionsCount == 0 ) {
+        _type = NO_DATA_TYPE;
+        emit dataModelUpdated();
+    }
+}
+
+
+bool
+PowFunctionalNode::
+acceptDataType( QtNodes::PortIndex
+              , const QtNodes::NodeDataType& nodeDataType ) const
+{
+    return DataTypeInteractionRules::isFloatingType(nodeDataType);
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 

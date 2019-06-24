@@ -34,6 +34,9 @@ private slots:
     onSelectSolutionPath();
 
     void
+    onSelectSolutionFolder();
+
+    void
     onOpenSolutionCreatorPage();
 
     void

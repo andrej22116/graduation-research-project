@@ -43,6 +43,9 @@ public:
     void
     save(const QString& path) const;
 
+    QJsonObject
+    save() const;
+
     void
     restore(const QString& path);
 
@@ -53,9 +56,6 @@ signals:
 public slots:
     void
     onBeginCompiling();
-
-private:
-
 
 private:
     using FlowViewPtr = std::shared_ptr<FlowView>;

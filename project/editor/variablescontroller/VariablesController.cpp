@@ -45,10 +45,10 @@ VariablesController( FlowViewPtr view
         UnsignedIntegerDataType unsignedInt;
         createDefaultVariable("Result color", vec4.name);
         createDefaultVariable("Time", unsignedInt.name);
-        createDefaultVariable("Vertex", vec3.name);
-        createDefaultVariable("Normal", vec3.name);
-        createDefaultVariable("Tangent", vec3.name);
-        createDefaultVariable("Bitangent", vec3.name);
+        createDefaultVariable("Fragment position", vec3.name);
+        createDefaultVariable("Fragment normal", vec3.name);
+        createDefaultVariable("Fragment tangent", vec3.name);
+        createDefaultVariable("Fragment bitangent", vec3.name);
         createDefaultVariable("UV position", vec2.name);
     }
 }

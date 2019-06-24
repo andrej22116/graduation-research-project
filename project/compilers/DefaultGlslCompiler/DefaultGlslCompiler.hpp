@@ -79,6 +79,8 @@ private:
     QHash<QString, QUuid> _variablesValueSources;
     QSet<QString> _variablesInitializations;
     QHash<QString, QString> _reservedVariablesNames;
+    QHash<QString, QString> _reservedVariablesIncludes;
+    QSet<QString> _defaultVariables;
 
     QHash<QString, QString> _dataTypeAssociation;
     QHash<QString, std::function<QString(const QJsonValue&)>> _constConvertors;

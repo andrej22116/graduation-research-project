@@ -6,7 +6,7 @@
 #include <functional>
 #include <memory>
 
-class QJsonObject;
+class QJsonValue;
 class VariableDataModel;
 
 class NodeDataTypeSerializer
@@ -24,12 +24,12 @@ public:
     static const QSet<QString>&
     supportedTypes();
 
-    static QJsonObject
+    static QJsonValue
     serialize( const QString& dataType
              , std::shared_ptr<VariableDataModel> dataModel );
 
     static void
-    deserialize( const QJsonObject& json
+    deserialize( const QJsonValue& json
                , const QString& dataType
                , std::shared_ptr<VariableDataModel> dataModel );
 
@@ -46,9 +46,9 @@ private:
 
 private:
     using GetFunction = std::function<
-                            QJsonObject(std::shared_ptr<VariableDataModel>) >;
+                            QJsonValue(std::shared_ptr<VariableDataModel>) >;
     using SetFunction = std::function<
-                            void( const QJsonObject&
+                            void( const QJsonValue&
                                 , std::shared_ptr<VariableDataModel> )>;
 
     QHash<QString, std::pair<GetFunction, SetFunction>> _serializers;

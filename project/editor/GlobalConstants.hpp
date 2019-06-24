@@ -21,6 +21,8 @@
 /// Concrete node type name
 #define JSON_TYPE_FUNCTION  "fun"
 
+#define JSON_TYPE_CONVERTER "converter"
+
 #define JSON_VARIABLE_TYPE  "var_t"
 
 #define JSON_VARIABLE_TYPE_GET  "get"

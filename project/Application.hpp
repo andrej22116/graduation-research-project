@@ -58,6 +58,9 @@ private slots:
     void
     onExportProject();
 
+    void
+    onCompileComplete(const QString& shaderText);
+
 private:
     void
     createMenu();

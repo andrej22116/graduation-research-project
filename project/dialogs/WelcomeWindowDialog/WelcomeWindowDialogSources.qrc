@@ -3,5 +3,6 @@
         <file alias="close-img.png">src/close.png</file>
         <file alias="back-img.png">src/back.png</file>
         <file alias="dialog-bacground-img.jpeg">src/background.jpeg</file>
+        <file>src/base.sdsln</file>
     </qresource>
 </RCC>

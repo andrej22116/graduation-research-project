@@ -200,8 +200,15 @@ setTargetObject(std::shared_ptr<TargetObject> object)
     _targetObjectEboId.allocate(_targetObject->indices.data(), eboSize);
 
     glf->glEnableVertexAttribArray(0);
-
     glf->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), nullptr);
+    glf->glEnableVertexAttribArray(1);
+    glf->glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoords));
+    glf->glEnableVertexAttribArray(2);
+    glf->glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
+    glf->glEnableVertexAttribArray(3);
+    glf->glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, tangent));
+    glf->glEnableVertexAttribArray(4);
+    glf->glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, bitangent));
 
     _targetObjectVaoId.release();
 
@@ -275,15 +282,16 @@ initializeGL()
     auto glf = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_4_2_Core>();
 
     glf->glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+    glf->glEnable(GL_DEPTH_TEST);
 
     if ( _targetObject ) { setTargetObject(_targetObject); }
 
     loadVertexShader();
-    setFragmentShaderText("#version 420 core\n"
+    /*setFragmentShaderText("#version 420 core\n"
                           "out vec4 FragColor;\n"
                           "void main() {\n"
                           "FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-                          "} ");
+                          "} ");*/
     compileShader();
 
     //createDsBuffer();
@@ -416,6 +424,16 @@ loadVertexShader()
     vertexShadeFiler.close();
 
     setVertexShaderText(vertexShaderText);
+
+    QFile fragmentShadeFiler(":/shaders/fragment_base.glsl");
+    if ( !fragmentShadeFiler.open(QFile::ReadOnly | QFile::Text) ) {
+        qDebug() << "Erororoeroeorweor";
+    }
+    QTextStream fragStream(&fragmentShadeFiler);
+    QString fragmentShaderText = fragStream.readAll();
+    fragmentShadeFiler.close();
+
+    setFragmentShaderText(fragmentShaderText);
 }
 
 

@@ -16,112 +16,112 @@ NodeDataTypeSerializer::
 NodeDataTypeSerializer()
 {
     registerDataType<IntegerDataType>(
-        [](std::shared_ptr<VariableDataModel> variable) -> QJsonObject {
+        [](std::shared_ptr<VariableDataModel> variable) -> QJsonValue {
         auto model = modelToModel<IntegerDataModel>(variable);
         if ( !model ) {
             return {};
         }
 
-        QJsonObject obj;
-        obj["value"] = model->value;
+        QJsonValue value;
+        value = QString::number(model->value);
 
-        return obj;
-    }, []( const QJsonObject& json
+        return value;
+    }, []( const QJsonValue& json
          , std::shared_ptr<VariableDataModel> variable ) {
         auto model = modelToModel<IntegerDataModel>(variable);
         if ( !model ) {
             return;
         }
 
-        model->value = json["value"].toInt();
+        model->value = json.toString().toInt();
     });
 
     registerDataType<UnsignedIntegerDataType>(
-        [](std::shared_ptr<VariableDataModel> variable) -> QJsonObject {
+        [](std::shared_ptr<VariableDataModel> variable) -> QJsonValue {
         auto model = modelToModel<UnsignedIntegerDataModel>(variable);
         if ( !model ) {
             return {};
         }
 
-        QJsonObject obj;
-        obj["value"] = QString::number(model->value);
+        QJsonValue value;
+        value = QString::number(model->value);
 
-        return obj;
-    }, []( const QJsonObject& json
+        return value;
+    }, []( const QJsonValue& json
          , std::shared_ptr<VariableDataModel> variable ) {
         auto model = modelToModel<UnsignedIntegerDataModel>(variable);
         if ( !model ) {
             return;
         }
 
-        model->value = json["value"].toString().toUInt();
+        model->value = json.toString().toUInt();
     });
 
     registerDataType<FloatDataType>(
-        [](std::shared_ptr<VariableDataModel> variable) -> QJsonObject {
+        [](std::shared_ptr<VariableDataModel> variable) -> QJsonValue {
         auto model = modelToModel<FloatDataModel>(variable);
         if ( !model ) {
             return {};
         }
 
-        QJsonObject obj;
-        obj["value"] = QString::number(static_cast<double>(model->value));
+        QJsonValue value;
+        value = QString::number(static_cast<double>(model->value));
 
-        return obj;
-    }, []( const QJsonObject& json
+        return value;
+    }, []( const QJsonValue& json
          , std::shared_ptr<VariableDataModel> variable ) {
         auto model = modelToModel<FloatDataModel>(variable);
         if ( !model ) {
             return;
         }
 
-        model->value = static_cast<float>(json["value"].toDouble());
+        model->value = static_cast<float>(json.toString().toDouble());
     });
 
     registerDataType<DoubleDataType>(
-        [](std::shared_ptr<VariableDataModel> variable) -> QJsonObject {
+        [](std::shared_ptr<VariableDataModel> variable) -> QJsonValue {
         auto model = modelToModel<DoubleDataModel>(variable);
         if ( !model ) {
             return {};
         }
 
-        QJsonObject obj;
-        obj["value"] = QString::number(model->value);
+        QJsonValue value;
+        value = QString::number(model->value);
 
-        return obj;
-    }, []( const QJsonObject& json
+        return value;
+    }, []( const QJsonValue& json
          , std::shared_ptr<VariableDataModel> variable ) {
         auto model = modelToModel<DoubleDataModel>(variable);
         if ( !model ) {
             return;
         }
 
-        model->value = json["value"].toDouble();
+        model->value = json.toString().toDouble();
     });
 
     registerDataType<BooleanDataType>(
-        [](std::shared_ptr<VariableDataModel> variable) -> QJsonObject {
+        [](std::shared_ptr<VariableDataModel> variable) -> QJsonValue {
         auto model = modelToModel<BooleanDataModel>(variable);
         if ( !model ) {
             return {};
         }
 
-        QJsonObject obj;
-        obj["value"] = model->value;
+        QJsonValue value;
+        value = QString::number(model->value);
 
-        return obj;
-    }, []( const QJsonObject& json
+        return value;
+    }, []( const QJsonValue& json
          , std::shared_ptr<VariableDataModel> variable ) {
         auto model = modelToModel<BooleanDataModel>(variable);
         if ( !model ) {
             return;
         }
 
-        model->value = json["value"].toBool();
+        model->value = json.toBool();
     });
 
     registerDataType<Vec2DataType>(
-        [](std::shared_ptr<VariableDataModel> variable) -> QJsonObject {
+        [](std::shared_ptr<VariableDataModel> variable) -> QJsonValue {
         auto model = modelToModel<Vec2DataModel>(variable);
         if ( !model ) {
             return {};
@@ -132,19 +132,19 @@ NodeDataTypeSerializer()
         obj["g"] = QString::number(static_cast<double>(model->value[1]));
 
         return obj;
-    }, []( const QJsonObject& json
+    }, []( const QJsonValue& json
          , std::shared_ptr<VariableDataModel> variable ) {
         auto model = modelToModel<Vec2DataModel>(variable);
         if ( !model ) {
             return;
         }
 
-        model->value[0] = static_cast<float>(json["r"].toDouble());
-        model->value[1] = static_cast<float>(json["g"].toDouble());
+        model->value[0] = static_cast<float>(json["r"].toString().toDouble());
+        model->value[1] = static_cast<float>(json["g"].toString().toDouble());
     });
 
     registerDataType<Vec3DataType>(
-        [](std::shared_ptr<VariableDataModel> variable) -> QJsonObject {
+        [](std::shared_ptr<VariableDataModel> variable) -> QJsonValue {
         auto model = modelToModel<Vec2DataModel>(variable);
         if ( !model ) {
             return {};
@@ -156,20 +156,20 @@ NodeDataTypeSerializer()
         obj["b"] = QString::number(static_cast<double>(model->value[2]));
 
         return obj;
-    }, []( const QJsonObject& json
+    }, []( const QJsonValue& json
          , std::shared_ptr<VariableDataModel> variable ) {
         auto model = modelToModel<Vec2DataModel>(variable);
         if ( !model ) {
             return;
         }
 
-        model->value[0] = static_cast<float>(json["r"].toDouble());
-        model->value[1] = static_cast<float>(json["g"].toDouble());
-        model->value[2] = static_cast<float>(json["b"].toDouble());
+        model->value[0] = static_cast<float>(json["r"].toString().toDouble());
+        model->value[1] = static_cast<float>(json["g"].toString().toDouble());
+        model->value[2] = static_cast<float>(json["b"].toString().toDouble());
     });
 
     registerDataType<Vec4DataType>(
-        [](std::shared_ptr<VariableDataModel> variable) -> QJsonObject {
+        [](std::shared_ptr<VariableDataModel> variable) -> QJsonValue {
         auto model = modelToModel<Vec2DataModel>(variable);
         if ( !model ) {
             return {};
@@ -182,17 +182,17 @@ NodeDataTypeSerializer()
         obj["a"] = QString::number(static_cast<double>(model->value[3]));
 
         return obj;
-    }, []( const QJsonObject& json
+    }, []( const QJsonValue& json
          , std::shared_ptr<VariableDataModel> variable ) {
         auto model = modelToModel<Vec2DataModel>(variable);
         if ( !model ) {
             return;
         }
 
-        model->value[0] = static_cast<float>(json["r"].toDouble());
-        model->value[1] = static_cast<float>(json["g"].toDouble());
-        model->value[2] = static_cast<float>(json["b"].toDouble());
-        model->value[3] = static_cast<float>(json["a"].toDouble());
+        model->value[0] = static_cast<float>(json["r"].toString().toDouble());
+        model->value[1] = static_cast<float>(json["g"].toString().toDouble());
+        model->value[2] = static_cast<float>(json["b"].toString().toDouble());
+        model->value[3] = static_cast<float>(json["a"].toString().toDouble());
     });
 }
 
@@ -205,7 +205,7 @@ supportedTypes()
 }
 
 
-QJsonObject
+QJsonValue
 NodeDataTypeSerializer::
 serialize( const QString& dataType
          , std::shared_ptr<VariableDataModel> dataModel )
@@ -216,7 +216,7 @@ serialize( const QString& dataType
 
 void
 NodeDataTypeSerializer::
-deserialize( const QJsonObject& json
+deserialize( const QJsonValue& json
            , const QString& dataType
            , std::shared_ptr<VariableDataModel> dataModel )
 {

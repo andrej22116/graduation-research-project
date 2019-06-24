@@ -72,6 +72,12 @@ public:
     static bool
     canBeNegation(const NodeDataType& dataType);
 
+    static bool
+    isVector(const NodeDataType& dataType);
+
+    static bool
+    isFloatingType(const NodeDataType& dataType);
+
 private:
     /// convertor
     template<typename From, typename To>

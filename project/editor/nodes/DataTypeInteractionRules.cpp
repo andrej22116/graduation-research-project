@@ -433,3 +433,21 @@ canBeNegation(const QtNodes::NodeDataType& dataType)
 {
     return _typesLevels[dataType.id] == 1;
 }
+
+
+bool
+DataTypeInteractionRules::
+isVector(const QtNodes::NodeDataType& dataType)
+{
+    return _typesLevels[dataType.id] >= 10
+            && _typesLevels[dataType.id] <= 18;
+}
+
+
+bool
+DataTypeInteractionRules::
+isFloatingType(const QtNodes::NodeDataType& dataType)
+{
+    auto id = _typesLevels[dataType.id];
+    return id == 5 || ( id >= 13 && id <= 15 );
+}

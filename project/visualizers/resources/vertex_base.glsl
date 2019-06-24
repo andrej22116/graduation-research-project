@@ -21,6 +21,17 @@ out VS_OUT {
 } vs_out;
 */
 
+out vec3 fPos;
+out vec3 fTex;
+out vec3 fNormal;
+out vec3 fTan;
+out vec3 fBitan;
+
 void main() {
+    fPos = vertex_pos;
+    fNormal = normal;
+    fTan = tangent;
+    fBitan = bitangent;
+    fTex = texture_pos;
     gl_Position = resultTransformMatrix * vec4(vertex_pos, 1);
 }

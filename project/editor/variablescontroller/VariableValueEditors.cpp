@@ -183,7 +183,7 @@ FloatValueEditor(QWidget* parent)
     _valueEdit = new QLineEdit("0", this);
 
     auto layout = new QBoxLayout(QBoxLayout::LeftToRight, this);
-    auto validator = new QDoubleValidator(FLT_MIN, FLT_MAX, 6, _valueEdit);
+    auto validator = new QDoubleValidator(-FLT_MAX, FLT_MAX, 6, _valueEdit);
     validator->setLocale(QLocale{QLocale::C});
 
     _valueEdit->setValidator(validator);
@@ -244,7 +244,7 @@ DoubleValueEditor(QWidget* parent)
     _valueEdit = new QLineEdit("0", this);
 
     auto layout = new QBoxLayout(QBoxLayout::LeftToRight, this);
-    auto validator = new QDoubleValidator(DBL_MIN, DBL_MAX, 15, _valueEdit);
+    auto validator = new QDoubleValidator(-DBL_MAX, DBL_MAX, 15, _valueEdit);
     validator->setLocale(QLocale{QLocale::C});
 
     _valueEdit->setValidator(validator);
@@ -351,7 +351,7 @@ Vector2ValueEditor::
 Vector2ValueEditor(QWidget* parent)
     : VariableValueEditor(parent)
 {
-    auto validator = new QDoubleValidator( static_cast<double>(FLT_MIN)
+    auto validator = new QDoubleValidator( static_cast<double>(-FLT_MAX)
                                          , static_cast<double>(FLT_MAX)
                                          , 6, this);
     validator->setLocale(QLocale{QLocale::C});
@@ -416,7 +416,7 @@ Vector3ValueEditor::
 Vector3ValueEditor(QWidget* parent)
     : VariableValueEditor(parent)
 {
-    auto validator = new QDoubleValidator( static_cast<double>(FLT_MIN)
+    auto validator = new QDoubleValidator( static_cast<double>(-FLT_MAX)
                                          , static_cast<double>(FLT_MAX)
                                          , 6, this);
     validator->setLocale(QLocale{QLocale::C});
@@ -481,7 +481,7 @@ Vector4ValueEditor::
 Vector4ValueEditor(QWidget* parent)
     : VariableValueEditor(parent)
 {
-    auto validator = new QDoubleValidator( static_cast<double>(FLT_MIN)
+    auto validator = new QDoubleValidator( static_cast<double>(-FLT_MAX)
                                          , static_cast<double>(FLT_MAX)
                                          , 6, this);
     validator->setLocale(QLocale{QLocale::C});

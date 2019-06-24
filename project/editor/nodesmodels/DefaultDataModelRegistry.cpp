@@ -7,6 +7,8 @@
 #include <nodes/VariableNode/VariableNode.hpp>
 #include <nodes/LogickalNodes.hpp>
 #include <nodes/ConstVariables/ConstVariablesNodes.hpp>
+#include <nodes/GeometrycFunctionalNodes.hpp>
+#include <nodes/CommonFunctionalNodes.hpp>
 
 DefaultDataModelRegistry::DefaultDataModelRegistry()
 {
@@ -38,7 +40,7 @@ registerModels()
     registerModel<ArcTanFunctionalNode>("Trigonometry");
 
 ///////////////////////////////////////////////////////////////////////////////
-    //registerModel<PowFunctionalNode>("Exponential");
+    registerModel<PowFunctionalNode>("Exponential");
     registerModel<ExpFunctionalNode>("Exponential");
     registerModel<Exp2FunctionalNode>("Exponential");
     registerModel<LogFunctionalNode>("Exponential");
@@ -55,6 +57,24 @@ registerModels()
     registerModel<Vec2ConstVariableNode>("Constants");
     registerModel<Vec3ConstVariableNode>("Constants");
     registerModel<Vec4ConstVariableNode>("Constants");
+
+///////////////////////////////////////////////////////////////////////////////
+    registerModel<NormalizeFunctionalNode>("Geometry");
+    registerModel<LengthFunctionalNode>("Geometry");
+    registerModel<DistanceFunctionalNode>("Geometry");
+    registerModel<DotFunctionalNode>("Geometry");
+    registerModel<CrossFunctionalNode>("Geometry");
+    registerModel<ReflectFunctionalNode>("Geometry");
+
+///////////////////////////////////////////////////////////////////////////////
+    registerModel<AbsoluteFunctionalNode>("Common");
+    registerModel<SignFunctionalNode>("Common");
+    registerModel<FloorFunctionalNode>("Common");
+    registerModel<CeilingFunctionalNode>("Common");
+    registerModel<FractionalFunctionalNode>("Common");
+    registerModel<ModuloFunctionalNode>("Common");
+    registerModel<MinimumFunctionalNode>("Common");
+    registerModel<MaximumFunctionalNode>("Common");
 
 ///////////////////////////////////////////////////////////////////////////////
     registerModel<VectorConverterDataModel>(

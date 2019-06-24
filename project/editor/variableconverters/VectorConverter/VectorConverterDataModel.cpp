@@ -3,6 +3,7 @@
 
 #include <ShaderNodeDataTypes.hpp>
 #include <nodes/Connection>
+#include <GlobalConstants.hpp>
 
 QString
 VectorConverterDataModel::
@@ -40,7 +41,7 @@ dataType( QtNodes::PortType portType
 
     switch( portIndex ) {
     case 0: {
-
+        return _inputVectorType;
     };
     default: return FloatDataType();
     }
@@ -81,6 +82,7 @@ VectorConverterDataModel::
 save() const
 {
     auto obj = QtNodes::NodeDataModel::save();
+    obj[JSON_TYPE] = JSON_TYPE_CONVERTER;
     obj["convertor"] = _converter->save();
     obj["in_vec_t"] = _inputVectorType.id;
     return obj;
@@ -91,7 +93,7 @@ void
 VectorConverterDataModel::
 restore(const QJsonObject& object)
 {
-    _converter->restore(object);
+    _converter->restore(object["convertor"].toObject());
 }
 
 

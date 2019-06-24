@@ -9,6 +9,11 @@
 #include <editor/EditorController.hpp>
 #include <visualizers/VisualizerController.hpp>
 #include <compilers/CompilerController.hpp>
+#include <QJsonObject>
+#include <QFileDialog>
+#include <QFile>
+#include <QTextStream>
+#include <QMessageBox>
 
 Application::
 Application( QApplication& application
@@ -97,6 +102,8 @@ startProject(const QString& projectPath)
     onCreateEditorNodesStoreDockWidget();
 
     _editorController->restore(projectPath);
+
+    //_visualizer;
 }
 
 
@@ -119,11 +126,43 @@ void Application::onExit()
 void
 Application::
 onCreateSolution( const QString& solutionPath
-                , const QString& /*sulutionName*/
-                , bool /*needCreateFolder*/
+                , const QString& solutionName
+                , bool needCreateFolder
                 , const QJsonObject&  /*solutionSettings*/ )
 {
-    startProject(solutionPath);
+
+    auto path = QDir::cleanPath(solutionPath);
+    if ( needCreateFolder ) {
+        if ( QDir(path).mkdir(solutionName) ) {
+            path += "/" + solutionName;
+            path = QDir::cleanPath(path);
+        }
+    }
+
+    path += "/" + solutionName;
+
+    if (!path.endsWith("sdsln", Qt::CaseInsensitive)) {
+        path += ".sdsln";
+    }
+
+    QFile file(path);
+    if ( !file.open(QFile::WriteOnly) ) {
+        QMessageBox::critical( this
+                             , "Error!"
+                             , "Invalid project name!" );
+        return;
+    }
+
+    QFile baseFile(":/WelcomWindowDialog/src/base.sdsln");
+    if ( baseFile.open(QFile::ReadOnly) ) {
+        auto data = baseFile.readAll();
+        file.write(data);
+        baseFile.close();
+    }
+
+    file.close();
+
+    startProject(path);
 }
 
 
@@ -207,7 +246,46 @@ void
 Application::
 onExportProject()
 {
+    auto json = _editorController->save();
+    connect( _compilerController.get()
+           , &CompilerController::compileComplete
+           , this
+           , &Application::onCompileComplete );
 
+    auto&& jsonR = std::move(json);
+    _compilerController->compile( ""
+                                , std::make_shared<QJsonObject>(jsonR));
+}
+
+
+void
+Application::
+onCompileComplete(const QString& shaderText)
+{
+    disconnect( _compilerController.get()
+              , &CompilerController::compileComplete
+              , this
+              , &Application::onCompileComplete );
+
+    QString fileName =
+      QFileDialog::getSaveFileName(nullptr,
+                                   tr("Export project"),
+                                   "",
+                                   tr("Text (*.txt)"));
+
+    if (!fileName.isEmpty())
+    {
+        if (!fileName.endsWith("txt", Qt::CaseInsensitive)) {
+            fileName += ".txt";
+        }
+
+        QFile file(fileName);
+        if (file.open(QIODevice::WriteOnly))
+        {
+            QTextStream stream(&file);
+            stream << shaderText;
+        }
+    }
 }
 
 
